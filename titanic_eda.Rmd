@@ -71,8 +71,8 @@ Discretizamos cuando tiene sentido y en función de cada variable. (**CAMBIO P1*
 apply(totalData,2, function(x) 
   length(unique(x)))
 
-# Discretizamos las variables con pocas clases
-cols<-c("Survived","Pclass")
+# Discretizamos las variables con pocas clases CAMBIO P1 incluir "Sex" y "Embarked"
+cols<-c("Survived","Pclass","Sex","Embarked")
 for (i in cols){
   totalData[,i] <- as.factor(totalData[,i])
 }
@@ -80,7 +80,7 @@ for (i in cols){
 
 **CAMBIO P2**: Volvemos a mostrar el dataset para ver como se ha actualizado con los cambios.
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
+str(totalData)
 ```
 
 
