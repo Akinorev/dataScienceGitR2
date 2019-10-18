@@ -119,7 +119,7 @@ ggplot(data = totalData[1:filas,],aes(x=Embarked,fill=Survived))+geom_bar(positi
 
 **CAMBIO P3**: Repetir gráfica anterior pero agrupando por sexo
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
+ggplot(data = totalData[1:filas,],aes(x=Embarked,fill=Survived))+geom_bar(position="fill")+facet_wrap(~Sex)
 ```
 
 Comparemos ahora dos gráficos de frecuencias: Survived-SibSp y Survived-Parch
@@ -131,7 +131,7 @@ ggplot(data = totalData[1:filas,],aes(x=SibSp,fill=Survived))+geom_bar()
 
 **CAMBIO P2**: Repetir grafica para la variable Parch
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-
+ggplot(data = totalData[1:filas,],aes(x=Parch,fill=Survived))+geom_bar()
 ```
 
 Veamos un ejemplo de construcción de una variable nueva: Tamaño de familia
@@ -157,4 +157,5 @@ ggplot(data = totalData1[!(is.na(totalData[1:filas,]$Age)),],aes(x=Age,fill=Surv
 **CAMBIO P1**: Repetir el histograma anterior cambiando la frecuencia por la probabilidad de superviviencia (Añadir el parámetro position="fill" en geom_histogram y la etiqueta ylab("Frecuencia"))
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
+ggplot(data = totalData1[!(is.na(totalData[1:filas,]$Age)),],aes(x=Age,fill=Survived))+geom_histogram(binwidth =3,position="fill")+ylab("Frecuencia")
 ```
