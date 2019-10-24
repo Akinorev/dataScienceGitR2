@@ -41,6 +41,17 @@ summary(datosA)
 summary(datosB)
 
 
+ggplot(datos, aes(lifetime)) +
+  geom_histogram(fill="white", colour="black") +
+  ggtitle('Histograma del valor lifetime')
+
+
+ggplot(datos, aes(lifetime, fill =facility)) +
+  geom_histogram()  +
+  ggtitle('Histograma del valor lifetime')
+
+
+
 #1.3 Realiza un histogram de cada uno de los subset y analizar su distribucón Normal#
 hist(datosA$lifetime, main = expression("Histograma lifetime población A"),
      xlab = expression("Lifetime"*" ("*symbol("m")*mol/m^2*s*")"),
@@ -49,6 +60,7 @@ curve(dnorm(x, mean(datosA$lifetime), sd(datosA$lifetime)), add = TRUE, lwd = 3,
 qqnorm(datosA$lifetime, pch = 20, col = alpha("red4", 0.5), las = 1)
 grid()
 qqline(datosA$lifetime, lwd = 2)
+
 
 
 
@@ -96,13 +108,13 @@ sf.test(datosB$lifetime)
 #2.1 Realiza una estimación puntual de la media y la desviación típica de la
 #población de cada tipo de baterías#
 
-mean(datosA$lifetime, na.rm = TRUE)
-sd(datosA$lifetime, na.rm = TRUE)
+mean_A<-mean(datosA$lifetime, na.rm = TRUE)
+std_A <-sd(datosA$lifetime, na.rm = TRUE)
 summary (datosA$lifetime)
 kurtosis(datosA$lifetime)
 
-mean(datosB$lifetime, na.rm = TRUE)
-sd(datosB$lifetime, na.rm = TRUE)
+mean_B<-mean(datosB$lifetime, na.rm = TRUE)
+std_B <-sd(datosB$lifetime, na.rm = TRUE)
 summary (datosA$lifetime)
 kurtosis(datosB$lifetime)
 
@@ -111,32 +123,32 @@ kurtosis(datosB$lifetime)
 #2.2 Calcula la probabilidad de que una batería tomada al azar del tipo A dure más de 210 horas#
 
 #para la poblacion A#
-pnorm(q = 210, mean = 200.5, sd = 2.75, lower.tail = FALSE)
+pnorm(q = 210, mean = mean_A, sd = std_A, lower.tail = FALSE)
 
 #para la poblacion B#
-pnorm(q = 210, mean = 179.68, sd = 2.08, lower.tail = FALSE)
+pnorm(q = 210, mean = mean_B, sd = std_B, lower.tail = FALSE)
 
 
 
 #2.3 Calcula la probabilidad de que una batería tomada al azar del tipo B dure menos de 175 horas#
 
 #para la poblacion B#
-1-pnorm(q = 175, mean = 179.68, sd = 2.08, lower.tail = FALSE)
+1-pnorm(q = 175, mean = mean_A, sd = std_A, lower.tail = FALSE)
 
 #2.4 Encuentra cuál es la duración máxima del 3% de las pilas del tipo B que duran menos (ayuda: esto es#
 #equivalente a encontrar el cuantil 0.03 de la distribución)#
 
-qnorm(0.9,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.8,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.7,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.6,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.5,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.4,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.3,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.2,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.1,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.05,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
-qnorm(0.03,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.9,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.8,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.7,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.6,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.5,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.4,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.3,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.2,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.1,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.05,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
+qnorm(0.03,mean = mean_B, sd = std_B, lower.tail = TRUE, log.p = FALSE)
 
 
 
@@ -149,8 +161,8 @@ qnorm(0.03,mean = 179.68, sd = 2.08, lower.tail = TRUE, log.p = FALSE)
 #3.1 Calcula la probabilidad de que en un lote de 10 baterías, no haya ninguna defectuosa (ayuda: distribución binomial).#
 #HAY QUE CALCULAR LA PROBABILIDAD DE QUE SEA MENOR A 175 HORAS EN LA POBLACION B#
 #para la poblacion B#
-1-pnorm(q = 175, mean = 170.68, sd = 2.08, lower.tail = FALSE)
-pnorm(q = 175, mean = 170.68, sd = 2.08, lower.tail = TRUE)
+1-pnorm(q = 175, mean = mean_B, sd = std_B, lower.tail = FALSE)
+pnorm(q = 175, mean = mean_B, sd = std_B, lower.tail = TRUE)
 
 dbinom(0, size=10, prob=0.9810957)
 
@@ -163,7 +175,7 @@ dbinom(0, size=10, prob=0.9810957)
 #independientes de Bernoulli con probabilidad de éxito p
 
 
-1-pnorm(q = 175, mean = 170.68, sd = 2.08, lower.tail = TRUE)
+1-pnorm(q = 175, mean = mean_B, sd = std_B, lower.tail = TRUE)
 pgeom(q = 5, prob = 0.01890433, lower.tail = TRUE)
 pgeom(q = 1, prob = 0.01890433, lower.tail = TRUE)
 pgeom(q = 2, prob = 0.01890433, lower.tail = TRUE)
@@ -258,7 +270,7 @@ rweibull(n, shape, scale = 1, alpha = shape, beta = scale)
 #Calcula la probabilidad de que una batería tomada al azar del tipo B dure menos de 175 horas
 
 #para la poblacion B#
-pb<-1-pnorm(q = 175, mean = 179.68, sd = 2.08, lower.tail = FALSE)
+pb<-1-pnorm(q = 175, mean = mean_B, sd = std_B, lower.tail = FALSE)
 defectuosas<-1000*pb
 defectuosas
 #Para la nueva población#
