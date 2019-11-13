@@ -1,6 +1,6 @@
 ---
 title: "Tecnicas de Inferencia"
-author: "Pablo Olmos Martinez, Carlos Grande Nuñez y Veronica Gomez Gomez"
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez,"
 date: "10/20/2019"
 output: 
   html_document:
@@ -11,8 +11,26 @@ output:
 
 # ANALISIS DE TECNICAS DE INFERENCIA.
 
+El objetivo de esta practica es analizar las distintas tecnicas de inferencia usadas en clase. Para esta practica hemos usado el siguiente dataset:
+
+https://www.kaggle.com/mishra5001/credit-card
+
+Las librerias usadas son las siguientes:
+
+- sampling
+- normtest
+- nortest
+
 ```{r setup, include=FALSE}
-library(PASWR2)
-datos <- BATTERY
+library(sampling)
+library(normtest)
+library(nortest) 
+
+relPath <- getwd()
+setwd(relPath)
+unzip("credit-card.zip")
+base <- read.csv (file="./credit-card/application_data.csv")
+names (base)
+summary (base)
 ```
 
