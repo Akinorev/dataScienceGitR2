@@ -34,3 +34,20 @@ names (base)
 summary (base)
 ```
 
+## Muestreo del conjunto de datos
+
+## Caracteristicas interesantes sujetas a estudio
+
+## Estimaciones puntuales de las caracteristicas
+
+## Intervalo de hipotesis para una de las caracteristicas
+
+## Intervalo de confianza para la comparacion de dicha caracteristica
+
+## Contrastes de hipotesis de independencia de las muestras
+
+## Contraste de hipotesis para la caracteristica de estudio de una de las muestras
+
+## Contraste de hipotesis de normalidad para una de las muestras
+
+## Contraste de hipotesis para la comparacion de las muestras
