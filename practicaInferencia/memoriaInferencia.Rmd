@@ -20,11 +20,13 @@ Las librerias usadas son las siguientes:
 - sampling
 - normtest
 - nortest
+- data.table
 
 ```{r setup, include=FALSE}
 library(sampling)
 library(normtest)
-library(nortest) 
+library(nortest)
+library(data.table)
 
 relPath <- getwd()
 setwd(relPath)
@@ -34,20 +36,189 @@ names (base)
 summary (base)
 ```
 
+## Informacion general sobre los datos que vamos a usar
+
+Hemos decidido usar unos datos basados en prestamos bancarios, las columnas y datos con los que contamos son los siguientes:
+
+  Variables de tipo discreto:
+  
+     - Género
+     - Flags
+     - tipo de casa
+     - ORGANIZATION_TYPE
+     - OCCUPATION_TYPE
+     - NAME_EDUCATION_TYPE   
+     - NAME_FAMILY_STATUS 
+     - NAME_HOUSING_TYPE
+    
+  Variables de tipo continuo:
+  
+     - AMT_INCOME_TOTAL 
+     - AMT_CREDIT 
+     - AMT_ANNUITY 
+     - AMT_GOODS_PRICE
+     - edad
+     - Antiguedad en el empleo
+
+Antes de comenzar con el resto de ejercicios hemos decidido comprobar si los datos obtenidos nos serviran para el estudio posterior.
+
+```{r}
+table(base$TARGET)
+prop.table(table(base$TARGET))
+```
+
+Como dato interesante podemos observar que aproximadamente el 8% de los creditos concedidos son impagados
+
 ## Muestreo del conjunto de datos
+
+Usamos una muestra aleatoria simple de 5000 elementos
+
+```{r}
+set.seed(5876)
+baset <- data.table(base)
+mas<-baset[sample(.N, 5000)]
+table(mas$TARGET)
+prop.table(table(mas$TARGET))
+```
+
+Muestreo estratificado para el nivel de educacion
+
+```{r}
+table(base$NAME_EDUCATION_TYPE)
+prop.table(table(base$NAME_EDUCATION_TYPE))
+
+sum(is.na(base$NAME_EDUCATION_TYPE))
+#the method is 'srswor' (equal probability, without replacement)
+strata.base=strata(base,c("NAME_EDUCATION_TYPE"),size=c(10,5,5,5,2), method="srswor",TRUE)
+strata.base
+```
+
 
 ## Caracteristicas interesantes sujetas a estudio
 
+Hemos encontrado las siguientes caracteristicas como intersantes para el estudio:
+
+ - Cuanto es la media del importe de crédito solicitado
+ - Cuanto es el ingreso medio de los clientes 
+ - ¿cual es la edad media del cliente que solicita?
+ - ¿cual es la media de la antigüedad en la empresa del cliente medio
+
 ## Estimaciones puntuales de las caracteristicas
+
+### Estimacion puntual de la media del importe de crédito solicitado
+
+Importe solicitado del cliente, Media Poblacion
+```{r}
+#importe solicitado del cliente Media Poblacion
+media.importe=mean(base$AMT_CREDIT)
+dt.importe=sd(base$AMT_CREDIT)
+media.importe
+dt.importe
+```
+
+Importe solicitado del cliente, Media Muestral
+```{r}
+#importe solcitado del cliente Media Muestral
+media.importe_mas<-mean(mas$AMT_CREDIT)
+dt.importe_mas<-sd(mas$AMT_CREDIT)
+media.importe_mas
+dt.importe_mas
+
+```
+
+
+### Estimacion puntual de la media de los ingresos del cliente
+
+Media poblacional de los ingresos del cliente
+```{r}
+#ingresos del cliente Media Poblacion
+media.ingresos=mean(base$AMT_INCOME_TOTAL)
+media.ingresos
+```
+
+Media muestral de los ingresos del cliente
+```{r}
+#ingresos del cliente Media Muestral
+media.ingresos_msa<-mean(mas$AMT_INCOME_TOTAL)
+media.ingresos_msa
+```
+
+### Estimacion puntual de la media de la edad de los clientes
+
+Edad media poblacional
+```{r}
+#edad media poblacional 
+dias=(base$DAYS_BIRTH*-1)/365.25
+media.edad= mean (dias)
+media.edad
+```
+
+Edad media muestral
+```{r}
+#edad media muestral
+dias_mas=(mas$DAYS_BIRTH*-1)/365.25
+media.edad_mas= mean (dias_mas)
+media.edad_mas
+```
+
+### Estimacion puntual de la media de la antiguedad en la empresa de los clientes
+
+Antiguedad poblacional en la empresa
+```{r}
+#antiguedad en la empresa poblacional
+antg=(base$DAYS_EMPLOYED)/365.25
+media.antg= mean (antg)
+media.antg
+```
+
+Muestral de la antiguedad en la empresa
+```{r}
+#antiguedad en la empresa muestral
+antg_mas=(mas$DAYS_EMPLOYED)/365.25
+media.antg_mas= mean (antg_mas)
+media.antg_mas
+```
+
+
 
 ## Intervalo de hipotesis para una de las caracteristicas
 
+```{r}
+
+```
+
+
 ## Intervalo de confianza para la comparacion de dicha caracteristica
+
+```{r}
+
+```
+
 
 ## Contrastes de hipotesis de independencia de las muestras
 
+```{r}
+
+```
+
+
 ## Contraste de hipotesis para la caracteristica de estudio de una de las muestras
+
+```{r}
+
+```
+
 
 ## Contraste de hipotesis de normalidad para una de las muestras
 
+```{r}
+
+```
+
+
 ## Contraste de hipotesis para la comparacion de las muestras
+
+```{r}
+
+```
+
