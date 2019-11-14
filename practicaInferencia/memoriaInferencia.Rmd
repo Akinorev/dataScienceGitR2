@@ -183,40 +183,269 @@ media.antg_mas
 
 ## Intervalo de hipotesis para una de las caracteristicas
 
+Definimos antes los subsets sobre los que trabajaremos a partir de ahora. Donde t1 (TARGET = 1) corresponde los creditos con impago y t0 (TARGET = 0) corresponde a los creditos pagados
+
 ```{r}
+#t1 impago
+t1<-subset(base, TARGET=="1")
+t1
+
+#t0 pago
+t0<-subset(base, TARGET=="0")
+t0
 
 ```
-
+TODO
 
 ## Intervalo de confianza para la comparacion de dicha caracteristica
 
-```{r}
+### Calculos sobre los ingresos de los clientes con el credito pagado
 
+```{r}
+#ingresos del cliente TARGET 0
+media.ingresos=mean(t0$AMT_INCOME_TOTAL)
+media.ingresos
+desviacion.ingresos=sd(t0$AMT_INCOME_TOTAL)
+desviacion.ingresos
+
+t0_ci=media.ingresos-qnorm(0.95)*desviacion.ingresos/sqrt(length(t0))
+t0_cs=media.ingresos+qnorm(0.95)*desviacion.ingresos/sqrt(length(t0))
+c(t0_ci,t0_cs)
+```
+
+
+### Calculos sobre los ingresos de los clientes con el credito impagado
+
+```{r}
+#ingresos del cliente TARGET 1
+media.ingresos=mean(t1$AMT_INCOME_TOTAL)
+media.ingresos
+desviacion.ingresos=sd(t1$AMT_INCOME_TOTAL)
+desviacion.ingresos
+
+t1_ci=media.ingresos-qnorm(0.95)*desviacion.ingresos/sqrt(length(t1))
+t1_cs=media.ingresos+qnorm(0.95)*desviacion.ingresos/sqrt(length(t1))
+c(t1_ci,t1_cs)
+```
+
+### Calculos sobre el importe de los clientes con el credito pagado
+
+```{r}
+#importe medio de los clientes TARGET 0
+media.importe=mean (t0$AMT_CREDIT)
+media.importe
+desviacion.importe=sd(t0$AMT_CREDIT)
+desviacion.importe
+
+t0_ci=media.importe-qnorm(0.95)*desviacion.importe/sqrt(length(t0))
+t0_cs=media.importe+qnorm(0.95)*desviacion.importe/sqrt(length(t0))
+c(t0_ci,t0_cs)
+```
+
+### Calculos sobre el importe de los clientes con el credito impagado
+
+```{r}
+#importe medio de los clientes TARGET 1
+media.importe=mean (t1$AMT_CREDIT)
+media.importe
+desviacion.importe=sd(t1$AMT_CREDIT)
+desviacion.importe
+
+t1_ci=media.importe-qnorm(0.95)*desviacion.importe/sqrt(length(t1))
+t1_cs=media.importe+qnorm(0.95)*desviacion.importe/sqrt(length(t1))
+c(t1_ci,t1_cs)
+```
+
+### Calculos sobre la edad de los clientes con el credito pagado
+
+```{r}
+# edad de los clientes TARGET 0
+dias=(t0$DAYS_BIRTH*-1)/365.25
+media.edad= mean (dias)
+media.edad
+desviacion.edad=sd(dias)
+desviacion.edad
+
+t0_ci=media.edad-qnorm(0.95)*desviacion.edad/sqrt(length(t0))
+t0_cs=media.edad+qnorm(0.95)*desviacion.edad/sqrt(length(t0))
+c(t0_ci,t0_cs)
+```
+
+### Calculos sobre la edad de los clientes con el credito impagado
+
+```{r}
+# edad de los clientes TARGET 1
+dias=(t1$DAYS_BIRTH*-1)/365.25
+media.edad= mean (dias)
+media.edad
+desviacion.edad=sd(dias)
+desviacion.edad
+
+t1_ci=media.edad-qnorm(0.95)*desviacion.edad/sqrt(length(t1))
+t1_cs=media.edad+qnorm(0.95)*desviacion.edad/sqrt(length(t1))
+c(t1_ci,t1_cs)
+```
+
+### Calculos sobre la antiguedad de los clientes con el credito pagado
+
+```{r}
+#antiguedad en la empresa TARGET 0
+antg=(t0$DAYS_EMPLOYED)/365.25
+media.antg= mean (antg)
+media.antg
+desviacion.antg=sd(antg)
+desviacion.antg
+
+t0_ci=media.antg-qnorm(0.95)*desviacion.antg/sqrt(length(t0))
+t0_cs=media.antg+qnorm(0.95)*desviacion.antg/sqrt(length(t0))
+c(t0_ci,t0_cs)
+```
+
+### Calculos sobre la antiguedad de los clientes con el credito impagado
+
+```{r}
+#antiguedad en la empresa TARGET 1
+antg=(t1$DAYS_EMPLOYED)/365.25
+media.antg= mean (antg)
+media.antg
+desviacion.antg=sd(antg)
+desviacion.antg
+
+t1_ci=media.antg-qnorm(0.95)*desviacion.antg/sqrt(length(t1))
+t1_cs=media.antg+qnorm(0.95)*desviacion.antg/sqrt(length(t1))
+c(t1_ci,t1_cs)
 ```
 
 
 ## Contrastes de hipotesis de independencia de las muestras
 
-```{r}
+### Observamos los contrastes de hipotesis de independencia en funcion de los ingresos de la poblacion
 
+```{r}
+#muestra1 ---Target 0
+#muestra2 ---Target 1
+
+###analisis para Ingresos de la poblacion#####
+
+Ho: Igualdad de Medias en Ingresos para la Poblacion T0 y T1
+H1: No igualdad...
+
+set.seed(5876)
+test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
+print(test)
+# p-value es < 0.05 no podemos Rechazamos la Hipotesis Nula . El valor del estadístico t es muy pequeño
+boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"))
+
+
+#sin outliers parece que nos están mucho más próximos intuitivamente las medias#
+##ESTUDIAR QUITAR LOS OUTLIER
+boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"),outline=FALSE)
+plot(t0$AMT_INCOME_TOTAL)
+plot(t1$AMT_INCOME_TOTAL)
+```
+
+### Observamos los contrastes de hipotesis de independencia en funcion del importe medio de la poblacion
+
+```{r}
+###analisis para importe medio de la poblacion#####
+
+Ho: Igualdad de Medias en importe medio de credito solicitado para la Poblacion T0 y T1
+H1: No igualdad...
+
+
+set.seed(5876)
+test <- t.test(t0$AMT_CREDIT,t1$AMT_CREDIT) # Prueba t de Student
+print(test)
+# p-value < 2.2e-16 RECHAZAR la Hipotesis Nula . El valor del estadístico t es muy pequeño
+boxplot(t0$AMT_CREDIT,t1$AMT_CREDIT,names=c("t0","t1"))
+```
+
+### Observamos los contrastes de hipotesis de independencia en funcion de la edad media de la poblacion
+
+```{r}
+###analisis para EDAD MEDIA de la poblacion#####
+
+Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
+H1: No igualdad...
+
+
+set.seed(5876)
+dias_t0<-(t0$DAYS_BIRTH*-1)/365.25
+dias_t1<-(t1$DAYS_BIRTH*-1)/365.25
+test <- t.test(dias_t0,dias_t1) # Prueba t de Student
+print(test)
+# p-value < 2.2e-16  RECHAZAR la Hipotesis Nula . El valor del estadístico t es muy pequeño
+boxplot(dias_t0,dias_t1,names=c("t0","t1"))
+```
+
+### Observamos los contrastes de hipotesis de independencia en funcion de la antiguedad en la empresa de la poblacion
+
+```{r}
+###analisis parala antiguedad en la empresa de la poblacion#####
+
+Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
+H1: No igualdad...
+
+
+set.seed(5876)
+antg_t0<-(t0$DAYS_EMPLOYED)/365.25
+antg_t1<-(t1$DAYS_EMPLOYED)/365.25
+test <- t.test(antg_t0,antg_t1) # Prueba t de Student
+print(test)
+# p-value < 2.2e-16  RECHAZAR la Hipotesis Nula . El valor del estadístico t es muy pequeño
+boxplot(dias_t0,dias_t1,names=c("t0","t1"))
 ```
 
 
 ## Contraste de hipotesis para la caracteristica de estudio de una de las muestras
 
+Vamos a comprobar lo siguiente:
+
+Existen diferencias significativas en el nivel de estudios entre los clientes que Pagan/Impagan
+
 ```{r}
 
+#### test chi2
+#### Ho : Nivel de Estudios e Impago de Crédito son Independientes
+#### H1 : existe dependencia
+
+chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE,correct=FALSE )
+chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE)$expected
+mosaicplot(base$TARGET,base$NAME_EDUCATION_TYPE, color=TRUE, main="Plot de mosaico")
+
+##Valor del estadistico X2 1019, y el p-value < 2.2e-16 . Rechazamos la Ho 
+##PARA NUESTRA BASE No existe independencia entre el impago y el Nivel de estudios
+## Vamos a sacar una distribucion de datos para ver en frecuencuias cuales son los estudios que más nos impagan
+uno<-table (base$NAME_EDUCATION_TYPE,base$TARGET)
+prop.table(uno,1)
+
+###Intuitivamente vemos que Higher education  pagan mejor, y Lower secondary pagan peor
 ```
 
+Por los resultados obtenidos podemos intuir que aquellos clientes que cuentan con Higher education pagan mejor que aquellos con Lower secondary
 
 ## Contraste de hipotesis de normalidad para una de las muestras
 
-```{r}
+Este contraste lo efectuaremos sobre la media del importe solicitado
 
+```{r}
+### Media del importe solicitado
+
+###Prueba de Anderson-Darling###
+norm<-ad.test(base$AMT_CREDIT)
+norm0<-ad.test(t0$AMT_CREDIT)
+norm1<-ad.test(t1$AMT_CREDIT)
+
+###Pruena de Lilliefors (Kolmogorov-Smirnov)###
+lillie.test(base$AMT_CREDIT)
+lillie.test(t0$AMT_CREDIT)
+lillie.test(t1$AMT_CREDIT)
 ```
 
 
 ## Contraste de hipotesis para la comparacion de las muestras
+
+TODO
 
 ```{r}
 
