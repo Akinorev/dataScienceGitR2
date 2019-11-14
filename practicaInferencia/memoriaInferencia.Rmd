@@ -327,8 +327,8 @@ c(t1_ci,t1_cs)
 
 ###analisis para Ingresos de la poblacion#####
 
-Ho: Igualdad de Medias en Ingresos para la Poblacion T0 y T1
-H1: No igualdad...
+#Ho: Igualdad de Medias en Ingresos para la Poblacion T0 y T1
+#H1: No igualdad...
 
 set.seed(5876)
 test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
@@ -349,8 +349,8 @@ plot(t1$AMT_INCOME_TOTAL)
 ```{r}
 ###analisis para importe medio de la poblacion#####
 
-Ho: Igualdad de Medias en importe medio de credito solicitado para la Poblacion T0 y T1
-H1: No igualdad...
+#Ho: Igualdad de Medias en importe medio de credito solicitado para la Poblacion T0 y T1
+#H1: No igualdad...
 
 
 set.seed(5876)
@@ -365,8 +365,8 @@ boxplot(t0$AMT_CREDIT,t1$AMT_CREDIT,names=c("t0","t1"))
 ```{r}
 ###analisis para EDAD MEDIA de la poblacion#####
 
-Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
-H1: No igualdad...
+#Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
+#H1: No igualdad...
 
 
 set.seed(5876)
@@ -383,8 +383,8 @@ boxplot(dias_t0,dias_t1,names=c("t0","t1"))
 ```{r}
 ###analisis parala antiguedad en la empresa de la poblacion#####
 
-Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
-H1: No igualdad...
+#Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
+#H1: No igualdad...
 
 
 set.seed(5876)
