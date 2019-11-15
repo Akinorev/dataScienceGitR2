@@ -3,12 +3,12 @@ title: "Tecnicas de Inferencia"
 author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez,"
 date: "10/20/2019"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     theme: united
     toc: yes
     toc_float: yes
+  pdf_document:
+    toc: yes
 ---
 
 # ANALISIS DE TECNICAS DE INFERENCIA.
@@ -64,7 +64,7 @@ Hemos decidido usar unos datos basados en prestamos bancarios, las columnas y da
 
 Antes de comenzar con el resto de ejercicios hemos decidido comprobar si los datos obtenidos nos serviran para el estudio posterior.
 
-```{r}
+```{r InfoGeneral}
 table(base$TARGET)
 prop.table(table(base$TARGET))
 ```
@@ -75,7 +75,7 @@ Como dato interesante podemos observar que aproximadamente el 8% de los creditos
 
 Usamos una muestra aleatoria simple de 5000 elementos
 
-```{r}
+```{r MuestreoDatos}
 set.seed(5876)
 baset <- data.table(base)
 mas<-baset[sample(.N, 5000)]
@@ -85,13 +85,13 @@ prop.table(table(mas$TARGET))
 
 Muestreo estratificado para el nivel de educacion
 
-```{r}
-table(base$NAME_EDUCATION_TYPE)
-prop.table(table(base$NAME_EDUCATION_TYPE))
+```{r MuestreoEstratificado}
+table(mas$NAME_EDUCATION_TYPE)
+prop.table(table(mas$NAME_EDUCATION_TYPE))
 
-sum(is.na(base$NAME_EDUCATION_TYPE))
+sum(is.na(mas$NAME_EDUCATION_TYPE))
 #the method is 'srswor' (equal probability, without replacement)
-strata.base=strata(base,c("NAME_EDUCATION_TYPE"),size=c(10,5,5,5,2), method="srswor",TRUE)
+strata.base=strata(mas,c("NAME_EDUCATION_TYPE"),size=c(10,5,5,5,2), method="srswor",TRUE)
 strata.base
 ```
 
@@ -110,16 +110,16 @@ Hemos encontrado las siguientes caracteristicas como intersantes para el estudio
 ### Estimacion puntual de la media del importe de crédito solicitado
 
 Importe solicitado del cliente, Media Poblacion
-```{r}
+```{r MediaPoblacionImporte}
 #importe solicitado del cliente Media Poblacion
-media.importe=mean(base$AMT_CREDIT)
-dt.importe=sd(base$AMT_CREDIT)
+media.importe=mean(mas$AMT_CREDIT)
+dt.importe=sd(mas$AMT_CREDIT)
 media.importe
 dt.importe
 ```
 
 Importe solicitado del cliente, Media Muestral
-```{r}
+```{r MediaMuestralImporte}
 #importe solcitado del cliente Media Muestral
 media.importe_mas<-mean(mas$AMT_CREDIT)
 dt.importe_mas<-sd(mas$AMT_CREDIT)
@@ -132,14 +132,14 @@ dt.importe_mas
 ### Estimacion puntual de la media de los ingresos del cliente
 
 Media poblacional de los ingresos del cliente
-```{r}
+```{r MediaPoblacionalIngresos}
 #ingresos del cliente Media Poblacion
-media.ingresos=mean(base$AMT_INCOME_TOTAL)
+media.ingresos=mean(mas$AMT_INCOME_TOTAL)
 media.ingresos
 ```
 
 Media muestral de los ingresos del cliente
-```{r}
+```{r MediaMuestralIngresos}
 #ingresos del cliente Media Muestral
 media.ingresos_msa<-mean(mas$AMT_INCOME_TOTAL)
 media.ingresos_msa
@@ -148,15 +148,15 @@ media.ingresos_msa
 ### Estimacion puntual de la media de la edad de los clientes
 
 Edad media poblacional
-```{r}
+```{r EdadMediaPoblacional}
 #edad media poblacional 
-dias=(base$DAYS_BIRTH*-1)/365.25
+dias=(mas$DAYS_BIRTH*-1)/365.25
 media.edad= mean (dias)
 media.edad
 ```
 
 Edad media muestral
-```{r}
+```{r EdadMediaMuestral}
 #edad media muestral
 dias_mas=(mas$DAYS_BIRTH*-1)/365.25
 media.edad_mas= mean (dias_mas)
@@ -166,15 +166,15 @@ media.edad_mas
 ### Estimacion puntual de la media de la antiguedad en la empresa de los clientes
 
 Antiguedad poblacional en la empresa
-```{r}
+```{r AntiguedadPoblacionalEmpresa}
 #antiguedad en la empresa poblacional
-antg=(base$DAYS_EMPLOYED)/365.25
+antg=(mas$DAYS_EMPLOYED)/365.25
 media.antg= mean (antg)
 media.antg
 ```
 
 Muestral de la antiguedad en la empresa
-```{r}
+```{r MuestralAntiguedadEmpresa}
 #antiguedad en la empresa muestral
 antg_mas=(mas$DAYS_EMPLOYED)/365.25
 media.antg_mas= mean (antg_mas)
@@ -187,12 +187,12 @@ media.antg_mas
 
 Definimos antes los subsets sobre los que trabajaremos a partir de ahora. Donde t1 (TARGET = 1) corresponde los creditos con impago y t0 (TARGET = 0) corresponde a los creditos pagados
 
-```{r}
+```{r DefinicionSubsets}
 #t1 impago
-t1<-subset(base, TARGET=="1")
+t1<-subset(mas, TARGET=="1")
 
 #t0 pago
-t0<-subset(base, TARGET=="0")
+t0<-subset(mas, TARGET=="0")
 ```
 TODO
 
@@ -200,7 +200,7 @@ TODO
 
 ### Calculos sobre los ingresos de los clientes con el credito pagado
 
-```{r}
+```{r CalculosIngresosClientesPagado}
 #ingresos del cliente TARGET 0
 media.ingresos=mean(t0$AMT_INCOME_TOTAL)
 media.ingresos
@@ -215,7 +215,7 @@ c(t0_ci,t0_cs)
 
 ### Calculos sobre los ingresos de los clientes con el credito impagado
 
-```{r}
+```{r CalculosIngresosClientesImpagado}
 #ingresos del cliente TARGET 1
 media.ingresos=mean(t1$AMT_INCOME_TOTAL)
 media.ingresos
@@ -229,7 +229,7 @@ c(t1_ci,t1_cs)
 
 ### Calculos sobre el importe de los clientes con el credito pagado
 
-```{r}
+```{r CalculosImportesClientesPago}
 #importe medio de los clientes TARGET 0
 media.importe=mean (t0$AMT_CREDIT)
 media.importe
@@ -243,7 +243,7 @@ c(t0_ci,t0_cs)
 
 ### Calculos sobre el importe de los clientes con el credito impagado
 
-```{r}
+```{r CalculosImportesClientesImpago}
 #importe medio de los clientes TARGET 1
 media.importe=mean (t1$AMT_CREDIT)
 media.importe
@@ -257,7 +257,7 @@ c(t1_ci,t1_cs)
 
 ### Calculos sobre la edad de los clientes con el credito pagado
 
-```{r}
+```{r CalculosEdadClientesPago}
 # edad de los clientes TARGET 0
 dias=(t0$DAYS_BIRTH*-1)/365.25
 media.edad= mean (dias)
@@ -272,7 +272,7 @@ c(t0_ci,t0_cs)
 
 ### Calculos sobre la edad de los clientes con el credito impagado
 
-```{r}
+```{r CalculosEdadClientesImpago}
 # edad de los clientes TARGET 1
 dias=(t1$DAYS_BIRTH*-1)/365.25
 media.edad= mean (dias)
@@ -287,7 +287,7 @@ c(t1_ci,t1_cs)
 
 ### Calculos sobre la antiguedad de los clientes con el credito pagado
 
-```{r}
+```{r CalculosAntiguedadClientesPago}
 #antiguedad en la empresa TARGET 0
 antg=(t0$DAYS_EMPLOYED)/365.25
 media.antg= mean (antg)
@@ -302,7 +302,7 @@ c(t0_ci,t0_cs)
 
 ### Calculos sobre la antiguedad de los clientes con el credito impagado
 
-```{r}
+```{r CalculosAntiguedadClientesImpago}
 #antiguedad en la empresa TARGET 1
 antg=(t1$DAYS_EMPLOYED)/365.25
 media.antg= mean (antg)
@@ -320,7 +320,7 @@ c(t1_ci,t1_cs)
 
 ### Observamos los contrastes de hipotesis de independencia en funcion de los ingresos de la poblacion
 
-```{r}
+```{r AnalisisIngresosPoblacion}
 #muestra1 ---Target 0
 #muestra2 ---Target 1
 
@@ -329,7 +329,6 @@ c(t1_ci,t1_cs)
 #Ho: Igualdad de Medias en Ingresos para la Poblacion T0 y T1
 #H1: No igualdad...
 
-set.seed(5876)
 test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
 print(test)
 # p-value es < 0.05 no podemos Rechazamos la Hipotesis Nula . El valor del estadístico t es muy pequeño
@@ -345,14 +344,12 @@ plot(t1$AMT_INCOME_TOTAL)
 
 ### Observamos los contrastes de hipotesis de independencia en funcion del importe medio de la poblacion
 
-```{r}
+```{r AnalisisImporteMedioPoblacion}
 ###analisis para importe medio de la poblacion#####
 
 #Ho: Igualdad de Medias en importe medio de credito solicitado para la Poblacion T0 y T1
 #H1: No igualdad...
 
-
-set.seed(5876)
 test <- t.test(t0$AMT_CREDIT,t1$AMT_CREDIT) # Prueba t de Student
 print(test)
 # p-value < 2.2e-16 RECHAZAR la Hipotesis Nula . El valor del estadístico t es muy pequeño
@@ -361,14 +358,12 @@ boxplot(t0$AMT_CREDIT,t1$AMT_CREDIT,names=c("t0","t1"))
 
 ### Observamos los contrastes de hipotesis de independencia en funcion de la edad media de la poblacion
 
-```{r}
+```{r AnalisisEdadMediaPoblacion}
 ###analisis para EDAD MEDIA de la poblacion#####
 
 #Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
 #H1: No igualdad...
 
-
-set.seed(5876)
 dias_t0<-(t0$DAYS_BIRTH*-1)/365.25
 dias_t1<-(t1$DAYS_BIRTH*-1)/365.25
 test <- t.test(dias_t0,dias_t1) # Prueba t de Student
@@ -379,14 +374,12 @@ boxplot(dias_t0,dias_t1,names=c("t0","t1"))
 
 ### Observamos los contrastes de hipotesis de independencia en funcion de la antiguedad en la empresa de la poblacion
 
-```{r}
+```{r AnalisisAntiguedadEmpresaPoblacion}
 ###analisis parala antiguedad en la empresa de la poblacion#####
 
 #Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
 #H1: No igualdad...
 
-
-set.seed(5876)
 antg_t0<-(t0$DAYS_EMPLOYED)/365.25
 antg_t1<-(t1$DAYS_EMPLOYED)/365.25
 test <- t.test(antg_t0,antg_t1) # Prueba t de Student
@@ -402,20 +395,20 @@ Vamos a comprobar lo siguiente:
 
 Existen diferencias significativas en el nivel de estudios entre los clientes que Pagan/Impagan
 
-```{r}
+```{r ContrasteHipotesisPagoImpagoEducacion}
 
 #### test chi2
 #### Ho : Nivel de Estudios e Impago de Crédito son Independientes
 #### H1 : existe dependencia
 
-chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE,correct=FALSE )
-chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE)$expected
-mosaicplot(base$TARGET,base$NAME_EDUCATION_TYPE, color=TRUE, main="Plot de mosaico")
+chisq.test(mas$TARGET,mas$NAME_EDUCATION_TYPE,correct=FALSE )
+chisq.test(mas$TARGET,mas$NAME_EDUCATION_TYPE)$expected
+mosaicplot(mas$TARGET,mas$NAME_EDUCATION_TYPE, color=TRUE, main="Plot de mosaico")
 
 ##Valor del estadistico X2 1019, y el p-value < 2.2e-16 . Rechazamos la Ho 
 ##PARA NUESTRA BASE No existe independencia entre el impago y el Nivel de estudios
 ## Vamos a sacar una distribucion de datos para ver en frecuencuias cuales son los estudios que más nos impagan
-uno<-table (base$NAME_EDUCATION_TYPE,base$TARGET)
+uno<-table (mas$NAME_EDUCATION_TYPE,mas$TARGET)
 prop.table(uno,1)
 
 ###Intuitivamente vemos que Higher education  pagan mejor, y Lower secondary pagan peor
@@ -427,16 +420,16 @@ Por los resultados obtenidos podemos intuir que aquellos clientes que cuentan co
 
 Este contraste lo efectuaremos sobre la media del importe solicitado
 
-```{r}
+```{r ContrasteMediaImporteSolicitado}
 ### Media del importe solicitado
 
 ###Prueba de Anderson-Darling###
-norm<-ad.test(base$AMT_CREDIT)
+norm<-ad.test(mas$AMT_CREDIT)
 norm0<-ad.test(t0$AMT_CREDIT)
 norm1<-ad.test(t1$AMT_CREDIT)
 
 ###Pruena de Lilliefors (Kolmogorov-Smirnov)###
-lillie.test(base$AMT_CREDIT)
+lillie.test(mas$AMT_CREDIT)
 lillie.test(t0$AMT_CREDIT)
 lillie.test(t1$AMT_CREDIT)
 ```
