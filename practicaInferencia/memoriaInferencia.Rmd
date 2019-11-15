@@ -2,11 +2,13 @@
 title: "Tecnicas de Inferencia"
 author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez,"
 date: "10/20/2019"
-output: 
+output:
+  pdf_document:
+    toc: yes
   html_document:
-    toc: true
-    toc_float: true
     theme: united
+    toc: yes
+    toc_float: yes
 ---
 
 # ANALISIS DE TECNICAS DE INFERENCIA.
@@ -188,12 +190,9 @@ Definimos antes los subsets sobre los que trabajaremos a partir de ahora. Donde 
 ```{r}
 #t1 impago
 t1<-subset(base, TARGET=="1")
-t1
 
 #t0 pago
 t0<-subset(base, TARGET=="0")
-t0
-
 ```
 TODO
 
