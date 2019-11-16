@@ -173,6 +173,9 @@ mean(baset0$AMT_INCOME_TOTAL)
 mean(t0$AMT_INCOME_TOTAL)
 t0_ci
 t0_cs
+
+t.test(t0$AMT_INCOME_TOTAL,mu=168977.2)
+
 ```
 
 La media nos da 168977.2 que entra sin problemas en el intervalo de confianza, que va de 154381.4 hasta 183572.9
@@ -245,27 +248,7 @@ En el caso de la educacion, rechazamos la hipotesis nula de independencia. Se pu
 
 En el caso de la ocupacion, rechazamos la hipotesis nula de independencia, existe relacion significativa entre el impago y la ocupacion. Por ejemplo se puede observar que para la categoria de Accountants tenemos una tasa de impago baja 0.04830327 mientras que para Low-skill Laborers tenemos una tasa de impago de 0.17152413.
 
-## Ejercicio7: Contraste de hipotesis de normalidad para una de las muestras
-
-Este contraste lo efectuaremos sobre la media del importe solicitado
-
-```{r ContrasteMediaImporteSolicitado}
-### Media del importe solicitado
-
-###Prueba de Anderson-Darling###
-norm<-ad.test(mas$AMT_CREDIT)
-norm0<-ad.test(t0$AMT_CREDIT)
-norm1<-ad.test(t1$AMT_CREDIT)
-
-###Pruena de Lilliefors (Kolmogorov-Smirnov)###
-lillie.test(mas$AMT_CREDIT)
-lillie.test(t0$AMT_CREDIT)
-lillie.test(t1$AMT_CREDIT)
-```
-
-
-
-## Ejercicio8: Contraste de hipotesis para la caracteristica de estudio de una de las muestras
+## Ejercicio7: Contraste de hipotesis para la caracteristica de estudio de una de las muestras
 
 Vamos a comprobar lo siguiente:
 
@@ -290,11 +273,40 @@ prop.table(uno,1)
 Por los resultados obtenidos podemos intuir que aquellos clientes que cuentan con Higher education pagan mejor que aquellos con Lower secondary
 
 
+## Ejercicio8: Contraste de hipotesis de normalidad para una de las muestras
+
+Este contraste lo efectuaremos sobre la media del importe solicitado
+
+```{r ContrasteMediaImporteSolicitado}
+
+###Prueba de Lilliefors (Kolmogorov-Smirnov)###
+
+
+lillie.test(log(mas$AMT_INCOME_TOTAL))
+histogram(log(mas$AMT_INCOME_TOTAL))
+qqnorm(log(mas$AMT_INCOME_TOTAL), pch = 19, col = "gray50") 
+qqline(log(mas$AMT_INCOME_TOTAL))
+
+
+lillie.test(log(t0$AMT_INCOME_TOTAL))
+histogram(log(t0$AMT_INCOME_TOTAL))
+qqnorm(log(t0$AMT_INCOME_TOTAL), pch = 19, col = "gray50") 
+qqline(log(t0$AMT_INCOME_TOTAL))
+
+lillie.test(log(t1$AMT_INCOME_TOTAL))
+histogram(log(t1$AMT_INCOME_TOTAL))
+qqnorm(log(t1$AMT_INCOME_TOTAL), pch = 19, col = "gray50") 
+qqline(log(t1$AMT_INCOME_TOTAL))
+
+
+ks.test(mas$DAYS_BIRTH, "pnorm", mean(mas$DAYS_BIRTH), sd(mas$AMT_CREDIT))
+```
+
+
 
 ## Ejercicio9: Contraste de hipotesis para la comparacion de las muestras
 
-TODO
-
+TODO 
 ```{r}
 
 ```
