@@ -193,6 +193,8 @@ La media nos da 168977.2 que entra sin problemas en el intervalo de confianza, q
 #Ho: Igualdad de Medias en Ingresos para las muestras T0 y T1
 #H1: No igualdad...
 
+var.test(x = t0$AMT_INCOME_TOTAL, y = t1$AMT_INCOME_TOTAL )
+
 test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
 print(test)
 # p-value es < 0.05 no podemos Rechazamos la Hipotesis Nula . El valor del estadístico t es muy pequeño
@@ -204,6 +206,9 @@ boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"))
 boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"),outline=FALSE)
 ```
 
+Para comparar la media de dos poblaciones a partir de muestras independientes necesitamos saber si la varianza de las dos poblaciones es diferente. Para ello realizamos el F-test, contrasta la hipotesis nula de que dos poblaciones normales tienen la misma varianza. El test no se rechaza ya que no existen diferencias entre las varianzas p-value = 0.475. En caso de que hubiesemos rechazado la hipotesis nula, habriamos tenido que hacer el test de Welch.
+
+Realizamos el test de igualdad de medias.
 Rechazamos la hipotesis nula, lo que podemos decir es que a partir de nuestros datos muestrales y en nuestro caso de estudio, la media de los ingresos para la gente que paga o no paga es diferente. Intuitivamente lo podemos ver con el valor de 168977.2 
 
 Nos llama la atencion que el valor del estadistico t no es muy grande t = 3.39 y el valor del p-valor no es demasiado pequeño. A pesar de que el contraste de hipotesis se rechaza, podriamos plantearnos que no cerramos por completo la posibilidad de una investigacion futura.
