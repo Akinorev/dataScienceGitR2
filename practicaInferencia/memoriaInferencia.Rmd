@@ -174,8 +174,6 @@ mean(t0$AMT_INCOME_TOTAL)
 t0_ci
 t0_cs
 
-t.test(t0$AMT_INCOME_TOTAL,mu=168977.2)
-
 ```
 
 La media nos da 168977.2 que entra sin problemas en el intervalo de confianza, que va de 154381.4 hasta 183572.9
@@ -184,38 +182,6 @@ La media nos da 168977.2 que entra sin problemas en el intervalo de confianza, q
 
 ### Observamos los contrastes de hipotesis de independencia en funcion de los ingresos de la poblacion
 
-```{r AnalisisIngresosPoblacion}
-#muestra1 ---Target 0
-#muestra2 ---Target 1
-
-###analisis para Ingresos de la poblacion#####
-
-#Ho: Igualdad de Medias en Ingresos para las muestras T0 y T1
-#H1: No igualdad...
-
-var.test(x = t0$AMT_INCOME_TOTAL, y = t1$AMT_INCOME_TOTAL )
-
-test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
-print(test)
-# p-value es < 0.05 no podemos Rechazamos la Hipotesis Nula . El valor del estadístico t es muy pequeño
-boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"))
-
-
-#sin outliers parece que nos están mucho más próximos intuitivamente las medias#
-##ESTUDIAR QUITAR LOS OUTLIER
-boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"),outline=FALSE)
-```
-
-Para comparar la media de dos poblaciones a partir de muestras independientes necesitamos saber si la varianza de las dos poblaciones es diferente. Para ello realizamos el F-test, contrasta la hipotesis nula de que dos poblaciones normales tienen la misma varianza. El test no se rechaza ya que no existen diferencias entre las varianzas p-value = 0.475. En caso de que hubiesemos rechazado la hipotesis nula, habriamos tenido que hacer el test de Welch.
-
-Realizamos el test de igualdad de medias.
-Rechazamos la hipotesis nula, lo que podemos decir es que a partir de nuestros datos muestrales y en nuestro caso de estudio, la media de los ingresos para la gente que paga o no paga es diferente. Intuitivamente lo podemos ver con el valor de 168977.2 
-
-Nos llama la atencion que el valor del estadistico t no es muy grande t = 3.39 y el valor del p-valor no es demasiado pequeño. A pesar de que el contraste de hipotesis se rechaza, podriamos plantearnos que no cerramos por completo la posibilidad de una investigacion futura.
-
-Tambien nos apoyamos en esta afirmacion con los datos obtenidos en la grafica del boxplot. Nos da que pensar que si hiciesemos un trabajo con los outliars nuestro contraste de hipotesis podria variar.
-
-El siguiente punto seria hacer un trabajo con los outliars y ver despues de este trabajo si el contraste de hipotesis funciona igual o no. 
 
 ```{r chisqTest}
 
@@ -255,28 +221,13 @@ En el caso de la ocupacion, rechazamos la hipotesis nula de independencia, exist
 
 ## Ejercicio7: Contraste de hipotesis para la caracteristica de estudio de una de las muestras
 
-Vamos a comprobar lo siguiente:
+```{r AnalisisIngresosPoblacion}
 
-Existen diferencias significativas en el nivel de ingresos entre los clientes que Pagan/Impagan
+t.test(t0$AMT_INCOME_TOTAL,mu=168977.2)
 
-```{r ContrasteHipotesisPagoImpagoIngresos}
-
-#### test chi2
-#### Ho : Nivel de Estudios e Impago de Crédito son Independientes
-#### H1 : existe dependencia
-
-chisq.test(mas$TARGET,mas$AMT_INCOME_TOTAL,correct=FALSE )
-chisq.test(mas$TARGET,mas$AMT_INCOME_TOTAL)$expected
-
-##Valor del estadistico X2 1019, y el p-value < 2.2e-16 . Rechazamos la Ho 
-##PARA NUESTRA BASE No existe independencia entre el impago y el Nivel de estudios
-## Vamos a sacar una distribucion de datos para ver en frecuencuias cuales son los estudios que más nos impagan
-uno<-table (mas$AMT_INCOME_TOTAL,mas$TARGET)
-prop.table(uno,1)
 ```
 
-Por los resultados obtenidos podemos intuir que aquellos clientes que cuentan con Higher education pagan mejor que aquellos con Lower secondary
-
+Tal como se ha podido ver en el ejercicio5 la media poblacional esta dentro del intervalo de confianza de la muestra. Tal y como se puede ver en el contraste no podemos rechazar la igualdad de medias.
 
 ## Ejercicio8: Contraste de hipotesis de normalidad para una de las muestras
 
@@ -311,8 +262,37 @@ Tras realizar el test de Smirnov y la modificacion del Lilliefors hemos visto qu
 
 ## Ejercicio9: Contraste de hipotesis para la comparacion de las muestras
 
-TODO 
-```{r}
 
+
+```{r}
+#muestra1 ---Target 0
+#muestra2 ---Target 1
+
+###analisis para Ingresos de la poblacion#####
+
+#Ho: Igualdad de Medias en Ingresos para las muestras T0 y T1
+#H1: No igualdad...
+
+var.test(x = t0$AMT_INCOME_TOTAL, y = t1$AMT_INCOME_TOTAL )
+
+test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
+print(test)
+# p-value es < 0.05 no podemos Rechazamos la Hipotesis Nula . El valor del estadístico t es muy pequeño
+boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"))
+
+
+#sin outliers parece que nos están mucho más próximos intuitivamente las medias#
+##ESTUDIAR QUITAR LOS OUTLIER
+boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"),outline=FALSE)
 ```
 
+Para comparar la media de dos poblaciones a partir de muestras independientes necesitamos saber si la varianza de las dos poblaciones es diferente. Para ello realizamos el F-test, contrasta la hipotesis nula de que dos poblaciones normales tienen la misma varianza. El test no se rechaza ya que no existen diferencias entre las varianzas p-value = 0.475. En caso de que hubiesemos rechazado la hipotesis nula, habriamos tenido que hacer el test de Welch.
+
+Realizamos el test de igualdad de medias.
+Rechazamos la hipotesis nula, lo que podemos decir es que a partir de nuestros datos muestrales y en nuestro caso de estudio, la media de los ingresos para la gente que paga o no paga es diferente. Intuitivamente lo podemos ver con el valor de 168977.2 
+
+Nos llama la atencion que el valor del estadistico t no es muy grande t = 3.39 y el valor del p-valor no es demasiado pequeño. A pesar de que el contraste de hipotesis se rechaza, podriamos plantearnos que no cerramos por completo la posibilidad de una investigacion futura.
+
+Tambien nos apoyamos en esta afirmacion con los datos obtenidos en la grafica del boxplot. Nos da que pensar que si hiciesemos un trabajo con los outliars nuestro contraste de hipotesis podria variar.
+
+El siguiente punto seria hacer un trabajo con los outliars y ver despues de este trabajo si el contraste de hipotesis funciona igual o no.
