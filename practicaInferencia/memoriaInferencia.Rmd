@@ -302,7 +302,7 @@ qqline(log(t1$AMT_INCOME_TOTAL))
 ks.test(mas$DAYS_BIRTH, "pnorm", mean(mas$DAYS_BIRTH), sd(mas$AMT_CREDIT))
 ```
 
-
+Tras realizar el test de Smirnov y la modificacion del Lilliefors hemos visto que el contraste de normalidad nos devuelve un p-valor muy bajo (2.2e-16). Debido a estos resultado hemos probado a normalizar mediante logaritmo con el mismo resultado. Al tratarse de un contraste tan delicado hemos usado metodos graficos para visualizar la normalidad. Tras comprobar los graficos y aplicar el teorema central del limite, debido al tamaño de nuestra muestra podriamos asumir que es normal.
 
 ## Ejercicio9: Contraste de hipotesis para la comparacion de las muestras
 
