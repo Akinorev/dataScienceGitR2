@@ -241,7 +241,9 @@ prop.table(dos,1)
 
 ```
 
-Rechazamos la hipotesis nula de independencia. Se puede decir que existe relacion para nuestros datos entre el nivel de estudios y el impago/pago. Esto es debido a que la diferencia entre la distribucion esperada y la real es muy grande. Lo cual hace que el estadistico chi2 sea muy grande en nuestro caso 1019
+En el caso de la educacion, rechazamos la hipotesis nula de independencia. Se puede decir que existe relacion para nuestros datos entre el nivel de estudios y el impago/pago. Esto es debido a que la diferencia entre la distribucion esperada y la real es muy grande. Lo cual hace que el estadistico chi2 sea muy grande en nuestro caso 1019.
+
+En el caso de la ocupacion, rechazamos la hipotesis nula de independencia, existe relacion significativa entre el impago y la ocupacion. Por ejemplo se puede observar que para la categoria de Accountants tenemos una tasa de impago baja 0.04830327 mientras que para Low-skill Laborers tenemos una tasa de impago de 0.17152413.
 
 ## Ejercicio7: Contraste de hipotesis de normalidad para una de las muestras
 
