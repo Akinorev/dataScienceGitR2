@@ -79,31 +79,26 @@ Usamos una muestra aleatoria simple de 5000 elementos
 set.seed(5876)
 baset <- data.table(base)
 mas<-baset[sample(.N, 5000)]
+mas2<-baset[sample(.N, 25)]
 table(mas$TARGET)
 prop.table(table(mas$TARGET))
 ```
-
-Muestreo estratificado para el nivel de educacion
-
-```{r MuestreoEstratificado}
-table(mas$NAME_EDUCATION_TYPE)
-prop.table(table(mas$NAME_EDUCATION_TYPE))
-
-sum(is.na(mas$NAME_EDUCATION_TYPE))
-#the method is 'srswor' (equal probability, without replacement)
-strata.base=strata(mas,c("NAME_EDUCATION_TYPE"),size=c(10,5,5,5,2), method="srswor",TRUE)
-strata.base
-```
+Trabajaremos sobre dos muestras, mas con 5000 entradas y mas2 con 25. En funcion del ejercicio indicaremos con que muestra estamos trabajando.
 
 
-## Caracteristicas interesantes sujetas a estudio
+## Ejercicio2: Caracteristicas interesantes sujetas a estudio
 
 Hemos encontrado las siguientes caracteristicas como intersantes para el estudio:
 
  - Cuanto es la media del importe de crédito solicitado
  - Cuanto es el ingreso medio de los clientes 
- - ¿cual es la edad media del cliente que solicita?
- - ¿cual es la media de la antigüedad en la empresa del cliente medio
+ - ¿Cual es la edad media del cliente que solicita?
+ - ¿Cual es la media de la antigüedad en la empresa del cliente medio?
+ - Contrastando con el pago/impago del credito
+
+```{r MuestreoDatos}
+
+```
 
 ## Estimaciones puntuales de las caracteristicas
 
@@ -112,8 +107,8 @@ Hemos encontrado las siguientes caracteristicas como intersantes para el estudio
 Importe solicitado del cliente, Media Poblacion
 ```{r MediaPoblacionImporte}
 #importe solicitado del cliente Media Poblacion
-media.importe=mean(mas$AMT_CREDIT)
-dt.importe=sd(mas$AMT_CREDIT)
+media.importe=mean(baset$AMT_CREDIT)
+dt.importe=sd(baset$AMT_CREDIT)
 media.importe
 dt.importe
 ```
@@ -134,7 +129,7 @@ dt.importe_mas
 Media poblacional de los ingresos del cliente
 ```{r MediaPoblacionalIngresos}
 #ingresos del cliente Media Poblacion
-media.ingresos=mean(mas$AMT_INCOME_TOTAL)
+media.ingresos=mean(baset$AMT_INCOME_TOTAL)
 media.ingresos
 ```
 
@@ -150,7 +145,7 @@ media.ingresos_msa
 Edad media poblacional
 ```{r EdadMediaPoblacional}
 #edad media poblacional 
-dias=(mas$DAYS_BIRTH*-1)/365.25
+dias=(baset$DAYS_BIRTH*-1)/365.25
 media.edad= mean (dias)
 media.edad
 ```
@@ -168,7 +163,7 @@ media.edad_mas
 Antiguedad poblacional en la empresa
 ```{r AntiguedadPoblacionalEmpresa}
 #antiguedad en la empresa poblacional
-antg=(mas$DAYS_EMPLOYED)/365.25
+antg=(baset$DAYS_EMPLOYED)/365.25
 media.antg= mean (antg)
 media.antg
 ```
