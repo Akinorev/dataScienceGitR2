@@ -71,20 +71,49 @@ prop.table(table(base$TARGET))
 
 Como dato interesante podemos observar que aproximadamente el 8% de los creditos concedidos son impagados
 
-## Muestreo del conjunto de datos
+## Ejercicio1: Muestreo del conjunto de datos
 
-Usamos una muestra aleatoria simple de 5000 elementos
+Usamos una muestra aleatoria simple de 8403 elementos a la que llamaremos mas. El numero de la muestra mas surge para determinar el tamaño optimo a partir del tamaño poblacional (300k) , un error máximpo de 5000 euros y a un niverl de confianmza del 95% Contamos a su vez con otra muestra de 25 elementos a la que llamaremos mas2.
 
-```{r MuestreoDatos}
+```{r BusquedaTamIdealMuestra}
 set.seed(5876)
 baset <- data.table(base)
-mas<-baset[sample(.N, 5000)]
+
+## Busqueda del tamaño muestral optimo
+m1<-mean(base$AMT_INCOME_TOTAL)
+m1
+dt<-sd(base$AMT_INCOME_TOTAL)
+dt
+N=307000
+B=5000
+NS=0.05;NC=1-NS
+k=qnorm(1-NS/2);round(k,3)#k=f(z)
+#kk=qnorm(1-0.05/2)
+s2=(237123)^2
+D=B^2/k^2
+#formula para el tamano de muestra (cuando se estima la media)
+n=(N*s2)/((N-1)*D+s2)
+round(n)
+```
+
+```{r MuestreoDatos}
+mas<-baset[sample(.N, 8403)]
 mas2<-baset[sample(.N, 25)]
 table(mas$TARGET)
 prop.table(table(mas$TARGET))
 ```
-Trabajaremos sobre dos muestras, mas con 5000 entradas y mas2 con 25. En funcion del ejercicio indicaremos con que muestra estamos trabajando.
 
+Definimos antes los subsets sobre los que trabajaremos a partir de ahora. Donde t1 (TARGET = 1) corresponde los creditos con impago y t0 (TARGET = 0) corresponde a los creditos pagados
+
+```{r CreacionDeSubsetsTARGET}
+#t1 impago
+t1<-subset(mas, TARGET=="1")
+dim(t1)
+
+#t0 pago
+t0<-subset(mas, TARGET=="0")
+dim(t0)
+```
 
 ## Ejercicio2: Caracteristicas interesantes sujetas a estudio
 
@@ -96,102 +125,30 @@ Hemos encontrado las siguientes caracteristicas como intersantes para el estudio
  - ¿Cual es la media de la antigüedad en la empresa del cliente medio?
  - Contrastando con el pago/impago del credito
 
-```{r MuestreoDatos}
 
-```
+## Ejercicio3: Estimaciones puntuales de las caracteristicas
 
-## Estimaciones puntuales de las caracteristicas
+### Estimacion puntual de la media de los ingresos de los clientes
 
-### Estimacion puntual de la media del importe de crédito solicitado
-
-Importe solicitado del cliente, Media Poblacion
+Ingresos de los clientes cliente, Media Poblacion
 ```{r MediaPoblacionImporte}
 #importe solicitado del cliente Media Poblacion
-media.importe=mean(baset$AMT_CREDIT)
-dt.importe=sd(baset$AMT_CREDIT)
+media.importe=mean(baset$AMT_INCOME_TOTAL)
+dt.importe=sd(baset$AMT_INCOME_TOTAL)
 media.importe
 dt.importe
 ```
 
-Importe solicitado del cliente, Media Muestral
+Ingresos de los clientes, Media Muestral
 ```{r MediaMuestralImporte}
 #importe solcitado del cliente Media Muestral
-media.importe_mas<-mean(mas$AMT_CREDIT)
-dt.importe_mas<-sd(mas$AMT_CREDIT)
+media.importe_mas<-mean(mas$AMT_INCOME_TOTAL)
+dt.importe_mas<-sd(mas$AMT_INCOME_TOTAL)
 media.importe_mas
 dt.importe_mas
-
 ```
 
-
-### Estimacion puntual de la media de los ingresos del cliente
-
-Media poblacional de los ingresos del cliente
-```{r MediaPoblacionalIngresos}
-#ingresos del cliente Media Poblacion
-media.ingresos=mean(baset$AMT_INCOME_TOTAL)
-media.ingresos
-```
-
-Media muestral de los ingresos del cliente
-```{r MediaMuestralIngresos}
-#ingresos del cliente Media Muestral
-media.ingresos_msa<-mean(mas$AMT_INCOME_TOTAL)
-media.ingresos_msa
-```
-
-### Estimacion puntual de la media de la edad de los clientes
-
-Edad media poblacional
-```{r EdadMediaPoblacional}
-#edad media poblacional 
-dias=(baset$DAYS_BIRTH*-1)/365.25
-media.edad= mean (dias)
-media.edad
-```
-
-Edad media muestral
-```{r EdadMediaMuestral}
-#edad media muestral
-dias_mas=(mas$DAYS_BIRTH*-1)/365.25
-media.edad_mas= mean (dias_mas)
-media.edad_mas
-```
-
-### Estimacion puntual de la media de la antiguedad en la empresa de los clientes
-
-Antiguedad poblacional en la empresa
-```{r AntiguedadPoblacionalEmpresa}
-#antiguedad en la empresa poblacional
-antg=(baset$DAYS_EMPLOYED)/365.25
-media.antg= mean (antg)
-media.antg
-```
-
-Muestral de la antiguedad en la empresa
-```{r MuestralAntiguedadEmpresa}
-#antiguedad en la empresa muestral
-antg_mas=(mas$DAYS_EMPLOYED)/365.25
-media.antg_mas= mean (antg_mas)
-media.antg_mas
-```
-
-
-
-## Intervalo de hipotesis para una de las caracteristicas
-
-Definimos antes los subsets sobre los que trabajaremos a partir de ahora. Donde t1 (TARGET = 1) corresponde los creditos con impago y t0 (TARGET = 0) corresponde a los creditos pagados
-
-```{r DefinicionSubsets}
-#t1 impago
-t1<-subset(mas, TARGET=="1")
-
-#t0 pago
-t0<-subset(mas, TARGET=="0")
-```
-TODO
-
-## Intervalo de confianza para la comparacion de dicha caracteristica
+## Ejercicio4: Intervalo de hipotesis para una de las muestras
 
 ### Calculos sobre los ingresos de los clientes con el credito pagado
 
@@ -207,111 +164,20 @@ t0_cs=media.ingresos+qnorm(0.95)*desviacion.ingresos/sqrt(length(t0))
 c(t0_ci,t0_cs)
 ```
 
-
-### Calculos sobre los ingresos de los clientes con el credito impagado
-
+## Ejercicio5: Intervalo de confianza para la comparacion de dicha caracteristica
 ```{r CalculosIngresosClientesImpagado}
-#ingresos del cliente TARGET 1
-media.ingresos=mean(t1$AMT_INCOME_TOTAL)
-media.ingresos
-desviacion.ingresos=sd(t1$AMT_INCOME_TOTAL)
-desviacion.ingresos
+baset0<-subset(base, TARGET=="0")
 
-t1_ci=media.ingresos-qnorm(0.95)*desviacion.ingresos/sqrt(length(t1))
-t1_cs=media.ingresos+qnorm(0.95)*desviacion.ingresos/sqrt(length(t1))
-c(t1_ci,t1_cs)
+mean(baset0$AMT_INCOME_TOTAL)
+
+mean(t0$AMT_INCOME_TOTAL)
+t0_ci
+t0_cs
 ```
 
-### Calculos sobre el importe de los clientes con el credito pagado
+La media nos da 168977.2 que entra sin problemas en el intervalo de confianza, que va de 154381.4 hasta 183572.9
 
-```{r CalculosImportesClientesPago}
-#importe medio de los clientes TARGET 0
-media.importe=mean (t0$AMT_CREDIT)
-media.importe
-desviacion.importe=sd(t0$AMT_CREDIT)
-desviacion.importe
-
-t0_ci=media.importe-qnorm(0.95)*desviacion.importe/sqrt(length(t0))
-t0_cs=media.importe+qnorm(0.95)*desviacion.importe/sqrt(length(t0))
-c(t0_ci,t0_cs)
-```
-
-### Calculos sobre el importe de los clientes con el credito impagado
-
-```{r CalculosImportesClientesImpago}
-#importe medio de los clientes TARGET 1
-media.importe=mean (t1$AMT_CREDIT)
-media.importe
-desviacion.importe=sd(t1$AMT_CREDIT)
-desviacion.importe
-
-t1_ci=media.importe-qnorm(0.95)*desviacion.importe/sqrt(length(t1))
-t1_cs=media.importe+qnorm(0.95)*desviacion.importe/sqrt(length(t1))
-c(t1_ci,t1_cs)
-```
-
-### Calculos sobre la edad de los clientes con el credito pagado
-
-```{r CalculosEdadClientesPago}
-# edad de los clientes TARGET 0
-dias=(t0$DAYS_BIRTH*-1)/365.25
-media.edad= mean (dias)
-media.edad
-desviacion.edad=sd(dias)
-desviacion.edad
-
-t0_ci=media.edad-qnorm(0.95)*desviacion.edad/sqrt(length(t0))
-t0_cs=media.edad+qnorm(0.95)*desviacion.edad/sqrt(length(t0))
-c(t0_ci,t0_cs)
-```
-
-### Calculos sobre la edad de los clientes con el credito impagado
-
-```{r CalculosEdadClientesImpago}
-# edad de los clientes TARGET 1
-dias=(t1$DAYS_BIRTH*-1)/365.25
-media.edad= mean (dias)
-media.edad
-desviacion.edad=sd(dias)
-desviacion.edad
-
-t1_ci=media.edad-qnorm(0.95)*desviacion.edad/sqrt(length(t1))
-t1_cs=media.edad+qnorm(0.95)*desviacion.edad/sqrt(length(t1))
-c(t1_ci,t1_cs)
-```
-
-### Calculos sobre la antiguedad de los clientes con el credito pagado
-
-```{r CalculosAntiguedadClientesPago}
-#antiguedad en la empresa TARGET 0
-antg=(t0$DAYS_EMPLOYED)/365.25
-media.antg= mean (antg)
-media.antg
-desviacion.antg=sd(antg)
-desviacion.antg
-
-t0_ci=media.antg-qnorm(0.95)*desviacion.antg/sqrt(length(t0))
-t0_cs=media.antg+qnorm(0.95)*desviacion.antg/sqrt(length(t0))
-c(t0_ci,t0_cs)
-```
-
-### Calculos sobre la antiguedad de los clientes con el credito impagado
-
-```{r CalculosAntiguedadClientesImpago}
-#antiguedad en la empresa TARGET 1
-antg=(t1$DAYS_EMPLOYED)/365.25
-media.antg= mean (antg)
-media.antg
-desviacion.antg=sd(antg)
-desviacion.antg
-
-t1_ci=media.antg-qnorm(0.95)*desviacion.antg/sqrt(length(t1))
-t1_cs=media.antg+qnorm(0.95)*desviacion.antg/sqrt(length(t1))
-c(t1_ci,t1_cs)
-```
-
-
-## Contrastes de hipotesis de independencia de las muestras
+## Ejercicio6: Contrastes de hipotesis de independencia de las muestras
 
 ### Observamos los contrastes de hipotesis de independencia en funcion de los ingresos de la poblacion
 
@@ -321,7 +187,7 @@ c(t1_ci,t1_cs)
 
 ###analisis para Ingresos de la poblacion#####
 
-#Ho: Igualdad de Medias en Ingresos para la Poblacion T0 y T1
+#Ho: Igualdad de Medias en Ingresos para las muestras T0 y T1
 #H1: No igualdad...
 
 test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
@@ -333,85 +199,51 @@ boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"))
 #sin outliers parece que nos están mucho más próximos intuitivamente las medias#
 ##ESTUDIAR QUITAR LOS OUTLIER
 boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"),outline=FALSE)
-plot(t0$AMT_INCOME_TOTAL)
-plot(t1$AMT_INCOME_TOTAL)
 ```
 
-### Observamos los contrastes de hipotesis de independencia en funcion del importe medio de la poblacion
+Rechazamos la hipotesis nula, lo que podemos decir es que a partir de nuestros datos muestrales y en nuestro caso de estudio, la media de los ingresos para la gente que paga o no paga es diferente. Intuitivamente lo podemos ver con el valor de 168977.2 
 
-```{r AnalisisImporteMedioPoblacion}
-###analisis para importe medio de la poblacion#####
+Nos llama la atencion que el valor del estadistico t no es muy grande t = 3.39 y el valor del p-valor no es demasiado pequeño. A pesar de que el contraste de hipotesis se rechaza, podriamos plantearnos que no cerramos por completo la posibilidad de una investigacion futura.
 
-#Ho: Igualdad de Medias en importe medio de credito solicitado para la Poblacion T0 y T1
-#H1: No igualdad...
+Tambien nos apoyamos en esta afirmacion con los datos obtenidos en la grafica del boxplot. Nos da que pensar que si hiciesemos un trabajo con los outliars nuestro contraste de hipotesis podria variar.
 
-test <- t.test(t0$AMT_CREDIT,t1$AMT_CREDIT) # Prueba t de Student
-print(test)
-# p-value < 2.2e-16 RECHAZAR la Hipotesis Nula . El valor del estadístico t es muy pequeño
-boxplot(t0$AMT_CREDIT,t1$AMT_CREDIT,names=c("t0","t1"))
-```
+El siguiente punto seria hacer un trabajo con los outliars y ver despues de este trabajo si el contraste de hipotesis funciona igual o no. 
 
-### Observamos los contrastes de hipotesis de independencia en funcion de la edad media de la poblacion
-
-```{r AnalisisEdadMediaPoblacion}
-###analisis para EDAD MEDIA de la poblacion#####
-
-#Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
-#H1: No igualdad...
-
-dias_t0<-(t0$DAYS_BIRTH*-1)/365.25
-dias_t1<-(t1$DAYS_BIRTH*-1)/365.25
-test <- t.test(dias_t0,dias_t1) # Prueba t de Student
-print(test)
-# p-value < 2.2e-16  RECHAZAR la Hipotesis Nula . El valor del estadístico t es muy pequeño
-boxplot(dias_t0,dias_t1,names=c("t0","t1"))
-```
-
-### Observamos los contrastes de hipotesis de independencia en funcion de la antiguedad en la empresa de la poblacion
-
-```{r AnalisisAntiguedadEmpresaPoblacion}
-###analisis parala antiguedad en la empresa de la poblacion#####
-
-#Ho: Igualdad de edad de los clientes que solicitan credito para la Poblacion T0 y T1
-#H1: No igualdad...
-
-antg_t0<-(t0$DAYS_EMPLOYED)/365.25
-antg_t1<-(t1$DAYS_EMPLOYED)/365.25
-test <- t.test(antg_t0,antg_t1) # Prueba t de Student
-print(test)
-# p-value < 2.2e-16  RECHAZAR la Hipotesis Nula . El valor del estadístico t es muy pequeño
-boxplot(dias_t0,dias_t1,names=c("t0","t1"))
-```
-
-
-## Contraste de hipotesis para la caracteristica de estudio de una de las muestras
-
-Vamos a comprobar lo siguiente:
-
-Existen diferencias significativas en el nivel de estudios entre los clientes que Pagan/Impagan
-
-```{r ContrasteHipotesisPagoImpagoEducacion}
+```{r chisqTest}
 
 #### test chi2
 #### Ho : Nivel de Estudios e Impago de Crédito son Independientes
 #### H1 : existe dependencia
 
-chisq.test(mas$TARGET,mas$NAME_EDUCATION_TYPE,correct=FALSE )
-chisq.test(mas$TARGET,mas$NAME_EDUCATION_TYPE)$expected
-mosaicplot(mas$TARGET,mas$NAME_EDUCATION_TYPE, color=TRUE, main="Plot de mosaico")
+chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE,correct=FALSE )
+chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE)$expected
 
-##Valor del estadistico X2 1019, y el p-value < 2.2e-16 . Rechazamos la Ho 
+##Valor del estadistico X2 1019, y el p-value < 2.2e-16 . Rechazamos la Ho
 ##PARA NUESTRA BASE No existe independencia entre el impago y el Nivel de estudios
 ## Vamos a sacar una distribucion de datos para ver en frecuencuias cuales son los estudios que más nos impagan
-uno<-table (mas$NAME_EDUCATION_TYPE,mas$TARGET)
+uno<-table (base$NAME_EDUCATION_TYPE,base$TARGET)
 prop.table(uno,1)
 
-###Intuitivamente vemos que Higher education  pagan mejor, y Lower secondary pagan peor
+
+#### test chi2
+#### Ho : Ocupacion e Impago de Crédito son Independientes
+#### H1 : existe dependencia
+
+
+chisq.test(base$TARGET,base$OCCUPATION_TYPE,correct=FALSE )
+
+##Valor del estadistico X2 1975.1, muchos grados de Libertad debido a las muchas profesiones  y el p-value < 2.2e-16 . Rechazamos la Ho
+##PARA NUESTRA BASE No existe independencia entre el impago y la profesion
+## Vamos a sacar una distribucion de datos para ver en frecuencias cuales son los estudios que más nos impagan
+dos<-table (base$OCCUPATION_TYPE,base$TARGET)
+prop.table(dos,1)
+
+
 ```
 
-Por los resultados obtenidos podemos intuir que aquellos clientes que cuentan con Higher education pagan mejor que aquellos con Lower secondary
+Rechazamos la hipotesis nula de independencia. Se puede decir que existe relacion para nuestros datos entre el nivel de estudios y el impago/pago. Esto es debido a que la diferencia entre la distribucion esperada y la real es muy grande. Lo cual hace que el estadistico chi2 sea muy grande en nuestro caso 1019
 
-## Contraste de hipotesis de normalidad para una de las muestras
+## Ejercicio7: Contraste de hipotesis de normalidad para una de las muestras
 
 Este contraste lo efectuaremos sobre la media del importe solicitado
 
@@ -430,7 +262,34 @@ lillie.test(t1$AMT_CREDIT)
 ```
 
 
-## Contraste de hipotesis para la comparacion de las muestras
+
+## Ejercicio8: Contraste de hipotesis para la caracteristica de estudio de una de las muestras
+
+Vamos a comprobar lo siguiente:
+
+Existen diferencias significativas en el nivel de ingresos entre los clientes que Pagan/Impagan
+
+```{r ContrasteHipotesisPagoImpagoIngresos}
+
+#### test chi2
+#### Ho : Nivel de Estudios e Impago de Crédito son Independientes
+#### H1 : existe dependencia
+
+chisq.test(mas$TARGET,mas$AMT_INCOME_TOTAL,correct=FALSE )
+chisq.test(mas$TARGET,mas$AMT_INCOME_TOTAL)$expected
+
+##Valor del estadistico X2 1019, y el p-value < 2.2e-16 . Rechazamos la Ho 
+##PARA NUESTRA BASE No existe independencia entre el impago y el Nivel de estudios
+## Vamos a sacar una distribucion de datos para ver en frecuencuias cuales son los estudios que más nos impagan
+uno<-table (mas$AMT_INCOME_TOTAL,mas$TARGET)
+prop.table(uno,1)
+```
+
+Por los resultados obtenidos podemos intuir que aquellos clientes que cuentan con Higher education pagan mejor que aquellos con Lower secondary
+
+
+
+## Ejercicio9: Contraste de hipotesis para la comparacion de las muestras
 
 TODO
 
