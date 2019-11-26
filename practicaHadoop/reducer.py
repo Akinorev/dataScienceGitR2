@@ -3,7 +3,7 @@ import sys
 
 curr_word = None
 curr_count = 0
-
+word = None
 # Process each key-value pair from the mapper
 for line in sys.stdin:
 

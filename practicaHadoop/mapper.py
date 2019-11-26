@@ -26,7 +26,8 @@ file = sys.stdin
 #for line in sys.stdin:
 for line in file:
 
-   if '"country_code":"US"' in line:
+   # NEXT IF ONLY FOR EXTRA POINTS, USE OUTSIDE BETTER
+   #if '"country_code":"US"' in line:
    #Filter here, each line still consist on Json format
       jsonLine = json.loads(line)
    # Get the words in each line
