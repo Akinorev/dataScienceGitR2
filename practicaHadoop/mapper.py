@@ -56,7 +56,9 @@ for line in file:
  #     if filterHastag in line:
  #        jsonLine = line
  #  else:
-   jsonLine = line
+
+   if '"country_code":"US"' in line:
+      jsonLine = line
    # Get the words in each line
    words = jsonLine.split()
 

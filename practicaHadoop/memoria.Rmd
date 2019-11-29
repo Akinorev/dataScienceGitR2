@@ -1,0 +1,32 @@
+---
+title: "Practica1 Sistemas distribuidos: Analisis de sentimientos con Hadoop"
+author: "Veronica Gomez Gomez, Pablo Olmos Martinez y Carlos Grande Nuñez"
+date: "11/29/2019"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: united
+    toc: yes
+    toc_float: yes
+---
+
+## Descripcion del codigo
+
+Nuestro codigo se divide en dos bloques importantes. (Si da tiempo mover el filtrado a un Python externo)
+
+Consisten en los 
+
+El fichero de Twitter, tamaño y blablabla
+
+## Formas de ejecucion
+
+En local, se probo con...
+
+## Evaluacion escalabilidad
+
+Buscar como se pueden obtener tiempos de ejecucion y uso de CPU/Memoria (por ejemplo)
+
+## Comentarios personales
+
+Mejoras al script, que podriamos analizar con los resultados obtenidos
