@@ -64,7 +64,9 @@ for line in file:
 
    # Generate the count for each word
    for word in words:
- 
+      # Transform to ascii and lower case, second step to remove punctuation
+      word = word.encode('ascii','ignore').lower()
+      word = re.sub(r'[^a-zA-Z0-9]', '', word)
       # Write the key-value pair to STDOUT to be processed by the reducer.
       # First we compare if the word appears on the dictionary
       # If it appears we give it corresponding value, if not we just give zero value
