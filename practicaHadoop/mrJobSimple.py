@@ -8,38 +8,41 @@ import string
 import urllib
 import urllib2
 
-file = re.compile(r"[\w']+")
-
 
 class MRWordFreqCount(MRJob):
 
     def mapper(self, _, line):
-    	#Loading dictionary
+        #Loading dictionary
         #Cargar el diccionario ingles en una valiable
-        opener = urllib.URLopener()
-        fileDict = opener.open('https://hadoopdatasciencetest.s3.amazonaws.com/AFINN-111.txt')
-
+        sys.path.append('.')
+        file = open("AFINN-111.txt")
         scores = {} # initialize an empty dictionary
-        for line in fileDict:
-           term, score = line.split("\t")
+        for row in file:
+           term, score = row.split("\t")
            scores[term] = int(score)
 
-        for word in file.findall(line):
-            word = word.encode('ascii','ignore').lower()
-            word = re.sub(r'[^a-zA-Z0-9]', '', word)
+        #for line in file:
+                # Read tweet
+        line = line.strip()
+        tweet = json.loads(line)
 
-            if word in scores:
-               sys.stderr.write("WORD WITH VALUE: ({0},{1})\n".format(word,scores[word]))
-               yield (word,scores[word])
-            else:
-               sys.stderr.write("WORD NO VALUE: ({0},{1})\n".format(word,0))
-               yield (word,0)
+        if ("place" in tweet.keys() 
+            and tweet["place"] is not None 
+            and tweet["place"]["country_code"] == "UY"):
             
-    def combiner(self, word, counts):
-        yield (word, sum(counts))
+            for word in tweet["text"].split(" "):
+                word = word.encode('ascii','ignore').lower()
+                word = re.sub(r'[^a-zA-Z0-9]', '', word)
+                if word in scores:
+                    yield (word,scores[word])
+                else:
+                    yield (word,0)
 
-    def reducer(self, word, counts):
-        yield (word, sum(counts))
+    def combiner(self, word, scores):
+        yield (word, sum(scores))
+
+    def reducer(self, word, scores):
+        yield (word, sum(scores))
 
 
 if __name__ == '__main__':
