@@ -28,12 +28,12 @@ class MRWordFreqCount(MRJob):
 
         if ("place" in tweet.keys() 
             and tweet["place"] is not None 
-            and tweet["place"]["country_code"] == "UY"):
+            and tweet["place"]["country_code"] == "US"):
             
             for word in tweet["text"].split(" "):
                 word = word.encode('ascii','ignore').lower()
                 word = re.sub(r'[^a-zA-Z0-9]', '', word)
-                if word in scores:
+                if word in scores.keys():
                     yield (word,scores[word])
                 else:
                     yield (word,0)
