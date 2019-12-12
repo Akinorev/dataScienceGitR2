@@ -13,11 +13,57 @@ output:
 
 ## Descripcion del codigo
 
-Nuestro codigo se divide en dos bloques importantes. (Si da tiempo mover el filtrado a un Python externo)
+Nuestro codigo basado en mapreduce se divide en varios bloques importantes. 
 
-Consisten en los 
+- Diccionario emocional AFINN-111
+- Script Python usado para la obtencion de datos de Twitter llamado TwitterStream.py
+- Fichero de datos obtenidos de Twitter. 7,0 GB (6.957.687.003 bytes) llamado bigTwitter.json
+- Codigo en Python de la solucion al analisis de emociones de Twitter llamado mrJobSimple.py
 
-El fichero de Twitter, tamaño y blablabla
+### Diccionario AFINN-111
+
+Hemos decidido usar el diccionario AFINN-111, se opto por usar el diccionario ingles por mayor simpleza de lenguaje. Tambien debido a que a continuacion el filtrado como se explicara mas en detalle como se ha realizado, filtra los Tweets eligiendo solo aquellos que pertenecen a Estados Unidos.
+
+### TwitterStream
+
+Se uso el script provisto por la practica para la captura de datos, para obtener un volumen de datos interesante para la realizacion de la practica se mantuvo ejecutando alrededor de 5h. Para la configuracion del script se uso una cuenta personal de Twitter.
+
+### bigTwitter
+
+El nombre del fichero utilizado para nuestro estudio. Nos sirvio tambien para comprender que cada linea correspondia a un Tweet, ello junto con la informacion sobre developers para Twitter nos permitio posteriormente que apartados deberiamos observar para un filtrado efectivo.
+
+### mrJobSimple
+
+Al final se opto por usar la libreria MrJob para la ejecucion y pruebas de nuestro Mapreduce en AWS y en local. Tanto el README de la propia libreria como los ejemplos disponibles en GitHub nos ayudo en la comprension y posterior ejecucion del script usando esta libreria.
+
+El script tiene tres partes o bloques (sin contar con la parte de declaracion de variables)
+
+#### Mapper
+
+Actualmente la funcion de mapper es la que contiene toda la logica de la practica. Primero carga el diccionario en un mapa. En el siguiente paso se leen todas las lineas del fichero obtenido gracias al script de TwitterStream y se realiza un parseado indicando que mantenga el formato de Json. Esto nos facilito mucho la realizacion de la tarea de filtrado y tambien la de analizar palabras, ya que solo analizaremos aquellas palabras que correspondan al cuerpo del tweet.
+
+A continuacion el primer filtrado que se realiza se basa en el campo de pais. En esta comprobacion de pais se comprueban tres valores importantes. El primero que exista el campo de "place" ya que se trata de un campo opcional en Twitter. Despues que sea distinto de none, nos hemos encontrado con problemas durante la fase de pruebas ya que en ocasiones pese a que el campo existia no tenia contenido y generaba un fallo en la ejecucion. La ultima comprobacion que se realiza es que el pais al que pertenece el Tweet sea el de Estados Unidos (US).
+
+Con este primer filtrado en la funcion de mapper, evitamos que sea el reduce quien se encargue de ello y con esto reducimos en gran parte el consumo de memoria, CPU y tiempo de uso.
+
+Finalmente nos centramos en analizar solo aquellas palabras que correspondan al cuerpo del Tweet, dejando de lado el nombre de usuario y otros valores que no son de importancia en esta practica. El ultimo paso consiste en eliminar mayusculas y caracteres extraños para a continuacion asignar a cada palabra resultante su valor correspondiente del diccionario. En caso de que la palabra no exista en el diccionario se le asigna el valor de 0
+
+#### Combiner
+
+Nuestro combiner se podria decir que es basico y no cumple ninguna funcion particularmente importante, ya que lo que hace actualmente podria hacerlo el reducer por completo. La idea del combiner es que mas adelante siguiese filtrando, en este caso eliminando aquellas palabras que no existen en el diccionario y tienen un valor de 0.
+
+Este seria un paso mas en la optimizacion del tiempo de ejecucion y uso de CPU.
+
+#### Reducer
+
+Nuestro reducer es el sumatorio de valores de cada palabra.
+
+### Otros scripts
+
+Previo al uso de la libreria de MrJob se ejecuto otro script para pruebas iniciales, este script solo podia ser ejecutado en local y fue utilizado por su velocidad y simpleza. Esto nos permitio entender como navegar por el Json de Twitter, como filtrar y que bucles nos serian necesarios para su ejecucion posterior en AWS.
+
+
+
 
 ## Formas de ejecucion
 
