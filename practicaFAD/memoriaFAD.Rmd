@@ -19,36 +19,29 @@ https://www.kaggle.com/swathiachath/kc-housesales-data
 
 Las librerias usadas son las siguientes:
 
- - magrittr
  - brew
- - gridExtra
- - lattice
- - mice
- - VIM
- - expss
- - dplyr
- - tidyr
- - ggplot2
- - egg
- - GGally
- - DMwR2
- - ISLR
- - car
- - DMwR2
- - faraway
- - mlbench
- - knitr
- - kableExtra
- - htmltools
  - bsplus
- - RColorBrewer
- - carData
- - GGally
- - sos
- - ISLR
- - car
  - DMwR2
+ - car
+ - carData
+ - dplyr
+ - egg
+ - expss
  - faraway
- - mlbench
- - readr
+ - GGally
+ - ggplot2
+ - gridExtra
  - Hmisc
+ - htmltools
+ - ISLR
+ - kableExtra
+ - knitr
+ - lattice
+ - magrittr
+ - mice
+ - mlbench
+ - RColorBrewer
+ - readr
+ - sos
+ - tidyr
+ - VIM
