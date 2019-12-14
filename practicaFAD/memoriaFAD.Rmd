@@ -19,15 +19,19 @@ https://www.kaggle.com/swathiachath/kc-housesales-data
 
 Las librerias usadas son las siguientes:
 
+ - Amelia
  - brew
  - bsplus
  - DMwR2
  - car
  - carData
+ - caret
+ - cluster
  - dplyr
  - egg
  - expss
  - faraway
+ - gclus
  - GGally
  - ggplot2
  - gridExtra
@@ -45,3 +49,36 @@ Las librerias usadas son las siguientes:
  - sos
  - tidyr
  - VIM
+ 
+```{r setup, include=FALSE}
+library(Amelia)
+library(brew)
+library(bsplus)
+library(DMwR2)
+library(car)
+library(carData)
+library(caret)
+library(cluster)
+library(dplyr)
+library(egg)
+library(expss)
+library(faraway)
+library(gclus)
+library(GGally)
+library(ggplot2)
+library(gridExtra)
+library(Hmisc)
+library(htmltools)
+library(ISLR)
+library(kableExtra)
+library(knitr)
+library(lattice)
+library(magrittr)
+library(mice)
+library(mlbench)
+library(RColorBrewer)
+library(readr)
+library(sos)
+library(tidyr)
+library(VIM)
+```
