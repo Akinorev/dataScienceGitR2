@@ -1,0 +1,54 @@
+---
+title: "Practica FAD"
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
+date: "11/29/2019"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: united
+    toc: yes
+    toc_float: yes
+---
+
+# Memoria Fundamentos de Analisis de Datos.
+
+El objetivo de esta practica es elaborar y presentar un informe de un proyecto de Ciencia de Datos en R Markdown. Para esta practica hemos usado el siguiente dataset:
+
+https://www.kaggle.com/swathiachath/kc-housesales-data
+
+Las librerias usadas son las siguientes:
+
+ - magrittr
+ - brew
+ - gridExtra
+ - lattice
+ - mice
+ - VIM
+ - expss
+ - dplyr
+ - tidyr
+ - ggplot2
+ - egg
+ - GGally
+ - DMwR2
+ - ISLR
+ - car
+ - DMwR2
+ - faraway
+ - mlbench
+ - knitr
+ - kableExtra
+ - htmltools
+ - bsplus
+ - RColorBrewer
+ - carData
+ - GGally
+ - sos
+ - ISLR
+ - car
+ - DMwR2
+ - faraway
+ - mlbench
+ - readr
+ - Hmisc
