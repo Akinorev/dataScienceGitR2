@@ -125,7 +125,7 @@ attr(datos_at[["sqft_lot15"]], "label")
 
 
 
-datos_miss <-read.csv2 (file="C:/Users/olmosp/Desktop/pie/fad/kc_house_data_missing.csv",
+datos_miss <-read.csv2 (file="/mnt/laptopspace/Datos/01_Proyectos actuales/00_MasterDataScience/dataScienceGitR2/practicaFAD/kc_house_data_missing.csv",
                        header=TRUE, na = c("", "NA"), )
 datos_miss
 summary (datos_miss)
@@ -155,7 +155,7 @@ datos_miss$grade<-recode(datos_miss$grade, "0:6=1; 7=2; 8=3; 9=4; else=5")
 histogram(datos_miss$grade)
 
 
-##3 Análisis exploratorio de datos faltantes: VIM##
+##3 An?lisis exploratorio de datos faltantes: VIM##
 aggr_plot <- aggr(datos_miss, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
                   labels=names(datos_miss), cex.axis=.8, gap=1, 
                   ylab=c("Histogram of missing data","Pattern"))
@@ -170,27 +170,27 @@ aggr_plot <- aggr(datos_miss, col=c('navyblue','red'), numbers=TRUE, sortVars=TR
 #sqft_above    40
 
 
-# Visualización de valores faltantes
+# Visualizaci?n de valores faltantes
 
 datos_miss %>% select(sqft_lot, condition) %>% marginplot()
 #vemos que los valores missing de Bedrooms suele darse en valores de sqft_lot bajos.
-#sobre todo en los primeros niveles. Imputación a través del algoritmo KNN de VIM
+#sobre todo en los primeros niveles. Imputaci?n a trav?s del algoritmo KNN de VIM
 
 datos_miss %>% select(sqft_lot, bedrooms) %>% VIM::kNN() %>% marginplot(., delimiter="_imp")
-#parece que no se aparta demasiado por lo que la imputación es buena 
+#parece que no se aparta demasiado por lo que la imputaci?n es buena 
 
 
 
 ##########################################
-#### Imputación individual Libreria Mice##
+#### Imputaci?n individual Libreria Mice##
 ##########################################
 
 
 
-# Imputación simple, regresión ordinaria
-#norm.predict: Corresponde a imputación por regresión lineal. Si configuramos m=1,
-#entonces es equivalente a la imputación simple con este método descrita en la sección anterior.
-# m es el número de multiples imputaciones 
+# Imputaci?n simple, regresi?n ordinaria
+#norm.predict: Corresponde a imputaci?n por regresi?n lineal. Si configuramos m=1,
+#entonces es equivalente a la imputaci?n simple con este m?todo descrita en la secci?n anterior.
+# m es el n?mero de multiples imputaciones 
 
 
 
@@ -222,10 +222,10 @@ plot(data_imp)
 
 
 #overimpute 
-#¿son precisos los valores imputados? al tener m=5 imputaciones nos permite construir un IC para validar
-#la calidad de la imputación y=x indica la linea de perfecto acuerdo con IC al 90% , cuanto más se ajuste 
-#a la linea x=y mejor predice la imputación de missing 
-#Parece más complejo para las ordinales...no es continuo ..existen casos extremos
+#?son precisos los valores imputados? al tener m=5 imputaciones nos permite construir un IC para validar
+#la calidad de la imputaci?n y=x indica la linea de perfecto acuerdo con IC al 90% , cuanto m?s se ajuste 
+#a la linea x=y mejor predice la imputaci?n de missing 
+#Parece m?s complejo para las ordinales...no es continuo ..existen casos extremos
 
   
 
@@ -248,10 +248,10 @@ overimpute(data_imp, var = "sqft_lot15")
 
 
 
-###analisis de la imputacion con los máximos locales a la hora de identificar una imputación
-#cuando la confunde con un máximo global, para evitarlo es interesante realizar , el algortimo se
+###analisis de la imputacion con los m?ximos locales a la hora de identificar una imputaci?n
+#cuando la confunde con un m?ximo global, para evitarlo es interesante realizar , el algortimo se
 #ve influenciado por el momento y sitio donde comienza , multiples imputaciones iniciales
-#amelia proporciona un diagnóstico para validar el algoritmo desde valores iniciales distintos
+#amelia proporciona un diagn?stico para validar el algoritmo desde valores iniciales distintos
 
 
 
@@ -294,7 +294,7 @@ price_testing  <- slice(datos_clean, -inTraining)
 #SEMMA 2. EXPLORE
 
 #ANALISIS 
-#VISUALIZACIÓN DE LOS DATOS
+#VISUALIZACI?N DE LOS DATOS
 #OUTLIER
 
 
@@ -458,11 +458,11 @@ boxplot(price ~ floors, data = price_training)
 #ANALISIS EXLORATORIO DE LOS DATOS
 
 
-####Transformaciones para igualar dispersión#####
-#podemos ver que sus valores para t odos los grupos están muy sesgados. 
-#Sería conveniente transformarla para que la distribución de valores 
-#fuese más homogénea.
-#Este resultado se consigue aplicando una transformación logarítmica.
+####Transformaciones para igualar dispersi?n#####
+#podemos ver que sus valores para t odos los grupos est?n muy sesgados. 
+#Ser?a conveniente transformarla para que la distribuci?n de valores 
+#fuese m?s homog?nea.
+#Este resultado se consigue aplicando una transformaci?n logar?tmica.
 
 
 p1 <- datos_root %>% select(new, price) %>%
@@ -754,7 +754,7 @@ datos_root$price %>%
   group_by(datos_root$condition) %>% 
   summarise(avg_price = mean(datos_root$price)) %>%
   ggplot(aes(x=datos_root$condition, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Salario promedio por categoría")
+  ggtitle("Salario promedio por categor?a")
 
 
 
