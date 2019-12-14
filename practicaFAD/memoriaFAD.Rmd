@@ -81,4 +81,13 @@ library(readr)
 library(sos)
 library(tidyr)
 library(VIM)
+
+relPath <- getwd()
+setwd(relPath)
+datos_miss <- read.csv2 (file="./kc_house_data_missing.csv",
+                       header=TRUE, na = c("", "NA"), )
+names (datos_miss)
+summary (datos_miss)
 ```
+
+## Analisis inicial
