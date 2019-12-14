@@ -1,29 +1,29 @@
 
 #librerias
-install.packages("expss")
-install.packages("egg")
-install.packages("GGally")
-install.packages("ISLR")
-install.packages("car")
-install.packages("DMwR2")
-install.packages("faraway")
-install.packages("mlbench")
-install.packages("kableExtra")
-install.packages("bsplus")
-install.packages("VIM")
-install.packages("mice")
-install.packages("lattice")
-install.packages("rbind")
-install.packages("GUI")
-install.packages("expss")
-install.packages("dplyr")
-install.packages("gridExtra")
-install.packages("carData")
-install.packages("sos")
-install.packages("brew")
-install.packages("dplyr")
-install.packages("magrittr") 
-install.packages("caret")
+#install.packages("expss")
+#install.packages("egg")
+#install.packages("GGally")
+#install.packages("ISLR")
+#install.packages("car")
+#install.packages("DMwR2")
+#install.packages("faraway")
+#install.packages("mlbench")
+#install.packages("kableExtra")
+#install.packages("bsplus")
+#install.packages("VIM")
+#install.packages("mice")
+#install.packages("lattice")
+#install.packages("rbind")
+#install.packages("GUI")
+#install.packages("expss")
+#install.packages("dplyr")
+#install.packages("gridExtra")
+#install.packages("carData")
+#install.packages("sos")
+#install.packages("brew")
+#install.packages("dplyr")
+#install.packages("magrittr") 
+#install.packages("caret")
 
 library(magrittr)
 library(brew)
@@ -68,264 +68,313 @@ library(RColorBrewer)
 library(sos)
 library(readr)
 library(Hmisc)
+library(caret)
+library(dplyr)
+library(gclus)
+library(Amelia)
 
+library(forcats)
 
 #################################################
 ####LECTURA DE LOS DATOS CON VARIABLES MISSING###
 #################################################
 
 
-#label variables datos origen datos_root
+#SEMMA
+#SEMMA 1. SAMPLE
 
-datos_at = apply_labels(datos_root,
-                        date            = "Date house was sold",
-                        price           = "Price is prediction target",
-                        bedrooms        = "Number of Bedrooms/House",
-                        bathrooms       = "Number of bathrooms",
-                        sqft_living     = "square footage of the home",
-                        sqft_lot        = "square footage of the lot",
-                        floors          = "Total floors (levels) in house",
-                        waterfront      = "House which has a view to a waterfront",
-                        view            = "Has been viewed",
-                        condition       = "How good the condition is ( Overall ). 1 indicates worn out property and 5 excellent",
-                        grade           = "overall grade given to the housing unit, based on King County grading system. 1 poor ,13 excellent",
-                        sqft_above      = "square footage of house apart from basement",
-                        sqft_basement   = "square footage of the basement",
-                        yr_built        = "Built Year",
-                        yr_renovated    = "Year when house was renovated",
-                        zipcode         = "Postal Code",
-                        lat             = "Latitude",
-                        long            = "Longitude",
-                        sqft_living15   = "Living room area in 2015(implies-- some renovations) This might or might not have affected the lotsize area",
-                        sqft_lot15      = "lotSize area in 2015(implies-- some renovations)"
-)
-
-
-
-attr(datos_at[["date"]], "label")
-attr(datos_at[["price"]], "label")
-attr(datos_at[["bedrooms"]], "label")
-attr(datos_at[["bathrooms"]], "label")
-attr(datos_at[["sqft_living"]], "label")
-attr(datos_at[["sqft_lot"]], "label")
-attr(datos_at[["floors"]], "label")
-attr(datos_at[["waterfront"]], "label")
-attr(datos_at[["view"]], "label")
-attr(datos_at[["condition"]], "label")
-attr(datos_at[["grade"]], "label")
-attr(datos_at[["sqft_above"]], "label")
-attr(datos_at[["sqft_basement"]], "label")
-attr(datos_at[["yr_built"]], "label")
-attr(datos_at[["yr_renovated"]], "label")
-attr(datos_at[["zipcode"]], "label")
-attr(datos_at[["lat"]], "label")
-attr(datos_at[["long"]], "label")
-attr(datos_at[["sqft_living15"]], "label")
-attr(datos_at[["sqft_lot15"]], "label")
-
-
-
+#TRAIN 70% / CONTROL 20% / TEST 10%
 
 datos_miss <-read.csv2 (file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_data_missing.csv",
                         header=TRUE, na = c("", "NA"), )
-datos_miss
 summary (datos_miss)
 
-#recode data nominal #
+set.seed(737)
+inTraining     <- createDataPartition(pull(datos_miss), p = .7, list = FALSE, times = 1)
+price_training <- slice(datos_miss, inTraining)
+aux            <- slice(datos_miss, -inTraining)
+intest         <- createDataPartition(pull(aux),
+                                      p = 2/3, list = FALSE, times = 1)
 
-datos_miss$waterfront[which(datos_miss$waterfront == 0)] <- "WF_NO"
-datos_miss$waterfront[which(datos_miss$waterfront == 1)] <- "WF_SI"
+price_control  <- slice(aux, intest)
+price_testing  <- slice(aux, -intest)
 
+#price_training 15.119 obs
+#price_control  4.319  obs
+#price_testing  2.159  obs
 
+#guardamos los datos despues del proceso de impudato###
+write.csv(price_testing, file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_price_testing.csv")
 
-datos_miss$condition[which(datos_miss$condition == 1)] <- "Co_1_Low"
-datos_miss$condition[which(datos_miss$condition == 2)] <- "Co_2_Med_low"
-datos_miss$condition[which(datos_miss$condition == 3)] <- "Co_3_Med"
-datos_miss$condition[which(datos_miss$condition == 4)] <- "Co_4_High"
-datos_miss$condition[which(datos_miss$condition == 5)] <- "Co_5_Top"
+###############################################
+#SEMMA 2. ANALISIS EXPLORATORIO DE LOS DATOS ##
+###############################################
 
-
-
-histogram(datos_miss$grade)
-
-
-
-datos_miss$grade<-recode(datos_miss$grade, "0:6=1; 7=2; 8=3; 9=4; else=5")
-
-
-histogram(datos_miss$grade)
-
+#price_training
 
 ##3 Análisis exploratorio de datos faltantes: VIM##
-aggr_plot <- aggr(datos_miss, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
-                  labels=names(datos_miss), cex.axis=.8, gap=1, 
+aggr_plot <- aggr(price_training, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
+                  labels=names(price_training), cex.axis=.7, gap=1, 
                   ylab=c("Histogram of missing data","Pattern"))
-
-
-#ranking de las variables missing
-#sqft_lot      59
-#bedrooms      56
-#sqft_living   41
-#sqft_basement 41
-#bathrooms     40
-#sqft_above    40
 
 
 # Visualización de valores faltantes
 
-datos_miss %>% select(sqft_lot, condition) %>% marginplot()
+price_training %>% select(sqft_lot, condition) %>% marginplot()
 #vemos que los valores missing de Bedrooms suele darse en valores de sqft_lot bajos.
 #sobre todo en los primeros niveles. Imputación a través del algoritmo KNN de VIM
 
-datos_miss %>% select(sqft_lot, bedrooms) %>% VIM::kNN() %>% marginplot(., delimiter="_imp")
+price_training %>% select(sqft_lot, bedrooms) %>% VIM::kNN() %>% marginplot(., delimiter="_imp")
 #parece que no se aparta demasiado por lo que la imputación es buena 
 
+#Variables Missing son en todos lod casos inferior al 3% 
+#bedrooms        41
+#bathrooms       28
+#sqft_living     28 
+#sqft_lot        41
+#floors          16 
+#waterfront      27 
+#view             8
+#condition        8
+#grade           17
+#sqft_above      27 
+#sqft_basement   31
+#yr_built        10 
+#yr_renovated     9
+#lat              1
 
 
-##########################################
-#### Imputación individual Libreria Mice##
-##########################################
+#ALTERNATIVA1 Impute (fill in) the missing data
+
+vec_miss <- price_training
 
 
+##Para las variables continuas podríamos hacer una imputacion a la media##
 
-# Imputación simple, regresión ordinaria
-#norm.predict: Corresponde a imputación por regresión lineal. Si configuramos m=1,
-#entonces es equivalente a la imputación simple con este método descrita en la sección anterior.
-# m es el número de multiples imputaciones 
+#sqft_living
+price_training$sqft_living[is.na(price_training$sqft_living)] <- 
+                    mean(price_training$sqft_living, na.rm = TRUE)
 
-
-
-
-install.packages("Amelia")
-library(Amelia)
-
-####amelia#####
+#sqft_lot
+price_training$sqft_lot[is.na(price_training$sqft_lot)] <- 
+  mean(price_training$sqft_lot, na.rm = TRUE)
 
 
-noms   = c( "waterfront","condition" )
-ords   = c("bathrooms","floors","grade","view")
-idvars = c( "id","date", "price", "lat", "long" )
-
-data_imp  = amelia(datos_miss, m=5, p2s=2, parallel = "no",
-                idvars= idvars,
-                ords=ords,
-                noms =  noms)  
+#sqft_above
+price_training$sqft_above[is.na(price_training$sqft_above)] <- 
+  mean(price_training$sqft_above, na.rm = TRUE)
 
 
-#analisis de los data sets imputados
-#Diagnostics
-#Amelia currently provides a number of diagnostic tools to inspect the imputationsthat are created
-
-#overimpute 
-#¿son precisos los valores imputados? al tener m=5 imputaciones nos permite construir un IC para validar
-#la calidad de la imputación y=x indica la linea de perfecto acuerdo con IC al 90% , cuanto más se ajuste 
-#a la linea x=y mejor predice la imputación de missing 
-#Parece más complejo para las ordinales...no es continuo ..existen casos extremos
-
-  
-par(mar = rep(2, 4))
-overimpute(data_imp, var = "sqft_living")
-overimpute(data_imp, var = "sqft_lot")
-overimpute(data_imp, var = "bedrooms")
-overimpute(data_imp, var = "bathrooms")
-overimpute(data_imp, var = "floors")
-overimpute(data_imp, var = "waterfront")
-overimpute(data_imp, var = "view")
-overimpute(data_imp, var = "condition")
-overimpute(data_imp, var = "grade")
-overimpute(data_imp, var = "sqft_above")
-overimpute(data_imp, var = "sqft_basement")
-overimpute(data_imp, var = "yr_built")
-overimpute(data_imp, var = "yr_renovated")
-overimpute(data_imp, var = "sqft_living15")
-overimpute(data_imp, var = "sqft_lot15")
+#sqft_basement
+price_training$sqft_basement[is.na(price_training$sqft_basement)] <- 
+  mean(price_training$sqft_basement, na.rm = TRUE)
 
 
 
-
-###analisis de la imputacion con los máximos locales a la hora de identificar una imputación
-#cuando la confunde con un máximo global, para evitarlo es interesante realizar , el algortimo se
-#ve influenciado por el momento y sitio donde comienza , multiples imputaciones iniciales
-#amelia proporciona un diagnóstico para validar el algoritmo desde valores iniciales distintos
-
-
-
-#grafico donde todas las cadenas EM convergen al mismo modo, independientemente del valor inicial
-
-disperse(data_imp, dims = 1, m = 5)
-
-#numero de iteraciones 2
-
-
-
-write.amelia( data_imp, file.stem ="C:/Users/Pablo/Desktop/FAD_Práctica/amelia")
-
-datos_clean <-read.csv (file="C:/Users/Pablo/Desktop/FAD_Práctica/amelia2.csv",
-                        header=TRUE, na = c("", "NA"), )
-
-#guardamos los datos despues del proceso de impudato###
-write.csv(datos_clean, file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_data_clean.csv")
-
-datos_clean
-summary (datos_clean)
+#variable discreta 
+# Create the function calculate the mode
+getmode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+mode_bedrooms   <- getmode(price_training$bedrooms)
+mode_bathrooms  <- getmode(price_training$bathrooms)
+mode_floors     <- getmode(price_training$floors)
+mode_waterfront <- getmode(price_training$waterfront )
+mode_view       <- getmode(price_training$view )
+mode_condition  <- getmode(price_training$condition )
+mode_grade      <- getmode(price_training$grade )
+mode_yr_built   <- getmode(price_training$yr_built )
+mode_yr_renovated     <- getmode(price_training$yr_renovated )
 
 
-datos_clean$beds<-floor (datos_clean$bedrooms)
-datos_clean$baths<-floor (datos_clean$bathrooms)
+#bedrooms
+price_training$bedrooms[is.na(price_training$bedrooms)] <- 
+  (mode_bedrooms)
 
-datos_clean$beds
-datos_clean$baths
+#bathrooms
+price_training$bathrooms[is.na(price_training$bathrooms)] <- 
+  (mode_bathrooms)
 
-#SEMMA
-#SEMMA 1. SAMPLE
+#floors
+price_training$floors[is.na(price_training$floors)] <- 
+  (mode_floors)
 
-#TRAIN 70% / CONTROL 30%
+#waterfront
+price_training$waterfront[is.na(price_training$waterfront)] <- 
+  (mode_waterfront)
+
+#view
+price_training$view[is.na(price_training$view)] <- 
+  (mode_view)
+
+#condition
+price_training$condition[is.na(price_training$condition)] <- 
+  (mode_condition)
+
+#grade
+price_training$grade[is.na(price_training$grade)] <- 
+  (mode_grade)
+
+#yr_built
+price_training$yr_built[is.na(price_training$yr_built)] <- 
+  (mode_yr_built)
+
+#yr_renovated
+price_training$yr_renovated[is.na(price_training$yr_renovated)] <- 
+  (mode_yr_renovated)
+
+
+#chequeamos que no hay variables missing
+summary (price_training)
 
 
 
-library(caret)
-library(dplyr)
+## ALTERNATIVA 2. ESUDIO DE LOS MISSING A TRAVES DE FUNCION MICE 
+#Usaríamos  MICE  en el caso de querer imputación múltiple
+#asume que los datos faltantes son debidos al azar MAR, lo que implica que la ausencia de 
+#un valor puede predecirse a partir de otros 
 
-set.seed(5876)
-inTraining <- createDataPartition(pull(datos_clean),
-                                  p = .7, list = FALSE, times = 1)
-price_training <- slice(datos_clean, inTraining)
-price_testing  <- slice(datos_clean, -inTraining)
+#1.-seleccion de las variables PMM (Predictive Mean Matching)  - For numeric variables
+
+summary(vec_miss)
+continuas<- mice(vec_miss [c(6,7,13,14)], m=5, method = 'pmm', seed = 737)
+summary(continuas)
+
+continuas$imp$sqft_living
+continuas$imp$sqft_lot 
+continuas$imp$sqft_above 
+continuas$imp$sqft_basement 
 
 
+
+#polyreg(Bayesian polytomous regression) - For Factor Variables (>= 2 levels)
+#Proportional odds model (ordered, >= 2 levels)
+
+vec_miss$bedrooms<-as.character(vec_miss$bedrooms)
+vec_miss$bathrooms<-as.character(vec_miss$bathrooms)
+vec_miss$floors<-as.character(vec_miss$floors)
+vec_miss$waterfront<-as.character(vec_miss$waterfront)
+vec_miss$view<-as.character(vec_miss$view)
+vec_miss$condition<-as.character(vec_miss$condition)
+vec_miss$grade<-as.character(vec_miss$grade)
+
+
+
+
+summary(vec_miss)
+discreta <- mice(vec_miss [c(4,5,8,9,10,11,12)], m=5, method = 'polyreg', seed = 737)
+
+discreta$imp$bedrooms
+discreta$imp$bathrooms
+discreta$imp$floors
+discreta$imp$waterfront  
+discreta$imp$view  
+discreta$imp$condition  
+discreta$imp$grade
+discreta$imp$yr_built  
+discreta$imp$yr_renovated  
+
+#nos quedamos con el primer método por sencillez, pero tenemos las bases deL Mice
+
+dat2<-mice::complete(discreta, 2)
+dat1<-mice::complete(continuas,2)
+dat <-vec_miss [c(1,2,3)]
+
+###unimos los 3 datasets , nos quedamos con el primer metodo
+
+
+
+
+
+
+
+#######################
 #SEMMA 2. EXPLORE
+#######################
+
+
 
 #ANALISIS 
 #VISUALIZACIÓN DE LOS DATOS
 #OUTLIER
 
+#variables continuas 
+
+
 
 #variables discretas
 
-
+#variable condition
 ggplot(price_training, aes(price_training$condition)) + geom_bar() + ggtitle("Condition")
 #problemas con los grupos con pocas frecuencias a considerar
-ggplot(price_training, aes(price_training$beds))  + geom_bar() + ggtitle("bedRooms")
-histogram(price_training$beds)
+
+price_training$condition<-as.character(price_training$condition)
+price_training$price<-as.numeric(price_training$price)
+aggregate(price_training$price, by=list(price_training$condition), FUN=mean)  
+
+levels(price_training$condition) <- list(hi="1", notHi=c("2", "3","4","5"),otro=c("Co_Low"))
+price_training$condition
+
+###bedrooms
+ggplot(price_training, aes(price_training$bedrooms))  + geom_bar() + ggtitle("bedRooms")
+#es una variable ordinal
 #observamos claramente que existe un outlier en las camas
-ggplot(price_training, aes(price_training$baths)) + geom_bar() + ggtitle("bathrooms")
+
+#bathrooms
+ggplot(price_training, aes(price_training$bathrooms)) + geom_bar() + ggtitle("bathrooms")
+#es una variable ordinal
+
+#floors
 ggplot(price_training, aes(price_training$floors))    + geom_bar() + ggtitle("floors")
+price_training %>%
+  count(floors, sort = TRUE)
+
+#waterfront
 ggplot(price_training, aes(price_training$waterfront))    + geom_bar() + ggtitle("waterfront")
+#recode data nominal vistas versus no vistas #
+price_training$waterfront[which(price_training$waterfront == 0)] <- "WF_NO"
+price_training$waterfront[which(price_training$waterfront == 1)] <- "WF_SI"
+ggplot(price_training, aes(price_training$waterfront))    + geom_bar() + ggtitle("waterfront")
+
+
+
+#view 
 ggplot(price_training, aes(price_training$view))     + geom_bar() + ggtitle("view")
-#nos podemos plantear un flag Visitada vs no vistada 
+#VARIABLE ORDINAL CON ESCASA FRECUENCIA DISTINTA DE CERO
+#interesante crear una nueva variable flag Visitas si versus visitas NO
+price_training$view_flag<-ifelse(price_training$view> 0,
+                                  "VS_SI", "VS_NO")
+
+#view_flag#nos podemos plantear un flag Visitada vs no vistada 
+ggplot(price_training, aes(price_training$view_flag))     + geom_bar() + ggtitle("view_flag")
+
+
+
+#analisis de grade
 ggplot(price_training, aes(price_training$grade))    + geom_bar() + ggtitle("grade")
+#en este punto interesa crear una agrupación en función del precio que será nuestra variable objetivo
+price_training$grade<-as.character(price_training$grade)
+
+aggregate(price_training$price, by=list(price_training$grade), FUN=mean)                         
+
+
+#parecen que se deberian formar los siguientes grupos (9,8) (7,13,10) (11,12,4,5,6) en funcion al 
+#precio medio de estas viviendas 
+
+
+
+
 ggplot(price_training, aes(price_training$yr_built))     + geom_bar() + ggtitle("yr_built")
 ggplot(price_training, aes(price_training$yr_renovated))    + geom_bar() + ggtitle("yr_renovated")
 
-
-histogram(price_training$condition)
-histogram(price_training$baths)
-histogram(price_training$floors)
-histogram(price_training$waterfront)
-histogram(price_training$view)
-histogram(price_training$grade)
-histogram(price_training$yr_built)
-histogram(price_training$yr_renovated)
+boxplot(price ~ bedrooms, data = price_training)
+boxplot(price ~ bathrooms, data = price_training)                      
+boxplot(price ~ condition, data = price_training)
+boxplot(price ~ grade, data = price_training)  
+boxplot(price ~ waterfront    , data = price_training)
+boxplot(price ~ view, data = price_training)
+boxplot(price ~ floors, data = price_training)
 
 
 ##analisis por el precio de la vivienda
@@ -341,18 +390,18 @@ price_training %>%
 
 
 price_training %>%
-  group_by(beds) %>% 
+  group_by(bedrooms) %>% 
   summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=beds, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggplot(aes(x=bedrooms, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio medio por Habitaciones")
 #interesante por el precio es creciente en relacion a numero de
 #habitaciones pero a partir de 7 habitaciones el precio empieza 
 #a reducirse
 
 price_training %>%
-  group_by(baths) %>% 
+  group_by(bathrooms) %>% 
   summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=baths, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggplot(aes(x=bathrooms, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Banyos")
 #impresionante, da gusto verla. de libro
 
@@ -382,8 +431,6 @@ price_training %>%
 
 #segun aumenta el numero de visitas mayor es el precio de compra
 #lo cual quiere decir que ¿será más valiosa y por eso es más visitad?
-
-
 
 
 price_training %>%
@@ -459,8 +506,19 @@ hist(flag_reforma, xlab="flag_reforma",ylab="frecuencia",main="histograma flag_r
 
 
 ######################
-#variables continuas##
+#variables trassformacion de las variables ##
 ######################
+
+#recode data nominal #
+
+
+"
+
+histogram(datos_miss$grade)
+datos_miss$grade<-recode(datos_miss$grade, "0:6=1; 7=2; 8=3; 9=4; else=5")
+histogram(datos_miss$grade)
+
+
 
 
 ggplot(price_training, aes(x = price_training$sqft_living)) +
@@ -495,7 +553,7 @@ plot(price_training$sqft_living, price_training$price, main="Scatterplot Example
      xlab="price ", ylab="sqft_living ", pch=100)
 
 library(car)
-scatterplot(price_training$sqft_living ~ price_training$price | price_training$baths, data=price_training,
+scatterplot(price_training$sqft_living ~ price_training$price | price_training$bathrooms, data=price_training,
             xlab="Metros", ylab="precio",
             main="Enhanced Scatter Plot")
 
@@ -530,13 +588,6 @@ glimpse(price_training)
 
 
 
-boxplot(price ~ beds, data = price_training)
-boxplot(price ~ baths, data = price_training)                      
-boxplot(price ~ condition, data = price_training)
-boxplot(price ~ grade, data = price_training)  
-boxplot(price ~ waterfront    , data = price_training)
-boxplot(price ~ view, data = price_training)
-boxplot(price ~ floors, data = price_training)
 
 
 #ANALISIS EXLORATORIO DE LOS DATOS
@@ -625,6 +676,7 @@ sqft_liv2 <- price_training %>% mutate(log10_sqft_living = log10(sqft_living)) %
   na.omit() %>%
   ggplot(aes(x=condition, y=log10_sqft_living, fill=condition)) +
   geom_boxplot()
+
 
 
 sq1 <- price_training %>% select(condition, sqft_living) %>%
