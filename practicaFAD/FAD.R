@@ -305,9 +305,9 @@ dat <-vec_miss [c(1,2,3)]
 
 #variables discretas
 
-#########################
-#variable condition#######
-###########################
+########################################################################
+#variable condition#####################################################
+########################################################################
 
 
 ggplot(price_training, aes(price_training$condition)) + geom_bar() + ggtitle("Condition")
@@ -321,24 +321,85 @@ aggregate(price_training$price, by=list(price_training$condition), FUN=mean)
 price_training$condition_new<-recode (price_training$condition,
                                       "c('1','2')='low'; 
                                        c('3','4')='med'; 
-                                       c('5')='hig'"
+                                       c('5')    ='hig'"
                                       )
 ggplot(price_training, aes(price_training$condition_new)) + geom_bar() + ggtitle("Condition new")
 
 #hemos recodificado esta variable en tres grupos alrededor de la media en relacion a su precio medio
+#veamos esta relacion antes y depues de la transformación
+
+
+price_training %>%
+  group_by(condition) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=condition, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Condicion")
+
+#nos llama la atencion el grupo 1 y 2 precios en medio mucho menor que los otros 3 grupos
+#si aplicamos la transformacion
+
+
+price_training %>%
+  group_by(condition_new) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=condition_new, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Condicion New")
+
+
+ggplot(data = price_training, aes(x = condition_new, y = price, color = condition_new)) +
+  geom_boxplot() +
+  theme_bw()
+
+#podemos afirmar a priori y visualmente que existe una relación entre el precio y la 
+#condicion de la vivienda que se refleja claramente en el grupo LOW
 
 
 
 
+###################################################
+###bedrooms#######################################
+##################################################
 
-###bedrooms
 ggplot(price_training, aes(price_training$bedrooms))  + geom_bar() + ggtitle("bedRooms")
 #es una variable ordinal
-#observamos claramente que existe un outlier en las camas
 
-#bathrooms
+price_training %>%
+  group_by(bedrooms) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=bedrooms, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio medio por Habitaciones")
+#interesante por el precio es creciente en relacion a numero de
+#habitaciones pero a partir de 7 habitaciones el precio empieza a reducirse
+
+
+boxplot(price ~ bedrooms, data = price_training, col = "lightgreen", 
+        xlab = "numero de camas", ylab = "precio vivienda") 
+
+t_beds<-table(price_training$bedrooms)
+t_beds
+aggregate(price_training$price, by=list(price_training$bedrooms), FUN=mean) 
+
+# nuestra decision y considerando los valores medios agrupar a partir de 6 camas en 
+# una unica categoria obteniendo la variable bed_new
+
+price_training$bedrooms_new<-recode (price_training$bedrooms,"6:11=6"
+)
+aggregate(price_training$price, by=list(price_training$bedrooms_new), FUN=mean) 
+
+boxplot(price ~ bedrooms_new, data = price_training, col = "lightgreen", 
+        xlab = "numero de camas new", ylab = "precio vivienda")
+
+
+
+###################################################################################
+#bathrooms #######################################################################
+###################################################################################
+
 ggplot(price_training, aes(price_training$bathrooms)) + geom_bar() + ggtitle("bathrooms")
 #es una variable ordinal
+
+
+
 
 #floors
 ggplot(price_training, aes(price_training$floors))    + geom_bar() + ggtitle("floors")
@@ -394,24 +455,9 @@ boxplot(price ~ floors, data = price_training)
 
 ##analisis por el precio de la vivienda
 
-price_training %>%
-  group_by(condition) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=condition, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por Condicion")
-#se ve claramene que las casas con condicion 5 Top son más caras
-# pero da que pensar porque el comportamiento no es creciente y continuo
-#pensamos que puede interactuar con otras variables.
 
 
-price_training %>%
-  group_by(bedrooms) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=bedrooms, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio medio por Habitaciones")
-#interesante por el precio es creciente en relacion a numero de
-#habitaciones pero a partir de 7 habitaciones el precio empieza 
-#a reducirse
+
 
 price_training %>%
   group_by(bathrooms) %>% 
