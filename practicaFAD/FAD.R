@@ -25,8 +25,9 @@
 #install.packages("magrittr") 
 #install.packages("caret")
 #install.packages("bestNormalize")
-#@install.packages("rcompanion")
-
+#install.packages("rcompanion")
+#install.packages("GoodmanKruskal")
+library(GoodmanKruskal)
 library(rcompanion)
 library (bestNormalize)
 library(magrittr)
@@ -80,6 +81,7 @@ library(lubridate)
 library(forcats)
 library(nortest)
 library(MASS)
+library(vcd)
 
 #################################################
 ####LECTURA DE LOS DATOS CON VARIABLES MISSING###
@@ -128,14 +130,7 @@ aggr_plot <- aggr(price_training, col=c('navyblue','red'), numbers=TRUE, sortVar
                   ylab=c("Histogram of missing data","Pattern"))
 
 
-# Visualización de valores faltantes
 
-price_training %>% select(sqft_lot, condition) %>% marginplot()
-#vemos que los valores missing de Bedrooms suele darse en valores de sqft_lot bajos.
-#sobre todo en los primeros niveles. Imputación a través del algoritmo KNN de VIM
-
-price_training %>% select(sqft_lot, bedrooms) %>% VIM::kNN() %>% marginplot(., delimiter="_imp")
-#parece que no se aparta demasiado por lo que la imputación es buena 
 
 #Variables Missing son en todos lod casos inferior al 3% 
 #bedrooms        41
@@ -309,6 +304,22 @@ dat <-vec_miss [c(1,2,3)]
 #VISUALIZACIÓN DE LOS DATOS
 #OUTLIER
 
+summary(price_training)
+ggcorr(price_training[c(3,4,5,6,7,8,9,10,11,12,13,14)],
+       palette = "RdBu", label = TRUE)
+        
+#seleccion de variables por alta correlacion
+# 1.- variable correlacion alta beth-bath-sqft_living-sqft_above
+# 2.- variable correlacion alta waterfront -view
+# eliminamos variables y estudiamos 
+
+
+ggcorr(price_training[c(4,8,9,11,12,14)],
+       palette = "RdBu", label = TRUE)
+
+
+
+
 ########################################################
 #variables continuas ##################################
 #######################################################
@@ -339,14 +350,14 @@ print (norm_price_test)
 # 3.-Inversa 1/x
 
 #Prueba 1 . Logaritmo
-
+summary (price_training$price)
 norm_price_test<-lillie.test(log10(price_training$price))
 print (norm_price_test)
-histogram(log10(price_training$price))
+histogram((price_training$price))
 # Rechazamos Ho para nuestra muestra.Log10 Price No sigue una distribución Normal
 
-qqnorm(log10(price_training$price))
-qqline(log10(price_training$price))
+qqnorm(1/(price_training$price))
+qqline(1/(price_training$price))
 #vemos que en los valores superiores no se ajusta del todo a una normal. pero nos apoyamos en TCL
 
 
@@ -457,29 +468,27 @@ histogram (log10(dwo$sqft_living))
 qqnorm(log10(dwo$sqft_living))
 qqline(log10(dwo$sqft_living))
 
-#estudiamos si tenemos problemas con los outliers en esta variable
 
-lowerq = quantile(dwo$sqft_living)[2]
-upperq = quantile(dwo$sqft_living)[4]
-iqr = (upperq - lowerq) 
-extreme.threshold.upper = (iqr * 3) + upperq
-extreme.threshold.lower = lowerq - (iqr * 3)
-extreme.threshold.upper
-extreme.threshold.lower
+dwo$sqft_livingt_log<-log10(dwo$sqft_living)
 
-dwo<-subset(dwo, dwo$sqft_living<extreme.threshold.upper &
-                 dwo$sqft_living>extreme.threshold.lower)
+#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
+# de los bandings
 
-
-###pasamos de  14.344 a 14.338 observaciones
-histogram (log10(dwo$sqft_living))
-qqnorm(log10(dwo$sqft_living))
-qqline(log10(dwo$sqft_living))
-#el test se rechaza pero parece que nos aproximamos a una dist normal TCL
-
+#alternativa  bandings. Evitamos los problemas de Normalidad
+histogram ((dwo$sqft_living)) 
+summary (dwo$sqft_living)
+table(dwo$sqft_living)
+dwo$sqft_livingt_banding<-recode (dwo$sqft_living,
+                              "
+                             0:1370=0;
+                          1371:1800=1;
+                          1801:2320=2;
+                          2321:30000=3"
+)
+table(dwo$sqft_livingt_banding)
 
 
-dwo$sqft_living_log<-(log10(dwo$sqft_living))
+
 
 
 ##################################
@@ -493,35 +502,27 @@ dwo$sqft_living_log<-(log10(dwo$sqft_living))
 
 histogram (dwo$sqft_lot)
 histogram (log10(dwo$sqft_lot))
+qqnorm    (log10(dwo$sqft_lot))
+qqline    (log10(dwo$sqft_lot))
 histogram (sqrt(dwo$sqft_lot))
 histogram ((dwo$sqft_lot)*(dwo$sqft_lot))
 
-#la mas fiable parece la logaritmica 
-#estudiamos si tenemos problemas con los outliers en esta variable
+#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
+# de los bandings
 
-lowerq = quantile(dwo$sqft_lot)[2]
-upperq = quantile(dwo$sqft_lot)[4]
-iqr = (upperq - lowerq) 
-extreme.threshold.upper = (iqr * 3) + upperq
-extreme.threshold.lower = lowerq - (iqr * 3)
-extreme.threshold.upper
-extreme.threshold.lower
+#alternativa  bandings. Evitamos los problemas de Normalidad
+histogram ((dwo$sqft_lot)) 
+summary (dwo$sqft_lot)
+table(dwo$sqft_lot)
+dwo$sqft_lot_banding<-recode (dwo$sqft_lot,
+                            "
+                            0:5054='a';
+                          5044:7620='b';
+                          7621:10720='c';
+                          10721:300000000='d'"
+                        )
+table(dwo$sqft_lot_banding)
 
-
-dwo<-subset(dwo, dwo$sqft_lot<extreme.threshold.upper &
-                 dwo$sqft_lot>extreme.threshold.lower)
-
-###pasamos de  14.338 a 14.332 observaciones
-
-histogram (dwo$sqft_lot)
-histogram (log10(dwo$sqft_lot))
-qqnorm(log10(dwo$sqft_lot))
-qqline(log10(dwo$sqft_lot))
-
-#log10 es la transformacion que mas se aproxima a la normal
-
-
-dwo$sqft_lot_log<-(log10(dwo$sqft_lot))
 
 
 
@@ -533,31 +534,26 @@ dwo$sqft_lot_log<-(log10(dwo$sqft_lot))
 #rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
 
 histogram (dwo$sqft_basement)
-histogram (log10(dwo$sqft_basement))                          
+histogram (log10(dwo$sqft_basement)) 
 histogram (1/(dwo$sqft_basement))
 histogram (sqrt(dwo$sqft_basement))
+#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
+# de los bandings
 
+#alternativa  bandings. Evitamos los problemas de Normalidad
+histogram ((dwo$sqft_basement)) 
+table(dwo$sqft_basement)
+dwo$sqft_basement_banding<-recode (dwo$sqft_basement,
+                               "0='a'; 
+                            1:200='b';
+                          201:400='c';
+                          401:600='d';
+                          601:800='e';
+                          801:1000='f';
+                          1001:10000='g'
+                        ")
 
-
-# analisis de los outliers 
-lowerq = quantile(dwo$sqft_basement)[2]
-upperq = quantile(dwo$sqft_basement)[4]
-iqr = (upperq - lowerq) 
-extreme.threshold.upper = (iqr * 1.5) + upperq
-extreme.threshold.lower = lowerq - (iqr * 1.5)
-extreme.threshold.upper
-extreme.threshold.lower
-
-dwo<-subset(dwo, dwo$sqft_basement<extreme.threshold.upper &
-                dwo$sqft_basement>extreme.threshold.lower)
-
-
-
-###pasamos de 14.332 a 12.882  observaciones
-#nos quedamos con la transformacion logaritmica
-histogram (log10(dwo$sqft_basement))  
-dwo$sqft_basement_log<-(log10(dwo$sqft_basement))
-
+table(dwo$sqft_basement_banding)
 
 
 
@@ -572,32 +568,25 @@ dwo$sqft_basement_log<-(log10(dwo$sqft_basement))
 histogram (dwo$sqft_above)
 histogram (log10(dwo$sqft_above)) 
 
-#estudiamos si tenemos problemas con los outliers en esta variable
 
-lowerq = quantile(dwo$sqft_above)[2]
-upperq = quantile(dwo$sqft_above)[4]
-iqr = (upperq - lowerq) 
-extreme.threshold.upper = (iqr * 3) + upperq
-extreme.threshold.lower = lowerq - (iqr * 3)
-extreme.threshold.upper
-extreme.threshold.lower
+#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
+# de los bandings
 
+#alternativa  bandings. Evitamos los problemas de Normalidad
+histogram ((dwo$sqft_above)) 
+summary(dwo$sqft_above)
+table(dwo$sqft_above)
+dwo$sqft_above_banding<-recode (dwo$sqft_above,
+                            "
+                             0:1150='a';
+                          1151:1470='b';
+                          1471:2020='c';
+                          2021:10000='d'
+                        ")
 
-dwo<-subset(dwo, dwo$sqft_above<extreme.threshold.upper &
-                 dwo$sqft_above>extreme.threshold.lower)
-
-
-###pasamos de  12.882 a 12.878 observaciones
-
-#nos quedamos con la transformacion logaritmica
-histogram (log10(dwo$sqft_above))  
-qqnorm(log10(dwo$sqft_above))
-qqline(log10(dwo$sqft_above))
+table(dwo$sqft_above_banding)
 
 
-#no son transfromaciones a Normal pero se aproximan más  TCL
-
-dwo$sqft_above_log<-(log10(dwo$sqft_above))
 
 
 
@@ -617,9 +606,9 @@ aggregate(dwo$price, by=list(dwo$condition), FUN=mean)
 
 
 dwo$condition_new<-recode (dwo$condition,
-                                      "c('1','2')='low'; 
-                                       c('3','4')='med'; 
-                                       c('5')    ='hig'"
+                                      "c('1','2')=0; 
+                                       c('3','4')=1; 
+                                       c('5')    =2"
                                       )
 ggplot(dwo, aes(dwo$condition_new)) + geom_bar() + ggtitle("Condition new")
 
@@ -644,9 +633,6 @@ dwo %>%
   ggtitle("Precio Medio por Condicion New")
 
 
-ggplot(data = dwo, aes(x = condition_new, y = price, color = condition_new)) +
-  geom_boxplot() +
-  theme_bw()
 
 #podemos afirmar a priori y visualmente que existe una relación entre el precio y la 
 #condicion de la vivienda que se refleja claramente en el grupo LOW
@@ -760,8 +746,6 @@ boxplot(price ~ floors_new, data = dwo, col = "blue",
 
 ggplot(dwo, aes(dwo$waterfront))    + geom_bar() + ggtitle("waterfront")
 #recode data nominal vistas versus no vistas #
-dwo$waterfront[which(dwo$waterfront == 0)] <- "WF_NO"
-dwo$waterfront[which(dwo$waterfront == 1)] <- "WF_SI"
 ggplot(dwo, aes(dwo$waterfront))    + geom_bar() + ggtitle("waterfront")
 
 
@@ -778,7 +762,8 @@ dwo %>%
 
 ##variables significativa , vistas al mar implica mayor precio
 
-
+dwo$waterfront_flag<-ifelse(dwo$waterfront> 0,
+                      'SI', 'NO')
 
 
 #############################################################################
@@ -790,7 +775,7 @@ ggplot(dwo, aes(dwo$view))     + geom_bar() + ggtitle("view")
 #VARIABLE ORDINAL CON ESCASA FRECUENCIA DISTINTA DE CERO
 #interesante crear una nueva variable flag Visitas si versus visitas NO
 dwo$view_flag<-ifelse(dwo$view> 0,
-                                  "VS_SI", "VS_NO")
+                                  'SI', 'NO')
 
 #view_flag#nos podemos plantear un flag Visitada vs no vistada 
 ggplot(dwo, aes(dwo$view_flag))     + geom_bar() + ggtitle("view_flag")
@@ -831,10 +816,11 @@ aggregate(dwo$price, by=list(dwo$grade), FUN=mean)
 #precio medio de estas viviendas 
 
 
+
 dwo$grade_new<-recode (dwo$grade,
-                                      "c('12','11','10')='Grade_top'; 
-                                       c('8','9')='Grade_med'; 
-                                       c('3','4','5','6','7','s')    ='Grade_low'"
+                                      "c('13','12','11','10')=2; 
+                                       c('8','9')=1; 
+                                       c('3','4','5','6','7','s') =0"
 )
 
 table(dwo$grade_new)
@@ -896,7 +882,7 @@ dwo %>%
 # y despues del anyo 2000
 
 dwo$flag_milenio<-recode (dwo$yr_built,
-                                     "1900:1999=0; 2000:2020=1")
+                                     "1900:1999='NO'; 2000:2020='SI'")
 
 
 table(dwo$flag_milenio)
@@ -935,7 +921,7 @@ aggregate(dwo$price, by=list(dwo$yr_renovated), FUN=mean)
 # creamos un flag si /no por si ha reformado o no
 dwo$yr_renovated<-as.numeric(dwo$yr_renovated)
 dwo$flag_reforma<-recode (dwo$yr_renovated,
-                                     "0=0; 1900:2020=1")
+                                     "0='no'; 1900:2020='si'")
                                    
                                     
 
@@ -1008,20 +994,17 @@ histogram ((dwo$antiguedad))
 # el mejor tratamiento a esta variable es hacer banding discretos, así esquivamos los problemas con norm
 tabla.frec
 dwo$ant_clas<-recode (dwo$antiguedad,
-                        "-1:10=1; 
-                          11:20=2;
-                          21:30=3;
-                          31:40=4;
-                          41:50=5;
-                          51:60=6;
-                          61:70=7;
-                          71:80=8;
-                          81:90=9;
-                          91:120=10;
+                        "-100:30='a'; 
+                          31:40='d';
+                          41:50='e';
+                          51:60='f';
+                          61:70='g';
+                          71:80='h';
+                          81:90='i';
+                          91:200000='z';
                       ")
 
-histogram ((dwo$ant_clas))
-
+table(dwo$ant_clas)
 
 dwo %>%
   group_by(ant_clas) %>% 
@@ -1037,13 +1020,24 @@ dwo %>%
 #####analisisi conjunto y correlaciones entre las variables##################
 #############################################################################
 
+
+#No colinialidad o multicolinialidad:
+  
+#  En los modelos lineales múltiples los predictores deben ser independientes, 
+#no debe de haber colinialidad entre ellos.
+#La colinialidad ocurre cuando un predictor está linealmente relacionado
+#con uno o varios de los otros predictores del modelo o 
+#cuando es la combinación lineal de otros predictores
+
+
+
 #listado de variables de las que vamos a partir
 
 #price_log        
-#sqft_living_log 
-#sqft_lot_log
-#sqft_basement_log 
-#sqft_above_log 
+#sqft_living_banding 
+#sqft_lot_banding 
+#sqft_basement_banding 
+#sqft_above_banding  
 #condition_new       
 #bedrooms_new   
 #bathrooms_new  
@@ -1055,197 +1049,86 @@ dwo %>%
 #flag_milenio     
 #flag_reforma
 #ant_clas
+#waterfront
 
-summary (dwo)
 
-# Correlation plot
 
-ggcorr(dwo, palette = "RdBu", label = TRUE)
+#ANALISIS DE LAS ASOCIACIONES ENTRE VARIABLES CON EL V DE CRAMER
+#La V de Cramer es muy habitual para medir la relación entre factores,
+#es menos susceptible a valores muestrales. También 0 implica independencia
+#y 1 una relación perfecta entre los factores. Habitualmente
+#valores superiores a 0,30 ya nos están indicando que hay una posible
+#relación entre las variables.
 
-dwo$condition_new
 
+cv.test = function(x,y) {
+  CV = sqrt(chisq.test(x, y, correct=FALSE)$statistic /
+              (length(x) * (min(length(unique(x)),length(unique(y))) - 1)))
+  print.noquote("Cramér V / Phi:")
+  return(as.numeric(CV))
+}
 
 
-#####analisis
+cv.test(x=dwo$waterfront_flag,y=dwo$view_flag)
+#[1] 0.1395412
+cv.test(x=dwo$waterfront_flag,y=dwo$flag_milenio)
+#[1] 0.01939653
+cv.test(x=dwo$waterfront_flag,y=dwo$grade)
+#[1] 0.02395002
+cv.test(x=dwo$waterfront_flag,y=dwo$bedrooms_new)
+#[1] 0.03232724
+cv.test(x=dwo$waterfront_flag,y=dwo$flag_reforma)
+#[1] 0.0504965
+cv.test(x=dwo$waterfront_flag,y=dwo$ant_clas)
+#[1] 0.02916336
+cv.test(x=dwo$waterfront_flag,y=dwo$bathrooms_new)
+#[1] 0.006930592
+cv.test(x=dwo$waterfront_flag,y=dwo$bedrooms_new)
+#[1] 0.03232724
+cv.test(x=dwo$bathrooms_new,y=dwo$bedrooms_new)
+#[1] 0.2821159 ---> tenemos que eliminar  bedrooms_new
+cv.test(x=dwo$bathrooms_new,y=dwo$view_flag)
+#[1] 0.0720352
+cv.test(x=dwo$bathrooms_new,y=dwo$grade)
+#[1] 0.3567409 tenemos que eliminar bathrooms
+cv.test(x=dwo$grade,y=dwo$view_flag)
+#[1] 0.1004545
+cv.test(x=dwo$grade,y=dwo$)
 
-price1 <- price_training %>% select(grade_new, price) %>%
-  na.omit() %>%
-  ggplot(aes(x=grade_new, y=price, fill=grade_new)) +
-  geom_boxplot()
-  
 
-price2 <- price_training %>% mutate(log10_price = log10(price)) %>%
-  select(grade_new, log10_price) %>%
-  na.omit() %>%
-  ggplot(aes(x=grade_new, y=log10_price, fill=grade_new)) +
-  geom_boxplot()
-  
 
-p1 <- price_training %>% select(grade_new, price) %>%
-  na.omit() %>%
-  ggplot(aes(x=price, colour=grade_new)) +
-  geom_density()
 
-p2 <- price_training %>% mutate(log10_price = log10(price)) %>%
-  select(grade_new, log10_price) %>%
-  na.omit() %>%
-  ggplot(aes(x=log10_price, colour=grade_new)) +
-  geom_density()
 
-grid.arrange(p1, p2, nrow = 1)
-grid.arrange(price1, price2, nrow = 1)
+#eliminadas
+#bedrooms_new
+#bathrooms_new
 
 
 
 
 
-#transformacion sqft_living
 
-sqft_liv1 <- price_training %>% select(condition, sqft_living) %>%
-  na.omit() %>%
-  ggplot(aes(x=condition, y=sqft_living, fill=condition)) +
-  geom_boxplot()
 
-sqft_liv2 <- price_training %>% mutate(log10_sqft_living = log10(sqft_living)) %>%
-  select(condition, log10_sqft_living) %>%
-  na.omit() %>%
-  ggplot(aes(x=condition, y=log10_sqft_living, fill=condition)) +
-  geom_boxplot()
+######################################################################
+#####semma4 modelo ###################################################
+######################################################################
 
 
+modelo1 <- lm(formula = price ~ flag_reforma + ant_clas
+               + grade + bedrooms_new + view_flag  + flag_milenio + waterfront_flag
+               , data = dwo)
+modelo1
+summary(modelo1)
 
-sq1 <- price_training %>% select(condition, sqft_living) %>%
-  na.omit() %>%
-  ggplot(aes(x=sqft_living, colour=condition)) +
-  geom_density()
+# una primera vision de los resultados de este modelo nos dicen que todas
+#las variables son significativas en el mismo salvo la variable mes en el que 
+#no podemos rechazar la Hipotesis nula de Parametro de estimacion igual a cero
+#               Estimate Std. Error t value Pr(>|t|) 
+#mes           -0.0028113  0.0007510  -3.744 0.000182 *** 
+# nos podemos plantear si no hay confictos a nivel negocio sacar esta variable de
+#la modelizacion
 
-sq2 <- price_training %>% mutate(log10_sqft_living = log10(sqft_living)) %>%
-  select(condition, log10_sqft_living) %>%
-  na.omit() %>%
-  ggplot(aes(x=log10_sqft_living, colour=condition)) +
-  geom_density()
-
-grid.arrange(sq1, sq2, nrow = 1)
-grid.arrange(sqft_liv1, sqft_liv2, nrow = 1)
-
-
-
-#transformacion sqft_lot
-
-sqft_lot1<- price_training %>% select(condition, sqft_lot) %>%
-  na.omit() %>%
-  ggplot(aes(x=condition, y=sqft_lot, fill=condition)) +
-  geom_boxplot()
-
-sqft_lot2 <- price_training %>% mutate(log10_sqft_lot = log10(sqft_lot)) %>%
-  select(condition, log10_sqft_lot) %>%
-  na.omit() %>%
-  ggplot(aes(x=condition, y=log10_sqft_lot, fill=condition)) +
-  geom_boxplot()
-
-sql1 <- price_training %>% select(condition, sqft_lot) %>%
-  na.omit() %>%
-  ggplot(aes(x=sqft_lot, colour=condition)) +
-  geom_density()
-
-sql2 <- price_training %>% mutate(log10_sqft_lot = log10(sqft_lot)) %>%
-  select(condition, log10_sqft_lot) %>%
-  na.omit() %>%
-  ggplot(aes(x=log10_sqft_lot, colour=condition)) +
-  geom_density()
-
-grid.arrange(sql1, sql2, nrow = 1)
-grid.arrange(sqft_lot1, sqft_lot2, nrow = 1)
-
-#transformacion sqft_above
-
-sqft_above1<- datos_root %>% select(new, sqft_above) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=sqft_above, fill=new)) +
-  geom_boxplot()
-
-
-sqft_above2 <- datos_root %>% mutate(log10_sqft_above= log10(sqft_above)) %>%
-  select(new, log10_sqft_above) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=log10_sqft_above, fill=new)) +
-  geom_boxplot()
-
-
-grid.arrange(sqft_above1, sqft_above2, nrow = 1)
-
-
-
-#transformacion sqft_basement
-
-sqft_basement1<- datos_root %>% select(new, sqft_basement) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=sqft_basement, fill=new)) +
-  geom_boxplot()
-
-sqft_basement2 <- datos_root %>% mutate(log10_sqft_basement= log10(sqft_basement)) %>%
-  select(new, log10_sqft_basement) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=log10_sqft_basement, fill=new)) +
-  geom_boxplot()
-
-grid.arrange(sqft_basement1, sqft_basement2, nrow = 1)
-
-
-
-
-#transformacion sqft_living15 
-
-
-sqft_living15_1<- datos_root %>% select(new, sqft_living15) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=sqft_living15, fill=new)) +
-  geom_boxplot()
-
-sqft_living15_2 <- datos_root %>% mutate(log10_sqft_living15= log10(sqft_living15)) %>%
-  select(new, log10_sqft_living15) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=log10_sqft_living15, fill=new)) +
-  geom_boxplot()
-
-grid.arrange(sqft_living15_1, sqft_living15_2, nrow = 1)
-
-
-#transformacion sqft_lot15
-
-
-sqft_lot15_1<- datos_root %>% select(new, sqft_lot15) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=sqft_lot15, fill=new)) +
-  geom_boxplot()
-
-sqft_lot15_2 <- datos_root %>% mutate(log10_sqft_lot15= log10(sqft_lot15)) %>%
-  select(new, log10_sqft_lot15) %>%
-  na.omit() %>%
-  ggplot(aes(x=new, y=log10_sqft_lot15, fill=new)) +
-  geom_boxplot()
-
-grid.arrange(sqft_lot15_1, sqft_lot15_2, nrow = 1)
-
-
-
-
-#analisis de correlaciones de las variables metros 
-###analisis de las correlaciones###
-
-# Correlation plot
-ggcorr(dta, palette = "RdBu", label = TRUE)
-
-# Correlation plot all variables
-ggcorr(price_training, palette = "RdBu", label = TRUE)
-#tenemos que borrar Bedrooms y bathrooms
-
-
-
-
-
-
-####analisis de los outliers#####
-
-
+# el resto de variables son significativas , podemos ver en función del estadítico
+#de t y el valor del parametro que la variable grade_new es con mucha diferencia
+#la que más variabilidad explica en el modelo
 
