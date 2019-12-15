@@ -24,7 +24,11 @@
 #install.packages("dplyr")
 #install.packages("magrittr") 
 #install.packages("caret")
+#install.packages("bestNormalize")
+#@install.packages("rcompanion")
 
+library(rcompanion)
+library (bestNormalize)
 library(magrittr)
 library(brew)
 library(gridExtra)
@@ -74,6 +78,8 @@ library(gclus)
 library(Amelia)
 library(lubridate)
 library(forcats)
+library(nortest)
+library(MASS)
 
 #################################################
 ####LECTURA DE LOS DATOS CON VARIABLES MISSING###
@@ -85,9 +91,11 @@ library(forcats)
 
 #TRAIN 70% / CONTROL 20% / TEST 10%
 
-datos_miss <-read.csv2 (file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_data_missing.csv",
+datos_miss <-read.csv2 (file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_data_missing3.csv",
                         header=TRUE, na = c("", "NA"), )
 summary (datos_miss)
+histogram(datos_miss$price)
+
 
 set.seed(737)
 inTraining     <- createDataPartition(pull(datos_miss), p = .7, list = FALSE, times = 1)
@@ -98,6 +106,8 @@ intest         <- createDataPartition(pull(aux),
 
 price_control  <- slice(aux, intest)
 price_testing  <- slice(aux, -intest)
+
+
 
 #price_training 15.119 obs
 #price_control  4.319  obs
@@ -299,7 +309,296 @@ dat <-vec_miss [c(1,2,3)]
 #VISUALIZACIÓN DE LOS DATOS
 #OUTLIER
 
-#variables continuas 
+########################################################
+#variables continuas ##################################
+#######################################################
+
+#################################
+#trasnformacion para precio######
+#################################
+
+
+
+# Ver si cumple la hipotesis de Normalidad y si no es así realizar la transformacion 
+# test de kolmogorov 
+# Ho: La muestra proviene de una distribución normal.
+# El nivel de significancia que se trabajará es de 0.05. Alfa=0.05
+# Criterio de Decisión
+# Si P < Alfa Se rechaza Ho
+
+
+norm_price_test<-lillie.test(price_training$price)
+print (norm_price_test)
+
+
+# Rechazamos Ho para nuestra muestra. Price No sigue una distribución Normal
+
+# posibles soluciones
+# 1.-Transformacion logaritmico 10
+# 2.-Raiz cuadrada
+# 3.-Inversa 1/x
+
+#Prueba 1 . Logaritmo
+
+norm_price_test<-lillie.test(log10(price_training$price))
+print (norm_price_test)
+histogram(log10(price_training$price))
+# Rechazamos Ho para nuestra muestra.Log10 Price No sigue una distribución Normal
+
+qqnorm(log10(price_training$price))
+qqline(log10(price_training$price))
+#vemos que en los valores superiores no se ajusta del todo a una normal. pero nos apoyamos en TCL
+
+
+#Prueba 2 . Raiz Cuadrada sqrt 
+histogram(sqrt(price_training$price))
+norm_price_test<-lillie.test(sqrt(price_training$price))
+print (norm_price_test) 
+# Rechazamos Ho para nuestra muestra. Raiz cuadrada de Price No sigue una distribución Normal
+
+
+#Prueba 3 . Inversa 1/x 
+histogram(1/(price_training$price))
+norm_price_test<-lillie.test(1/(price_training$price))
+print (norm_price_test) 
+# Rechazamos Ho para nuestra muestra. Inversa de  Price No sigue una distribución Normal
+
+#Prueba 4 . x al cuadrado
+histogram((price_training$price*price_training$price))
+x2<-(price_training$price*price_training$price)
+norm_price_test<-lillie.test(x2)
+print (norm_price_test) 
+# Rechazamos Ho para nuestra muestra.  Price al cuadrado No sigue una distribución Normal
+
+
+
+
+#Transformación general de potencias: También llamada transformación de Box-Cox,
+#ya que fue propuesta por Box y Cox (1964). 
+#Engloba a las anteriores mediante la siguiente fórmula general
+
+
+b <- boxcox(price_training$price ~ price_training$grade_new)
+lambda <- b$x # lambda values
+lik <- b$y # log likelihood values for SSE
+bc <- cbind(lambda, lik) # combine lambda and lik
+sorted_bc <- bc[order(-lik),]
+head(sorted_bc, n = 10)
+
+#el lambda para la maxima  log likeihood obteniendo un minimo SSE es 0.707
+
+prueba<-(price_training$price^(0.707))
+norm_price_test<-lillie.test(prueba)
+print (norm_price_test) 
+
+
+
+###vamos a analizar si es un problema con los outliers#####
+
+#Univariate -> boxplot. outside of 1.5 times inter-quartile range is an outlier.
+
+lowerq = quantile(price_training$price)[2]
+upperq = quantile(price_training$price)[4]
+iqr = (upperq - lowerq) 
+extreme.threshold.upper = (iqr * 3) + upperq
+extreme.threshold.lower = lowerq - (iqr * 3)
+extreme.threshold.upper
+extreme.threshold.lower
+
+dev.off()
+dwo<-subset(price_training, price_training$price<extreme.threshold.upper &
+              price_training$price>extreme.threshold.lower)
+
+
+###pasamos de 15119 a 14.344 observaciones
+(norm_price_test<-lillie.test(log10(price_training$price)))
+histogram (log10(dwo$price))
+qqnorm    (log10(dwo$price))
+qqline    (log10(dwo$price))
+
+
+
+dwo$price_log<-(log10(dwo$price))
+
+
+#########################################################################################
+###nos quedamos con la transformacion logaritmica log10 para los price sin ouliers#######
+#########################################################################################
+
+
+
+
+
+
+#### analisis normalidad para las siguientes valibles continuas#####
+
+
+#transformacion sqft_living
+#transformacion sqft_lot
+#transformacion sqft_basement
+#transformacion sqft_above
+
+
+
+
+##################################
+#transformacion sqft_living
+###################################
+
+
+(norm_price_test<-lillie.test(dwo$sqft_living))
+#rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
+
+(norm_price_test<-lillie.test(log10(dwo$sqft_living)))
+
+histogram (dwo$sqft_living)
+histogram (log10(dwo$sqft_living))
+#el test se rechaza pero parece que nos aproximamos a una dist normal TCL
+qqnorm(log10(dwo$sqft_living))
+qqline(log10(dwo$sqft_living))
+
+#estudiamos si tenemos problemas con los outliers en esta variable
+
+lowerq = quantile(dwo$sqft_living)[2]
+upperq = quantile(dwo$sqft_living)[4]
+iqr = (upperq - lowerq) 
+extreme.threshold.upper = (iqr * 3) + upperq
+extreme.threshold.lower = lowerq - (iqr * 3)
+extreme.threshold.upper
+extreme.threshold.lower
+
+dwo<-subset(dwo, dwo$sqft_living<extreme.threshold.upper &
+                 dwo$sqft_living>extreme.threshold.lower)
+
+
+###pasamos de  14.344 a 14.338 observaciones
+histogram (log10(dwo$sqft_living))
+qqnorm(log10(dwo$sqft_living))
+qqline(log10(dwo$sqft_living))
+#el test se rechaza pero parece que nos aproximamos a una dist normal TCL
+
+
+
+dwo$sqft_living_log<-(log10(dwo$sqft_living))
+
+
+##################################
+#transformacion sqft_lot
+###################################
+
+
+(norm_price_test<-lillie.test(dwo$sqft_lot))
+#rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
+(norm_price_test<-lillie.test(log10(dwo$sqft_lot)))
+
+histogram (dwo$sqft_lot)
+histogram (log10(dwo$sqft_lot))
+histogram (sqrt(dwo$sqft_lot))
+histogram ((dwo$sqft_lot)*(dwo$sqft_lot))
+
+#la mas fiable parece la logaritmica 
+#estudiamos si tenemos problemas con los outliers en esta variable
+
+lowerq = quantile(dwo$sqft_lot)[2]
+upperq = quantile(dwo$sqft_lot)[4]
+iqr = (upperq - lowerq) 
+extreme.threshold.upper = (iqr * 3) + upperq
+extreme.threshold.lower = lowerq - (iqr * 3)
+extreme.threshold.upper
+extreme.threshold.lower
+
+
+dwo<-subset(dwo, dwo$sqft_lot<extreme.threshold.upper &
+                 dwo$sqft_lot>extreme.threshold.lower)
+
+###pasamos de  14.338 a 14.332 observaciones
+
+histogram (dwo$sqft_lot)
+histogram (log10(dwo$sqft_lot))
+qqnorm(log10(dwo$sqft_lot))
+qqline(log10(dwo$sqft_lot))
+
+#log10 es la transformacion que mas se aproxima a la normal
+
+
+dwo$sqft_lot_log<-(log10(dwo$sqft_lot))
+
+
+
+##############################################################
+#transformacion sqft_basement
+##############################################################
+
+(norm_price_test<-lillie.test(dwo$sqft_basement))
+#rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
+
+histogram (dwo$sqft_basement)
+histogram (log10(dwo$sqft_basement))                          
+histogram (1/(dwo$sqft_basement))
+histogram (sqrt(dwo$sqft_basement))
+
+
+
+# analisis de los outliers 
+lowerq = quantile(dwo$sqft_basement)[2]
+upperq = quantile(dwo$sqft_basement)[4]
+iqr = (upperq - lowerq) 
+extreme.threshold.upper = (iqr * 1.5) + upperq
+extreme.threshold.lower = lowerq - (iqr * 1.5)
+extreme.threshold.upper
+extreme.threshold.lower
+
+dwo<-subset(dwo, dwo$sqft_basement<extreme.threshold.upper &
+                dwo$sqft_basement>extreme.threshold.lower)
+
+
+
+###pasamos de 14.332 a 12.882  observaciones
+#nos quedamos con la transformacion logaritmica
+histogram (log10(dwo$sqft_basement))  
+dwo$sqft_basement_log<-(log10(dwo$sqft_basement))
+
+
+
+
+
+################################################################
+#transformacion sqft_above######################################
+##################################################################
+
+(norm_price_test<-lillie.test(dwo$sqft_above))
+#rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
+
+histogram (dwo$sqft_above)
+histogram (log10(dwo$sqft_above)) 
+
+#estudiamos si tenemos problemas con los outliers en esta variable
+
+lowerq = quantile(dwo$sqft_above)[2]
+upperq = quantile(dwo$sqft_above)[4]
+iqr = (upperq - lowerq) 
+extreme.threshold.upper = (iqr * 3) + upperq
+extreme.threshold.lower = lowerq - (iqr * 3)
+extreme.threshold.upper
+extreme.threshold.lower
+
+
+dwo<-subset(dwo, dwo$sqft_above<extreme.threshold.upper &
+                 dwo$sqft_above>extreme.threshold.lower)
+
+
+###pasamos de  12.882 a 12.878 observaciones
+
+#nos quedamos con la transformacion logaritmica
+histogram (log10(dwo$sqft_above))  
+qqnorm(log10(dwo$sqft_above))
+qqline(log10(dwo$sqft_above))
+
+
+#no son transfromaciones a Normal pero se aproximan más  TCL
+
+dwo$sqft_above_log<-(log10(dwo$sqft_above))
+
 
 
 
@@ -310,26 +609,25 @@ dat <-vec_miss [c(1,2,3)]
 ########################################################################
 
 
-ggplot(price_training, aes(price_training$condition)) + geom_bar() + ggtitle("Condition")
+ggplot(dwo, aes(dwo$condition)) + geom_bar() + ggtitle("Condition")
 #problemas con los grupos con pocas frecuencias a considerar
 
-price_training$condition<-as.character(price_training$condition)
-price_training$price<-as.numeric(price_training$price)
-aggregate(price_training$price, by=list(price_training$condition), FUN=mean)  
+dwo$condition<-as.character(dwo$condition)
+aggregate(dwo$price, by=list(dwo$condition), FUN=mean)  
 
 
-price_training$condition_new<-recode (price_training$condition,
+dwo$condition_new<-recode (dwo$condition,
                                       "c('1','2')='low'; 
                                        c('3','4')='med'; 
                                        c('5')    ='hig'"
                                       )
-ggplot(price_training, aes(price_training$condition_new)) + geom_bar() + ggtitle("Condition new")
+ggplot(dwo, aes(dwo$condition_new)) + geom_bar() + ggtitle("Condition new")
 
 #hemos recodificado esta variable en tres grupos alrededor de la media en relacion a su precio medio
 #veamos esta relacion antes y depues de la transformación
 
 
-price_training %>%
+dwo %>%
   group_by(condition) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=condition, y=avg_price)) + geom_bar(stat = "identity") + 
@@ -339,14 +637,14 @@ price_training %>%
 #si aplicamos la transformacion
 
 
-price_training %>%
+dwo %>%
   group_by(condition_new) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=condition_new, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Condicion New")
 
 
-ggplot(data = price_training, aes(x = condition_new, y = price, color = condition_new)) +
+ggplot(data = dwo, aes(x = condition_new, y = price, color = condition_new)) +
   geom_boxplot() +
   theme_bw()
 
@@ -360,33 +658,33 @@ ggplot(data = price_training, aes(x = condition_new, y = price, color = conditio
 ###bedrooms#######################################
 ##################################################
 
-ggplot(price_training, aes(price_training$bedrooms))  + geom_bar() + ggtitle("bedRooms")
+ggplot(dwo, aes(dwo$bedrooms))  + geom_bar() + ggtitle("bedRooms")
 #es una variable ordinal
 
-price_training %>%
+dwo %>%
   group_by(bedrooms) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=bedrooms, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio medio por Habitaciones")
-#interesante por el precio es creciente en relacion a numero de
-#habitaciones pero a partir de 7 habitaciones el precio empieza a reducirse
+
+#vemos que claramente la distribucion es creciente a mayor bedrooms mayor precio
 
 
-boxplot(price ~ bedrooms, data = price_training, col = "lightgreen", 
+boxplot(price ~ bedrooms, data = dwo, col = "lightgreen", 
         xlab = "numero de camas", ylab = "precio vivienda") 
 
-t_beds<-table(price_training$bedrooms)
+t_beds<-table(dwo$bedrooms)
 t_beds
-aggregate(price_training$price, by=list(price_training$bedrooms), FUN=mean) 
+aggregate(dwo$price, by=list(dwo$bedrooms), FUN=mean) 
 
 # nuestra decision y considerando los valores medios agrupar a partir de 6 camas en 
 # una unica categoria obteniendo la variable bed_new
 
-price_training$bedrooms_new<-recode (price_training$bedrooms,"6:11=6")
-table(price_training$bedrooms_new)
-aggregate(price_training$price, by=list(price_training$bedrooms_new), FUN=mean) 
+dwo$bedrooms_new<-recode (dwo$bedrooms,"6:11=6")
+table(dwo$bedrooms_new)
+aggregate(dwo$price, by=list(dwo$bedrooms_new), FUN=mean) 
 
-boxplot(price ~ bedrooms_new, data = price_training, col = "lightgreen", 
+boxplot(price ~ bedrooms_new, data = dwo, col = "lightgreen", 
         xlab = "numero de camas new", ylab = "precio vivienda")
 
 
@@ -395,32 +693,32 @@ boxplot(price ~ bedrooms_new, data = price_training, col = "lightgreen",
 #bathrooms #######################################################################
 ###################################################################################
 
-ggplot(price_training, aes(price_training$bathrooms)) + geom_bar() + ggtitle("bathrooms")
+ggplot(dwo, aes(dwo$bathrooms)) + geom_bar() + ggtitle("bathrooms")
 #es una variable ordinal
-aggregate(price_training$price, by=list(price_training$bathrooms), FUN=mean) 
+aggregate(dwo$price, by=list(dwo$bathrooms), FUN=mean) 
 
 
-price_training %>%
+dwo %>%
   group_by(bathrooms) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=bathrooms, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Banyos")
 
-table(price_training$bathrooms)
+table(dwo$bathrooms)
 #la distribución a partir de 4 es muy pequeña. Poco estable para inferir
 #proponemos la recodificación a partir de este valor
 
-price_training$bathrooms_new<-recode (price_training$bathrooms,"4:8=4")
-table(price_training$bathrooms_new)
+dwo$bathrooms_new<-recode (dwo$bathrooms,"4:8=4")
+table(dwo$bathrooms_new)
 
 
-price_training %>%
+dwo %>%
   group_by(bathrooms_new) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=bathrooms_new, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Banyos new")
 
-boxplot(price ~ bathrooms_new, data = price_training, col = "red", 
+boxplot(price ~ bathrooms_new, data = dwo, col = "red", 
         xlab = "numero de banyos new", ylab = "precio vivienda")
 
 
@@ -429,25 +727,27 @@ boxplot(price ~ bathrooms_new, data = price_training, col = "red",
 #floors#####################################################################
 #############################################################################
 
-ggplot(price_training, aes(price_training$floors))    + geom_bar() + ggtitle("floors")
+ggplot(dwo, aes(dwo$floors))    + geom_bar() + ggtitle("floors")
 
 
-price_training %>%
+dwo %>%
   group_by(floors) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=floors, y=avg_price)) + geom_bar(stat = "identity")  +
   ggtitle("Precio Medio por Plantas")
 
 #es una variable bastante estable en relación al precio.
-table(price_training$floors)
-aggregate(price_training$price, by=list(price_training$floors), FUN=mean) 
+table(dwo$floors)
+aggregate(dwo$price, by=list(dwo$floors), FUN=mean) 
 
 #nuestra propuesta es recodifcar 2.5 en 2 y 3.5 en 3 
-price_training$floors_new<-recode (price_training$floors,"2.5=2; 3.5=3")
-table(price_training$floors_new)
-aggregate(price_training$price, by=list(price_training$floors_new), FUN=mean) 
+dwo$floors_new<-recode (dwo$floors,"2.5=2; 3.5=3")
+table(dwo$floors_new)
+aggregate(dwo$price, by=list(dwo$floors_new), FUN=mean) 
 
-boxplot(price ~ floors_new, data = price_training, col = "blue", 
+
+
+boxplot(price ~ floors_new, data = dwo, col = "blue", 
         xlab = "numero de floors new", ylab = "precio vivienda")
 
 
@@ -458,25 +758,25 @@ boxplot(price ~ floors_new, data = price_training, col = "blue",
 ############################################################################
 
 
-ggplot(price_training, aes(price_training$waterfront))    + geom_bar() + ggtitle("waterfront")
+ggplot(dwo, aes(dwo$waterfront))    + geom_bar() + ggtitle("waterfront")
 #recode data nominal vistas versus no vistas #
-price_training$waterfront[which(price_training$waterfront == 0)] <- "WF_NO"
-price_training$waterfront[which(price_training$waterfront == 1)] <- "WF_SI"
-ggplot(price_training, aes(price_training$waterfront))    + geom_bar() + ggtitle("waterfront")
+dwo$waterfront[which(dwo$waterfront == 0)] <- "WF_NO"
+dwo$waterfront[which(dwo$waterfront == 1)] <- "WF_SI"
+ggplot(dwo, aes(dwo$waterfront))    + geom_bar() + ggtitle("waterfront")
 
 
-table(price_training$waterfront)
-aggregate(price_training$price, by=list(price_training$waterfront), FUN=mean) 
+table(dwo$waterfront)
+aggregate(dwo$price, by=list(dwo$waterfront), FUN=mean) 
 
 
 
-price_training %>%
+dwo %>%
   group_by(waterfront) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=waterfront, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Vista al Mar")
 
-##esto a entender. frente al mar el precio es en media más barato?¿
+##variables significativa , vistas al mar implica mayor precio
 
 
 
@@ -486,34 +786,32 @@ price_training %>%
 #############################################################################
 
 
-ggplot(price_training, aes(price_training$view))     + geom_bar() + ggtitle("view")
+ggplot(dwo, aes(dwo$view))     + geom_bar() + ggtitle("view")
 #VARIABLE ORDINAL CON ESCASA FRECUENCIA DISTINTA DE CERO
 #interesante crear una nueva variable flag Visitas si versus visitas NO
-price_training$view_flag<-ifelse(price_training$view> 0,
+dwo$view_flag<-ifelse(dwo$view> 0,
                                   "VS_SI", "VS_NO")
 
 #view_flag#nos podemos plantear un flag Visitada vs no vistada 
-ggplot(price_training, aes(price_training$view_flag))     + geom_bar() + ggtitle("view_flag")
+ggplot(dwo, aes(dwo$view_flag))     + geom_bar() + ggtitle("view_flag")
 
 
 
-price_training %>%
+dwo %>%
   group_by(view) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=view, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Numero de Visitas")
 
+####aqui vemos de forma clara que a mayor numero de visitas mayor precio en la vivienda
 
-price_training %>%
+dwo %>%
   group_by(view_flag) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=view_flag, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Numero de Visitas flag")
 
-#no parece que view flag sea una variable interesante a tratar porque está recogiendo 
-# distintas variabilidades de los estados 1-4 de view que difieren entre ellos en media
-#no es interesante agruparla . La descartamos.
-
+####interesante mantener el flag s / n . existe una media en precio importante y cuidamos la parsimonia
 
 
 
@@ -521,41 +819,41 @@ price_training %>%
 #analisis de grade
 ################################################################################
 
-ggplot(price_training, aes(price_training$grade))    + geom_bar() + ggtitle("grade")
+ggplot(dwo, aes(dwo$grade))    + geom_bar() + ggtitle("grade")
 #en este punto interesa crear una agrupación en función del precio que será nuestra variable objetivo
-price_training$grade<-as.character(price_training$grade)
+dwo$grade<-as.character(dwo$grade)
 
-table(price_training$grade)
-aggregate(price_training$price, by=list(price_training$grade), FUN=mean)                         
+table(dwo$grade)
+aggregate(dwo$price, by=list(dwo$grade), FUN=mean)                         
 
 
 #parecen que se deberian formar los siguientes grupos (9,8) (7,13,10,s) (11,12,4,5,6) en funcion al 
 #precio medio de estas viviendas 
 
 
-price_training$grade_new<-recode (price_training$grade,
-                                      "c('9','8')='Grade_top'; 
-                                       c('7','13','10','s')='Grade_med'; 
-                                       c('11','12','4','5','6')    ='Grade_low'"
+dwo$grade_new<-recode (dwo$grade,
+                                      "c('12','11','10')='Grade_top'; 
+                                       c('8','9')='Grade_med'; 
+                                       c('3','4','5','6','7','s')    ='Grade_low'"
 )
 
-table(price_training$grade_new)
-aggregate(price_training$price, by=list(price_training$grade_new), FUN=mean)  
+table(dwo$grade_new)
+aggregate(dwo$price, by=list(dwo$grade_new), FUN=mean)  
 
 
-price_training %>%
+dwo %>%
   group_by(grade) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=grade, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Grado")
 
-price_training %>%
+dwo %>%
   group_by(grade_new) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=grade_new, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Grado new")
 
-
+###nueva variable grado discremina muy bien a nivel precio de la vivienda
 
 
 ############################################################################
@@ -564,29 +862,29 @@ price_training %>%
 
 #extraemos en mes por si existe una estcionalidad en la compra
 
-price_training$mes<-month(as.POSIXlt(price_training$date, format="%m/%d/%Y"))
-table(price_training$mes)
-aggregate(price_training$price, by=list(price_training$mes), FUN=mean)  
+dwo$mes<-month(as.POSIXlt(dwo$date, format="%m/%d/%Y"))
+table(dwo$mes)
+aggregate(dwo$price, by=list(dwo$mes), FUN=mean)  
 
 
-price_training %>%
+dwo %>%
   group_by(mes) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=mes, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por mes")
 
-
+###no parece a priori que presente una gran variabilidad
 
 ################################################################################
 ### anyo de construccion 
 ###############################################################################
 
 
-table(price_training$yr_built)
-aggregate(price_training$price, by=list(price_training$yr_built), FUN=mean)  
+table(dwo$yr_built)
+aggregate(dwo$price, by=list(dwo$yr_built), FUN=mean)  
 
 
-price_training %>%
+dwo %>%
   group_by(yr_built) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=yr_built, y=avg_price)) + geom_bar(stat = "identity") + 
@@ -597,13 +895,13 @@ price_training %>%
 # Partimos de la Hipotesis de que es existe una diferencia entre las viviendas antes 
 # y despues del anyo 2000
 
-price_training$flag_milenio<-recode (price_training$yr_built,
+dwo$flag_milenio<-recode (dwo$yr_built,
                                      "1900:1999=0; 2000:2020=1")
 
 
-table(price_training$flag_milenio)
-aggregate(price_training$price, by=list(price_training$flag_milenio), FUN=mean)  
-price_training %>%
+table(dwo$flag_milenio)
+aggregate(dwo$price, by=list(dwo$flag_milenio), FUN=mean)  
+dwo %>%
   group_by(flag_milenio) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=flag_milenio, y=avg_price)) + geom_bar(stat = "identity") + 
@@ -614,8 +912,8 @@ price_training %>%
 # t test 
 # Ho : No existen diferencias significativas de precio entre las categorias Milenio 1900 y 2000 
 
-m1<-subset(price_training, flag_milenio=="1")
-m0<-subset(price_training, flag_milenio=="0")
+m1<-subset(dwo, flag_milenio=="1")
+m0<-subset(dwo, flag_milenio=="0")
 
 set.seed(737)
 test <- t.test(m0$price,m1$price) # Prueba t de Student
@@ -625,70 +923,24 @@ boxplot(m0$price,m1$price,names=c("m_1900","m_2000"))
 
 
 
-#################################################
-#####analisis por decadas en ambas siglos#######
-#################################################
-
-table(m1$yr_built)
-aggregate(m1$price, by=list(m1$yr_built), FUN=mean)  
-m1 %>%
-  group_by(yr_built) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=yr_built, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por decada ")
-
-table(m0$yr_built)
-aggregate(m0$price, by=list(m0$yr_built), FUN=mean)  
-m0 %>%
-  group_by(yr_built) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=yr_built, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por decada ")
-
-# analizando ambas poblaciones de siglos parece que existen diferencias en el siglo 20
-# por lo que nos detendremos a realizar un analisis detallado
-
-table(m0$yr_built)
-aggregate(m0$price, by=list(m0$yr_built), FUN=mean)  
-
-# analizando la distribución parece que las casa construidas hasta el anyo 1932 tiene
-#mucho más valor de mercado hasta el anyo 1975 que sufren otra subida
-#proponemos el siguiente Banding
-
-price_training$decada<-recode (price_training$yr_built,
-                                     "1900:1932=0; 
-                                      1933:1975=1;
-                                      1975:1999=2;
-                                      2000:2020=3")
-
-table(price_training$decada)
-aggregate(price_training$price, by=list(price_training$decada), FUN=mean)  
-
-
-price_training %>%
-  group_by(decada) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=decada, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por periodo")
-
 
 ############################################################################
 #####anyo de renovacion 
 ###########################################################################
 
 
-table(price_training$yr_renovated)
-aggregate(price_training$price, by=list(price_training$yr_renovated), FUN=mean) 
+table(dwo$yr_renovated)
+aggregate(dwo$price, by=list(dwo$yr_renovated), FUN=mean) 
 
 # creamos un flag si /no por si ha reformado o no
-price_training$yr_renovated<-as.numeric(price_training$yr_renovated)
-price_training$flag_reforma<-recode (price_training$yr_renovated,
-                                     "0=0; 1940:2020=1")
+dwo$yr_renovated<-as.numeric(dwo$yr_renovated)
+dwo$flag_reforma<-recode (dwo$yr_renovated,
+                                     "0=0; 1900:2020=1")
                                    
                                     
 
-table(price_training$flag_reforma)
-aggregate(price_training$price, by=list(price_training$flag_reforma), FUN=mean) 
+table(dwo$flag_reforma)
+aggregate(dwo$price, by=list(dwo$flag_reforma), FUN=mean) 
 
 ####parece que existe diferencias entre el precio en funcion de si ha sido reformado
 # o no pero no lo podemos afirmar con total seguridad , vamos a realizar un contraste
@@ -698,24 +950,24 @@ aggregate(price_training$price, by=list(price_training$flag_reforma), FUN=mean)
 # t test 
 # Ho : No existen diferencias significativas de precio entre las categorias reforma si/no 
 
-f1<-subset(price_training, flag_reforma=="1")
-f0<-subset(price_training, flag_reforma=="0")
+f1<-subset(dwo, flag_reforma=="1")
+f0<-subset(dwo, flag_reforma=="0")
 
 set.seed(737)
 test <- t.test(f0$price,f1$price) # Prueba t de Student
 print(test)
 
-# No podemos rechazar  la Ho , 
-# a priori en en función a nuestros datos NO existen diferencias sginifcativas
-# entre las viviendas reformadas y no reformadas
-#vamos a intruducirla en el modelo pero no parece que vaya a ser un factor importante
+# rechazamos  la Ho , 
+# a partir de nuestros datos existen direncias significativas entre las poblaciones que han reformado 
+#y las que no
 
 
-price_training %>%
+dwo %>%
   group_by(flag_reforma) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=flag_reforma, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por  Reforma")
+
 
 
 ##################################################################
@@ -725,216 +977,126 @@ price_training %>%
 
 #tiempo desde la construccion  hasta la venta
 
-tabla.frec  <- table(price_training$yr_built)   # Crea la tabla de frecuencias
+tabla.frec  <- table(dwo$yr_built)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
 
-tabla.frec  <- table(price_training$date)   # Crea la tabla de frecuencias
+tabla.frec  <- table(dwo$date)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
 #tienen distinto formato por lo que nos quedamos con el año
 
-date1 <-  as.Date(price_training$date,'%m/%d/%Y')
+date1 <-  as.Date(dwo$date,'%m/%d/%Y')
 year1 <- as.numeric(format(date1,'%Y'))
 tabla.frec  <- table(year1)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
 
-price_training$antiguedad<-(year1-price_training$yr_built)
-tabla.frec  <- table(price_training$antiguedad)   # Crea la tabla de frecuencias
+dwo$antiguedad<-(year1-dwo$yr_built)
+tabla.frec  <- table(dwo$antiguedad)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
-hist(price_training$antiguedad, xlab="antiguedad",ylab="frecuencia",
+hist(dwo$antiguedad, xlab="antiguedad",ylab="frecuencia",
      main="histograma distribucion de la antiguedad", col="blue")
 
-price_training %>%
+dwo %>%
   group_by(antiguedad) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=antiguedad, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por antiguedad")
 
 
-###vemos que en el analisis de correlaciones esta va tener mucha relacion con otras
-# de estacionalidad d¡cque hemos trabajado con la de decada. Se denota en el grafico
-# que existe una poblacion de viviendas de una antiguedad importante que sn 
-#siginificativamente mas cara en precio,
+##vamos a realizar una transformacion logaritmica
+histogram ((dwo$antiguedad))
+
+# el mejor tratamiento a esta variable es hacer banding discretos, así esquivamos los problemas con norm
+tabla.frec
+dwo$ant_clas<-recode (dwo$antiguedad,
+                        "-1:10=1; 
+                          11:20=2;
+                          21:30=3;
+                          31:40=4;
+                          41:50=5;
+                          51:60=6;
+                          61:70=7;
+                          71:80=8;
+                          81:90=9;
+                          91:120=10;
+                      ")
+
+histogram ((dwo$ant_clas))
 
 
-
-#parece a primera vista que no existe mucha relacion entre a antiguedad de la vivienda
-# con el precio de la vivienda
-
-
-
-#flag reforma si/no
-
-tabla.frec  <- table(price_training$yr_renovated)   # Crea la tabla de frecuencias
-as.data.frame(tabla.frec) 
-
-
-flag_reforma<-recode(price_training$yr_renovated,"1:hi=1 ;lo:0=0 ")
-tabla.frec  <- table(flag_reforma)   # Crea la tabla de frecuencias
-as.data.frame(tabla.frec) 
-hist(flag_reforma, xlab="flag_reforma",ylab="frecuencia",main="histograma flag_reforma", col="blue")
-
-
-
-
-
-
-######################
-#variables trassformacion de las variables ##
-######################
-
-#recode data nominal #
-
-
-"
-
-histogram(datos_miss$grade)
-datos_miss$grade<-recode(datos_miss$grade, "0:6=1; 7=2; 8=3; 9=4; else=5")
-histogram(datos_miss$grade)
-
-
-
-
-ggplot(price_training, aes(x = price_training$sqft_living)) +
-  geom_density() +
-  ggtitle('Density sqft Casa')
-
-
-ggplot(price_training, aes(x = price_training$sqft_above)) +
-  geom_density() +
-  ggtitle('Density sqft above')
-
-
-ggplot(price_training, aes(x = price_training$sqft_lot)) +
-  geom_density() +
-  ggtitle('Density sqft terreno')
-
-
-ggplot(price_training, aes(x = price_training$sqft_living15)) +
-  geom_density() +
-  ggtitle('Density sqft casa 15')
-
-
-ggplot(price_training, aes(x = price_training$sqft_lot15)) +
-  geom_density() +
-  ggtitle('Density sqft terrero 15')
+dwo %>%
+  group_by(ant_clas) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=ant_clas, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por  antiguedad banding")
 
 
 
 
 
-plot(price_training$sqft_living, price_training$price, main="Scatterplot Example",
-     xlab="price ", ylab="sqft_living ", pch=100)
+#############################################################################
+#####analisisi conjunto y correlaciones entre las variables##################
+#############################################################################
 
-library(car)
-scatterplot(price_training$sqft_living ~ price_training$price | price_training$bathrooms, data=price_training,
-            xlab="Metros", ylab="precio",
-            main="Enhanced Scatter Plot")
+#listado de variables de las que vamos a partir
 
-library(cluster)
-library(gclus)
+#price_log        
+#sqft_living_log 
+#sqft_lot_log
+#sqft_basement_log 
+#sqft_above_log 
+#condition_new       
+#bedrooms_new   
+#bathrooms_new  
+#floors_new
+#view
+#view_flag          
+#grade_new             
+#mes         
+#flag_milenio     
+#flag_reforma
+#ant_clas
 
-head(price_training)
-
-
-####relacion entre las variables metros cuadrados
-dta <- price_training[c(7,8,14,15,21,22)] # get data
-dta.r <- abs(cor(dta)) # get correlations
-dta.col <- dmat.color(dta.r) # get colors
-# reorder variables so those with highest correlation
-# are closest to the diagonal
-dta.o <- order.single(dta.r)
-cpairs(dta, dta.o, panel.colors=dta.col, gap=.5,
-       main="Variables Ordered and Colored by Correlation" )
-
-#analisis de correlaciones de las variables metros 
-###analisis de las correlaciones###
+summary (dwo)
 
 # Correlation plot
-ggcorr(dta, palette = "RdBu", label = TRUE)
 
-# Correlation plot all variables
-ggcorr(price_training, palette = "RdBu", label = TRUE)
-#tenemos que borrar Bedrooms y bathrooms
+ggcorr(dwo, palette = "RdBu", label = TRUE)
 
-
-glimpse(price_training)
+dwo$condition_new
 
 
 
+#####analisis
 
-
-#ANALISIS EXLORATORIO DE LOS DATOS
-
-
-####Transformaciones para igualar dispersión#####
-#podemos ver que sus valores para t odos los grupos están muy sesgados. 
-#Sería conveniente transformarla para que la distribución de valores 
-#fuese más homogénea.
-#Este resultado se consigue aplicando una transformación logarítmica.
-
-
-p1 <- price_training %>% select(condition, price) %>%
+price1 <- price_training %>% select(grade_new, price) %>%
   na.omit() %>%
-  ggplot(aes(x=price, colour=condition)) +
-  geom_density()
-
-p2 <- price_training %>% mutate(log10_price = log10(price)) %>%
-  select(condition, log10_price) %>%
-  na.omit() %>%
-  ggplot(aes(x=log10_price, colour=condition)) +
-  geom_density()
-
-grid.arrange(p1, p2, nrow = 1)
-
-
-
-##GRAFICO CON LA TRANFORMACION LOG10
-
-########################################################
-###analisis de las variables discretas y  ordinales#####
-########################################################
-
-####to do 
-
-#analisis de las zonas codigo postal
-
-tabla.frec  <- table(datos_root$zipcode)   # Crea la tabla de frecuencias
-as.data.frame(tabla.frec) 
-
-
-
-########################################################
-###analisis de las variables continuas             #####
-########################################################
-
-#trasnformacion para precio
-
-price1 <- price_training %>% select(condition, price) %>%
-  na.omit() %>%
-  ggplot(aes(x=condition, y=price, fill=condition)) +
+  ggplot(aes(x=grade_new, y=price, fill=grade_new)) +
   geom_boxplot()
   
 
 price2 <- price_training %>% mutate(log10_price = log10(price)) %>%
-  select(condition, log10_price) %>%
+  select(grade_new, log10_price) %>%
   na.omit() %>%
-  ggplot(aes(x=condition, y=log10_price, fill=condition)) +
+  ggplot(aes(x=grade_new, y=log10_price, fill=grade_new)) +
   geom_boxplot()
   
 
-p1 <- price_training %>% select(condition, price) %>%
+p1 <- price_training %>% select(grade_new, price) %>%
   na.omit() %>%
-  ggplot(aes(x=price, colour=condition)) +
+  ggplot(aes(x=price, colour=grade_new)) +
   geom_density()
 
 p2 <- price_training %>% mutate(log10_price = log10(price)) %>%
-  select(condition, log10_price) %>%
+  select(grade_new, log10_price) %>%
   na.omit() %>%
-  ggplot(aes(x=log10_price, colour=condition)) +
+  ggplot(aes(x=log10_price, colour=grade_new)) +
   geom_density()
 
 grid.arrange(p1, p2, nrow = 1)
 grid.arrange(price1, price2, nrow = 1)
+
+
+
 
 
 #transformacion sqft_living
@@ -1067,13 +1229,19 @@ grid.arrange(sqft_lot15_1, sqft_lot15_2, nrow = 1)
 
 
 
-###analisis de los precios por las categorias
-library(dplyr)
-datos_root$price %>%
-  group_by(datos_root$condition) %>% 
-  summarise(avg_price = mean(datos_root$price)) %>%
-  ggplot(aes(x=datos_root$condition, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Salario promedio por categoría")
+
+#analisis de correlaciones de las variables metros 
+###analisis de las correlaciones###
+
+# Correlation plot
+ggcorr(dta, palette = "RdBu", label = TRUE)
+
+# Correlation plot all variables
+ggcorr(price_training, palette = "RdBu", label = TRUE)
+#tenemos que borrar Bedrooms y bathrooms
+
+
+
 
 
 
