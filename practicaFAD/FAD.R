@@ -606,9 +606,9 @@ aggregate(dwo$price, by=list(dwo$condition), FUN=mean)
 
 
 dwo$condition_new<-recode (dwo$condition,
-                                      "c('1','2')=0; 
-                                       c('3','4')=1; 
-                                       c('5')    =2"
+                                      "c('1','2')='low'; 
+                                       c('3','4')='med'; 
+                                       c('5')    ='hig'"
                                       )
 ggplot(dwo, aes(dwo$condition_new)) + geom_bar() + ggtitle("Condition new")
 
@@ -1033,7 +1033,7 @@ dwo %>%
 
 #listado de variables de las que vamos a partir
 
-#price_log        
+#price       
 #sqft_living_banding 
 #sqft_lot_banding 
 #sqft_basement_banding 
@@ -1042,7 +1042,6 @@ dwo %>%
 #bedrooms_new   
 #bathrooms_new  
 #floors_new
-#view
 #view_flag          
 #grade_new             
 #mes         
@@ -1093,42 +1092,52 @@ cv.test(x=dwo$bathrooms_new,y=dwo$grade)
 #[1] 0.3567409 tenemos que eliminar bathrooms
 cv.test(x=dwo$grade,y=dwo$view_flag)
 #[1] 0.1004545
-cv.test(x=dwo$grade,y=dwo$)
-
-
+cv.test(x=dwo$grade,y=dwo$condition_new)
+#[1] 0.1121542
+cv.test(x=dwo$ant_clas,y=dwo$flag_milenio)
+#[1] 0.469873
 
 
 
 #eliminadas
-#bedrooms_new
+
 #bathrooms_new
+#sqft_living_banding
+#sqft_basement_banding 
+#sqft_above_banding 
+#flag_milenio
+#mes
 
 
 
-
-
+#############variables al modelo ################### 
+#condition_new       
+#bedrooms_new   
+#bathrooms_new  
+#floors_new
+#view_flag          
+#grade            
+#mes         
+#flag_milenio     
+#flag_reforma
+#waterfront_new
 
 
 ######################################################################
 #####semma4 modelo ###################################################
 ######################################################################
-
-
-modelo1 <- lm(formula = price ~ flag_reforma + ant_clas
-               + grade + bedrooms_new + view_flag  + flag_milenio + waterfront_flag
+modelo1 <- lm(formula = price_log ~ condition_new+ bedrooms_new+ floors_new+
+                view_flag + grade  + ant_clas + flag_reforma + waterfront_flag
                , data = dwo)
 modelo1
 summary(modelo1)
 
 # una primera vision de los resultados de este modelo nos dicen que todas
-#las variables son significativas en el mismo salvo la variable mes en el que 
-#no podemos rechazar la Hipotesis nula de Parametro de estimacion igual a cero
-#               Estimate Std. Error t value Pr(>|t|) 
-#mes           -0.0028113  0.0007510  -3.744 0.000182 *** 
-# nos podemos plantear si no hay confictos a nivel negocio sacar esta variable de
-#la modelizacion
+#un primer visionado de los datos nos dice que tenemos que realizar recodificaciones 
+# en la variable grade porque algunos grupos no son significativos
+#                     Estimate Std. Error t value Pr(>|t|) 
+# grades            -0.324945   0.135617  -2.396 0.016585 * 
+modback <- stepAIC(modelo1, trace=TRUE, direction="backward")
 
-# el resto de variables son significativas , podemos ver en función del estadítico
-#de t y el valor del parametro que la variable grade_new es con mucha diferencia
-#la que más variabilidad explica en el modelo
+###-50345 akaike 
 
