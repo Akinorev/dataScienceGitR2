@@ -1126,6 +1126,7 @@ cv.test(x=dwo$ant_clas,y=dwo$flag_milenio)
 ######################################################################
 #####semma4 modelo ###################################################
 ######################################################################
+
 modelo1 <- lm(formula = price_log ~ condition_new+ bedrooms_new+ floors_new+
                 view_flag + grade  + ant_clas + flag_reforma + waterfront_flag
                , data = dwo)
@@ -1140,4 +1141,11 @@ summary(modelo1)
 modback <- stepAIC(modelo1, trace=TRUE, direction="backward")
 
 ###-50345 akaike 
+
+# analisis de los residuos del modelos
+names(modelo1)
+plot(modelo1)
+
+lillie.test(modelo1$residuals)
+modelo1$residuals
 
