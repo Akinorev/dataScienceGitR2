@@ -305,7 +305,11 @@ dat <-vec_miss [c(1,2,3)]
 
 #variables discretas
 
-#variable condition
+#########################
+#variable condition#######
+###########################
+
+
 ggplot(price_training, aes(price_training$condition)) + geom_bar() + ggtitle("Condition")
 #problemas con los grupos con pocas frecuencias a considerar
 
@@ -313,8 +317,19 @@ price_training$condition<-as.character(price_training$condition)
 price_training$price<-as.numeric(price_training$price)
 aggregate(price_training$price, by=list(price_training$condition), FUN=mean)  
 
-levels(price_training$condition) <- list(hi="1", notHi=c("2", "3","4","5"),otro=c("Co_Low"))
-price_training$condition
+
+price_training$condition_new<-recode (price_training$condition,
+                                      "c('1','2')='low'; 
+                                       c('3','4')='med'; 
+                                       c('5')='hig'"
+                                      )
+ggplot(price_training, aes(price_training$condition_new)) + geom_bar() + ggtitle("Condition new")
+
+#hemos recodificado esta variable en tres grupos alrededor de la media en relacion a su precio medio
+
+
+
+
 
 ###bedrooms
 ggplot(price_training, aes(price_training$bedrooms))  + geom_bar() + ggtitle("bedRooms")
@@ -409,10 +424,17 @@ price_training %>%
 price_training %>%
   group_by(floors) %>% 
   summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=floors, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggplot(aes(x=floors, y=avg_price)) + geom_bar(stat = "identity")  +
   ggtitle("Precio Medio por Plantas")
 
+
+mean(price_training$price)
 #parece que a mayor plantas mayor precio
+
+
+
+ 
+
 
 price_training %>%
   group_by(waterfront) %>% 
@@ -429,8 +451,19 @@ price_training %>%
   ggplot(aes(x=view, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Numero de Visitas")
 
+
+
+
+price_training %>%
+  group_by(view_flag) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=view_flag, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Numero de Visitas flag")
+
+
 #segun aumenta el numero de visitas mayor es el precio de compra
 #lo cual quiere decir que ¿será más valiosa y por eso es más visitad?
+
 
 
 price_training %>%
