@@ -72,7 +72,7 @@ library(caret)
 library(dplyr)
 library(gclus)
 library(Amelia)
-
+library(lubridate)
 library(forcats)
 
 #################################################
@@ -306,7 +306,7 @@ dat <-vec_miss [c(1,2,3)]
 #variables discretas
 
 ########################################################################
-#variable condition#####################################################
+# condition#####################################################
 ########################################################################
 
 
@@ -382,8 +382,8 @@ aggregate(price_training$price, by=list(price_training$bedrooms), FUN=mean)
 # nuestra decision y considerando los valores medios agrupar a partir de 6 camas en 
 # una unica categoria obteniendo la variable bed_new
 
-price_training$bedrooms_new<-recode (price_training$bedrooms,"6:11=6"
-)
+price_training$bedrooms_new<-recode (price_training$bedrooms,"6:11=6")
+table(price_training$bedrooms_new)
 aggregate(price_training$price, by=list(price_training$bedrooms_new), FUN=mean) 
 
 boxplot(price ~ bedrooms_new, data = price_training, col = "lightgreen", 
@@ -397,16 +397,67 @@ boxplot(price ~ bedrooms_new, data = price_training, col = "lightgreen",
 
 ggplot(price_training, aes(price_training$bathrooms)) + geom_bar() + ggtitle("bathrooms")
 #es una variable ordinal
+aggregate(price_training$price, by=list(price_training$bathrooms), FUN=mean) 
 
 
-
-
-#floors
-ggplot(price_training, aes(price_training$floors))    + geom_bar() + ggtitle("floors")
 price_training %>%
-  count(floors, sort = TRUE)
+  group_by(bathrooms) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=bathrooms, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Banyos")
 
-#waterfront
+table(price_training$bathrooms)
+#la distribución a partir de 4 es muy pequeña. Poco estable para inferir
+#proponemos la recodificación a partir de este valor
+
+price_training$bathrooms_new<-recode (price_training$bathrooms,"4:8=4")
+table(price_training$bathrooms_new)
+
+
+price_training %>%
+  group_by(bathrooms_new) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=bathrooms_new, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Banyos new")
+
+boxplot(price ~ bathrooms_new, data = price_training, col = "red", 
+        xlab = "numero de banyos new", ylab = "precio vivienda")
+
+
+
+#############################################################################
+#floors#####################################################################
+#############################################################################
+
+ggplot(price_training, aes(price_training$floors))    + geom_bar() + ggtitle("floors")
+
+
+price_training %>%
+  group_by(floors) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=floors, y=avg_price)) + geom_bar(stat = "identity")  +
+  ggtitle("Precio Medio por Plantas")
+
+#es una variable bastante estable en relación al precio.
+table(price_training$floors)
+aggregate(price_training$price, by=list(price_training$floors), FUN=mean) 
+
+#nuestra propuesta es recodifcar 2.5 en 2 y 3.5 en 3 
+price_training$floors_new<-recode (price_training$floors,"2.5=2; 3.5=3")
+table(price_training$floors_new)
+aggregate(price_training$price, by=list(price_training$floors_new), FUN=mean) 
+
+boxplot(price ~ floors_new, data = price_training, col = "blue", 
+        xlab = "numero de floors new", ylab = "precio vivienda")
+
+
+
+
+############################################################################
+#waterfront ################################################################
+############################################################################
+
+
 ggplot(price_training, aes(price_training$waterfront))    + geom_bar() + ggtitle("waterfront")
 #recode data nominal vistas versus no vistas #
 price_training$waterfront[which(price_training$waterfront == 0)] <- "WF_NO"
@@ -414,8 +465,27 @@ price_training$waterfront[which(price_training$waterfront == 1)] <- "WF_SI"
 ggplot(price_training, aes(price_training$waterfront))    + geom_bar() + ggtitle("waterfront")
 
 
+table(price_training$waterfront)
+aggregate(price_training$price, by=list(price_training$waterfront), FUN=mean) 
 
-#view 
+
+
+price_training %>%
+  group_by(waterfront) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=waterfront, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Vista al Mar")
+
+##esto a entender. frente al mar el precio es en media más barato?¿
+
+
+
+
+#############################################################################
+#view  ######################################################################
+#############################################################################
+
+
 ggplot(price_training, aes(price_training$view))     + geom_bar() + ggtitle("view")
 #VARIABLE ORDINAL CON ESCASA FRECUENCIA DISTINTA DE CERO
 #interesante crear una nueva variable flag Visitas si versus visitas NO
@@ -427,77 +497,11 @@ ggplot(price_training, aes(price_training$view_flag))     + geom_bar() + ggtitle
 
 
 
-#analisis de grade
-ggplot(price_training, aes(price_training$grade))    + geom_bar() + ggtitle("grade")
-#en este punto interesa crear una agrupación en función del precio que será nuestra variable objetivo
-price_training$grade<-as.character(price_training$grade)
-
-aggregate(price_training$price, by=list(price_training$grade), FUN=mean)                         
-
-
-#parecen que se deberian formar los siguientes grupos (9,8) (7,13,10) (11,12,4,5,6) en funcion al 
-#precio medio de estas viviendas 
-
-
-
-
-ggplot(price_training, aes(price_training$yr_built))     + geom_bar() + ggtitle("yr_built")
-ggplot(price_training, aes(price_training$yr_renovated))    + geom_bar() + ggtitle("yr_renovated")
-
-boxplot(price ~ bedrooms, data = price_training)
-boxplot(price ~ bathrooms, data = price_training)                      
-boxplot(price ~ condition, data = price_training)
-boxplot(price ~ grade, data = price_training)  
-boxplot(price ~ waterfront    , data = price_training)
-boxplot(price ~ view, data = price_training)
-boxplot(price ~ floors, data = price_training)
-
-
-##analisis por el precio de la vivienda
-
-
-
-
-
-price_training %>%
-  group_by(bathrooms) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=bathrooms, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por Banyos")
-#impresionante, da gusto verla. de libro
-
-
-price_training %>%
-  group_by(floors) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=floors, y=avg_price)) + geom_bar(stat = "identity")  +
-  ggtitle("Precio Medio por Plantas")
-
-
-mean(price_training$price)
-#parece que a mayor plantas mayor precio
-
-
-
- 
-
-
-price_training %>%
-  group_by(waterfront) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=waterfront, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por Vista al Mar")
-
-#claramente discrimina las vistas al mar, el único pero es el 
-#escaso volumen de la categoria
-
 price_training %>%
   group_by(view) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=view, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Numero de Visitas")
-
-
 
 
 price_training %>%
@@ -506,10 +510,37 @@ price_training %>%
   ggplot(aes(x=view_flag, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Numero de Visitas flag")
 
+#no parece que view flag sea una variable interesante a tratar porque está recogiendo 
+# distintas variabilidades de los estados 1-4 de view que difieren entre ellos en media
+#no es interesante agruparla . La descartamos.
 
-#segun aumenta el numero de visitas mayor es el precio de compra
-#lo cual quiere decir que ¿será más valiosa y por eso es más visitad?
 
+
+
+################################################################################
+#analisis de grade
+################################################################################
+
+ggplot(price_training, aes(price_training$grade))    + geom_bar() + ggtitle("grade")
+#en este punto interesa crear una agrupación en función del precio que será nuestra variable objetivo
+price_training$grade<-as.character(price_training$grade)
+
+table(price_training$grade)
+aggregate(price_training$price, by=list(price_training$grade), FUN=mean)                         
+
+
+#parecen que se deberian formar los siguientes grupos (9,8) (7,13,10,s) (11,12,4,5,6) en funcion al 
+#precio medio de estas viviendas 
+
+
+price_training$grade_new<-recode (price_training$grade,
+                                      "c('9','8')='Grade_top'; 
+                                       c('7','13','10','s')='Grade_med'; 
+                                       c('11','12','4','5','6')    ='Grade_low'"
+)
+
+table(price_training$grade_new)
+aggregate(price_training$price, by=list(price_training$grade_new), FUN=mean)  
 
 
 price_training %>%
@@ -518,7 +549,42 @@ price_training %>%
   ggplot(aes(x=grade, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Grado")
 
-#el cluster del problema discrimina
+price_training %>%
+  group_by(grade_new) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=grade_new, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Grado new")
+
+
+
+
+############################################################################
+##### analisis de la estacionalidad de la compra en funcion de los meses ###
+############################################################################
+
+#extraemos en mes por si existe una estcionalidad en la compra
+
+price_training$mes<-month(as.POSIXlt(price_training$date, format="%m/%d/%Y"))
+table(price_training$mes)
+aggregate(price_training$price, by=list(price_training$mes), FUN=mean)  
+
+
+price_training %>%
+  group_by(mes) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=mes, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por mes")
+
+
+
+################################################################################
+### anyo de construccion 
+###############################################################################
+
+
+table(price_training$yr_built)
+aggregate(price_training$price, by=list(price_training$yr_built), FUN=mean)  
+
 
 price_training %>%
   group_by(yr_built) %>% 
@@ -526,16 +592,136 @@ price_training %>%
   ggplot(aes(x=yr_built, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Anyo Construccion")
 
+#muy interesante esta variables vamos trabajar distintos Variaciones de la misma
+
+# Partimos de la Hipotesis de que es existe una diferencia entre las viviendas antes 
+# y despues del anyo 2000
+
+price_training$flag_milenio<-recode (price_training$yr_built,
+                                     "1900:1999=0; 2000:2020=1")
+
+
+table(price_training$flag_milenio)
+aggregate(price_training$price, by=list(price_training$flag_milenio), FUN=mean)  
+price_training %>%
+  group_by(flag_milenio) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=flag_milenio, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por Milenio")
+#Parece a priori que existe una diferencia significativa entre la construccíon 
+# durante un milenio y otro. Comprobaremos nuestra Hipótesis con un test
+# Suponiendo normalidad TCL
+# t test 
+# Ho : No existen diferencias significativas de precio entre las categorias Milenio 1900 y 2000 
+
+m1<-subset(price_training, flag_milenio=="1")
+m0<-subset(price_training, flag_milenio=="0")
+
+set.seed(737)
+test <- t.test(m0$price,m1$price) # Prueba t de Student
+print(test)
+#rechazamos la Ho , existen diferencias sginifcativas entre ambos milenios para la variable precio
+boxplot(m0$price,m1$price,names=c("m_1900","m_2000"))
+
+
+
+#################################################
+#####analisis por decadas en ambas siglos#######
+#################################################
+
+table(m1$yr_built)
+aggregate(m1$price, by=list(m1$yr_built), FUN=mean)  
+m1 %>%
+  group_by(yr_built) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=yr_built, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por decada ")
+
+table(m0$yr_built)
+aggregate(m0$price, by=list(m0$yr_built), FUN=mean)  
+m0 %>%
+  group_by(yr_built) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=yr_built, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por decada ")
+
+# analizando ambas poblaciones de siglos parece que existen diferencias en el siglo 20
+# por lo que nos detendremos a realizar un analisis detallado
+
+table(m0$yr_built)
+aggregate(m0$price, by=list(m0$yr_built), FUN=mean)  
+
+# analizando la distribución parece que las casa construidas hasta el anyo 1932 tiene
+#mucho más valor de mercado hasta el anyo 1975 que sufren otra subida
+#proponemos el siguiente Banding
+
+price_training$decada<-recode (price_training$yr_built,
+                                     "1900:1932=0; 
+                                      1933:1975=1;
+                                      1975:1999=2;
+                                      2000:2020=3")
+
+table(price_training$decada)
+aggregate(price_training$price, by=list(price_training$decada), FUN=mean)  
+
 
 price_training %>%
-  group_by(yr_renovated) %>% 
+  group_by(decada) %>% 
   summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=yr_renovated, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por Anyo Reforma")
+  ggplot(aes(x=decada, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por periodo")
 
 
+############################################################################
+#####anyo de renovacion 
+###########################################################################
 
-###vamos a crear variables a partir del los años
+
+table(price_training$yr_renovated)
+aggregate(price_training$price, by=list(price_training$yr_renovated), FUN=mean) 
+
+# creamos un flag si /no por si ha reformado o no
+price_training$yr_renovated<-as.numeric(price_training$yr_renovated)
+price_training$flag_reforma<-recode (price_training$yr_renovated,
+                                     "0=0; 1940:2020=1")
+                                   
+                                    
+
+table(price_training$flag_reforma)
+aggregate(price_training$price, by=list(price_training$flag_reforma), FUN=mean) 
+
+####parece que existe diferencias entre el precio en funcion de si ha sido reformado
+# o no pero no lo podemos afirmar con total seguridad , vamos a realizar un contraste
+# de Hipotesis para analizar el flag 
+
+# Suponiendo normalidad TCL
+# t test 
+# Ho : No existen diferencias significativas de precio entre las categorias reforma si/no 
+
+f1<-subset(price_training, flag_reforma=="1")
+f0<-subset(price_training, flag_reforma=="0")
+
+set.seed(737)
+test <- t.test(f0$price,f1$price) # Prueba t de Student
+print(test)
+
+# No podemos rechazar  la Ho , 
+# a priori en en función a nuestros datos NO existen diferencias sginifcativas
+# entre las viviendas reformadas y no reformadas
+#vamos a intruducirla en el modelo pero no parece que vaya a ser un factor importante
+
+
+price_training %>%
+  group_by(flag_reforma) %>% 
+  summarise(avg_price = mean(price)) %>%
+  ggplot(aes(x=flag_reforma, y=avg_price)) + geom_bar(stat = "identity") + 
+  ggtitle("Precio Medio por  Reforma")
+
+
+##################################################################
+####creamos la variable antiguedad de la vivienda 
+#### a partir de la fecha de compra date y el anyo de construccion
+#################################################################
 
 #tiempo desde la construccion  hasta la venta
 
@@ -551,17 +737,25 @@ year1 <- as.numeric(format(date1,'%Y'))
 tabla.frec  <- table(year1)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
 
-
 price_training$antiguedad<-(year1-price_training$yr_built)
 tabla.frec  <- table(price_training$antiguedad)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
-hist(antiguedad, xlab="antiguedad",ylab="frecuencia",main="histograma antiguedad", col="blue")
+hist(price_training$antiguedad, xlab="antiguedad",ylab="frecuencia",
+     main="histograma distribucion de la antiguedad", col="blue")
 
 price_training %>%
   group_by(antiguedad) %>% 
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=antiguedad, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por antiguedad")
+
+
+###vemos que en el analisis de correlaciones esta va tener mucha relacion con otras
+# de estacionalidad d¡cque hemos trabajado con la de decada. Se denota en el grafico
+# que existe una poblacion de viviendas de una antiguedad importante que sn 
+#siginificativamente mas cara en precio,
+
+
 
 #parece a primera vista que no existe mucha relacion entre a antiguedad de la vivienda
 # con el precio de la vivienda
