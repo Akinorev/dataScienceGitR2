@@ -551,6 +551,7 @@ qqline    (log10(dwo$sqft_above))
 #y podria ser normal con el TCL
 
 dwo$sqft_above_log<-log10(dwo$sqft_above)
+#excluimos esta variable del análisis
 
 
 #variables discretas. En este punto debemos tener en cuenta el pricipio de Parsimonia
@@ -1013,8 +1014,14 @@ chart.Correlation(dwo[c(23,24,26,27,36,37,38)], histogram = F, pch = 19)
 
 
 # a partir del analisis de correlaciones 
-# nos quedamos con la variables
-1-sqft_livingt_log
+# nos quedamos con la variables continuas siguientes 
+
+#1-sqft_livingt_log
+#2-sqft_lot_log
+#3-floors_new
+#4-sqft_above_log
+#5- antiguedad_raiz 
+
 
 
 #ANALISIS DE LAS ASOCIACIONES ENTRE VARIABLES CON EL V DE CRAMER
@@ -1023,6 +1030,14 @@ chart.Correlation(dwo[c(23,24,26,27,36,37,38)], histogram = F, pch = 19)
 #y 1 una relación perfecta entre los factores. Habitualmente
 #valores superiores a 0,30 ya nos están indicando que hay una posible
 #relación entre las variables.
+
+#flag_reforma
+#flag_milenio
+#grade_new
+#condition_new
+#mes_new
+#view_flag
+#waterfront_flag
 
 
 cv.test = function(x,y) {
@@ -1033,51 +1048,46 @@ cv.test = function(x,y) {
 }
 
 
-cv.test(x=dwo$waterfront_flag,y=dwo$view_flag)
-#[1] 0.1395412
-cv.test(x=dwo$waterfront_flag,y=dwo$flag_milenio)
-#[1] 0.01939653
-cv.test(x=dwo$waterfront_flag,y=dwo$grade)
-#[1] 0.02395002
-cv.test(x=dwo$waterfront_flag,y=dwo$bedrooms_new)
-#[1] 0.03232724
-cv.test(x=dwo$waterfront_flag,y=dwo$flag_reforma)
-#[1] 0.0504965
-cv.test(x=dwo$waterfront_flag,y=dwo$ant_clas)
-#[1] 0.02916336
-cv.test(x=dwo$waterfront_flag,y=dwo$bathrooms_new)
-#[1] 0.006930592
-cv.test(x=dwo$waterfront_flag,y=dwo$bedrooms_new)
-#[1] 0.03232724
-cv.test(x=dwo$bathrooms_new,y=dwo$bedrooms_new)
-#[1] 0.2821159 ---> tenemos que eliminar  bedrooms_new
-cv.test(x=dwo$bathrooms_new,y=dwo$view_flag)
-#[1] 0.0720352
-cv.test(x=dwo$bathrooms_new,y=dwo$grade)
-#[1] 0.3567409 tenemos que eliminar bathrooms
-cv.test(x=dwo$grade,y=dwo$view_flag)
-#[1] 0.1004545
-cv.test(x=dwo$grade,y=dwo$condition_new)
-#[1] 0.1121542
-cv.test(x=dwo$ant_clas,y=dwo$flag_milenio)
-#[1] 0.469873
+cv.test(x=dwo$flag_reforma,y=dwo$flag_milenio)
+#[1] 0.1025731
+cv.test(x=dwo$flag_reforma,y=dwo$grade_new)
+#[1] 0.03513422
+cv.test(x=dwo$flag_reforma,y=dwo$waterfront_flag)
+#[1] 0.07131954
+cv.test(x=dwo$flag_reforma,y=dwo$mes_new)
+#[1] 0.04108059
+cv.test(x=dwo$flag_reforma,y=dwo$view_flag)
+#[1] 0.05551726
+cv.test(x=dwo$flag_milenio,y=dwo$grade_new)
+#[1] 0.3246008
+####nos planteamos retizar la variable flag_milenio
 
+cv.test(x=dwo$grade_new,y=dwo$mes_new)
+#[1]0.04056281
+cv.test(x=dwo$grade_new,y=dwo$view_flag)
+#[1] 0.1305783
 
+cv.test(x=dwo$mes_new,y=dwo$waterfront_flag)
+#[1] 0.01678745
 
+cv.test(x=dwo$view_flag,y=dwo$view_flag)
+#[1] 0.01725379
 
+cv.test(x=dwo$grade_new,y=dwo$condition)
+#[1] 0.1471439
 
-
-#############variables al modelo ################### 
-#condition_new       
-#bedrooms_new   
-#bathrooms_new  
-#floors_new
-#view_flag          
-#grade            
-#mes         
-#flag_milenio     
-#flag_reforma
-#waterfront_new
+#variables in
+#1-sqft_livingt_log
+#2-sqft_lot_log
+#3-floors_new
+#4-sqft_above_log
+#5- antiguedad_raiz 
+#7-flag_reforma
+#8-grade_new
+#9.-condition
+#10.-mes_new
+#11.-view_flag
+#12.-waterfront_flag
 
 
 ######################################################################
@@ -1087,42 +1097,98 @@ cv.test(x=dwo$ant_clas,y=dwo$flag_milenio)
 #modelo1 . Seleccion de Predictores
 #Método de entrada forzada: se introducen todos los predictores simultáneamente
 
-modelo1 <- lm(formula = price_log ~ condition_new+ bedrooms_new+ floors_new+
-                view_flag + grade  + ant_clas + flag_reforma + waterfront_flag
-               
+modelo1 <- lm(formula = price ~sqft_livingt_log +sqft_lot_log + floors_new+
+                sqft_above_log+ antiguedad_raiz + flag_reforma + grade_new + 
+                condition+ +view_flag+waterfront_flag
                 ,data = dwo)
 modelo1
 summary(modelo1)
 
-#El modelo con todas las variables introducidas como predictores tiene un R2 alta (0.7501),
-#es capaz de explicar el 75,01% de la variabilidad observada en la esperanza de vida. 
-#El p-value del modelo es significativo (3.787e-10) por lo que se puede aceptar 
+#El modelo con todas las variables introducidas como predictores tiene un R2 nula 0,5133
+#es capaz de explicar el 51,01% de la variabilidad observada en la esperanza de vida. 
+#El p-value del modelo es significativo (p-value: < 2.2e-16) por lo que se puede aceptar 
 #que el modelo no es por azar, al menos uno de los coeficientes parciales de regresión 
 #es distinto de 0. Muchos de ellos no son significativos, 
 #lo que es un indicativo de que podrían no contribuir al modelo.
+
+#por ejemplo la variable condition es problable que sea conveniente eliminarla 
 
 
 #3.Selección de los mejores predictores
 #En este caso se van a emplear la estrategia de stepwise mixto. 
 #El valor matemático empleado para determinar la calidad del modelo va a ser Akaike(AIC).
-step(object = modelo1, direction = "both", trace = 1)
 
+step(object = modelo1, direction = "backward", trace = 1)
 
 #El mejor modelo resultante del proceso de selección ha sido:
   
-  modelo <- (lm(formula = price_log ~ , data = dwo))
-  
+modelo <- (lm(formula = price_log ~ sqft_livingt_log + sqft_lot_log + floors_new + 
+                sqft_above_log + antiguedad_raiz + flag_reforma + grade_new + 
+                condition + +view_flag + waterfront_flag, data = dwo))
 summary(modelo)
 
 #intervalos de confianza para los predictores del modelo
+confint(lm(formula = price_log ~ sqft_livingt_log + sqft_lot_log + floors_new + 
+             sqft_above_log + antiguedad_raiz + flag_reforma + grade_new + 
+             condition + +view_flag + waterfront_flag, data = dwo))
 
 
-#analisis de los residuos del modelos. siguen una distribucion normal
+
+#analisis de los residuos del modelos. a Prioi siguen una distribucion normal
 qqnorm(modelo$residuals)
 qqline(modelo$residuals)
 
-#test de normalidad de los residuos.
+#test de normalidad de los residuos. Se rechaza la hipotesis Nula de normalidad
 lillie.test(modelo$residuals)
 
-#Variabilidad constante de los residuos 
+
+#Variabilidad constante de los residuos (homocedasticidad):
+#Al representar los residuos frente a los valores ajustados por el modelo,
+#los primeros se tienen que distribuir de forma aleatoria en torno a cero,
+#manteniendo aproximadamente la misma variabilidad a lo largo del eje X.
+#Si se observa algún patrón específico, por ejemplo forma cónica o mayor
+#dispersión en los extremos, significa que la variabilidad es dependiente del valor ajustado
+#y por lo tanto no hay homocedasticidad.
+
+fit_plot <- ggplot(dwo, aes(modelo$fitted.values, modelo$residuals))+
+  geom_smooth(method="lm", se=FALSE, color="lightgray")+      
+  geom_point(alpha = 0.5) +
+  theme(plot.background = element_rect(colour = NA))+
+  xlab("x")+
+  ylab("y")
+
+fit_plot
+#parece que no hay homocedasticidad a pesar de la poca calidad del modelo
+#parece que existe una ligera forma cónica en el extremo 
+
+
+
+# Análisis de Inflación de Varianza (VIF):
+vif(modelo)
+#la variable condition mucha una inflaccion de la varianza muy alta. Tenemos que
+#trabajarla para reducir su tamaño o eliminarla del modelo.
+
+
+#Autocorrelación:
+library(car)
+#Durbin-Watson Test For Autocorrelated Errors
+dwt(modelo, alternative = "two.sided")
+#parece que tenemos un problema de autocorrelacion clara. La hipotesis nula del test 
+#Durbin-Watson, Tenemos que plantearnos el problema con Un SERIE TEMPORAL
+
+
+
+# identificacion de los valores atipicos o influyentes en el modelo
+library(dplyr)
+dwo$studentized_residual <- rstudent(modelo)
+borrar<-which(abs(dwo$studentized_residual) > 3)
+
+#hemos identificado un numero importante de valores atipicos que nos pueden desvirtuar el modelo
+#procedemos a eliminarlos.
+
+summary(influence.measures(modelo))
+influencePlot(modelo)
+#observamos los resultados de la distancia de cook Distancia Cook (cook.d): 
+#Se consideran influyentes valores superiores a 1.
+
 
