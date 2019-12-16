@@ -27,6 +27,8 @@
 #install.packages("bestNormalize")
 #install.packages("rcompanion")
 #install.packages("GoodmanKruskal")
+#install.packages("PerformanceAnalytics")
+library(PerformanceAnalytics)
 library(GoodmanKruskal)
 library(rcompanion)
 library (bestNormalize)
@@ -175,7 +177,6 @@ price_training$sqft_basement[is.na(price_training$sqft_basement)] <-
   mean(price_training$sqft_basement, na.rm = TRUE)
 
 
-
 #variable discreta 
 # Create the function calculate the mode
 getmode <- function(v) {
@@ -298,24 +299,19 @@ dat <-vec_miss [c(1,2,3)]
 #SEMMA 2. EXPLORE
 #######################
 
+#Hipotesis. Realizaremos un modelo lineal para estimar el precio de la vivienda en función 
+# de las variables independientes como beds, baths, etc
+
+#principios Modelo lineal Multiple
+
+#No colinialidad
+#Parsimonia
+#Relación lineal entre los predictores numéricos y la variable respuesta
+#Distribución normal de los residuos
+#Variabilidad constante de los residuos
 
 
-#ANALISIS 
-#VISUALIZACIÓN DE LOS DATOS
-#OUTLIER
-
-summary(price_training)
-ggcorr(price_training[c(3,4,5,6,7,8,9,10,11,12,13,14)],
-       palette = "RdBu", label = TRUE)
-        
-#seleccion de variables por alta correlacion
-# 1.- variable correlacion alta beth-bath-sqft_living-sqft_above
-# 2.- variable correlacion alta waterfront -view
-# eliminamos variables y estudiamos 
-
-
-ggcorr(price_training[c(4,8,9,11,12,14)],
-       palette = "RdBu", label = TRUE)
+      
 
 
 
@@ -388,14 +384,6 @@ print (norm_price_test)
 #ya que fue propuesta por Box y Cox (1964). 
 #Engloba a las anteriores mediante la siguiente fórmula general
 
-
-b <- boxcox(price_training$price ~ price_training$grade_new)
-lambda <- b$x # lambda values
-lik <- b$y # log likelihood values for SSE
-bc <- cbind(lambda, lik) # combine lambda and lik
-sorted_bc <- bc[order(-lik),]
-head(sorted_bc, n = 10)
-
 #el lambda para la maxima  log likeihood obteniendo un minimo SSE es 0.707
 
 prueba<-(price_training$price^(0.707))
@@ -404,30 +392,43 @@ print (norm_price_test)
 
 
 
+
+
 ###vamos a analizar si es un problema con los outliers#####
+#la distribucion del precio de la vivienda está muy dispersa y esto va a dificultar
+#la predicción del modelo. 
 
 #Univariate -> boxplot. outside of 1.5 times inter-quartile range is an outlier.
 
 lowerq = quantile(price_training$price)[2]
 upperq = quantile(price_training$price)[4]
 iqr = (upperq - lowerq) 
-extreme.threshold.upper = (iqr * 3) + upperq
-extreme.threshold.lower = lowerq - (iqr * 3)
+extreme.threshold.upper = (iqr * 1.5) + upperq
+extreme.threshold.lower = lowerq - (iqr * 1.5)
 extreme.threshold.upper
 extreme.threshold.lower
 
 dev.off()
+#el nuevo dataset es dwo. Data without outliers
+
 dwo<-subset(price_training, price_training$price<extreme.threshold.upper &
               price_training$price>extreme.threshold.lower)
 
 
 ###pasamos de 15119 a 14.344 observaciones
-(norm_price_test<-lillie.test(log10(price_training$price)))
+(norm_price_test<-lillie.test((dwo$price)))
+
+#los datos siguen sin seguir una distribución Normal. Esto incumple los principios del lm
+#provemos con la distribucion log10 sobre los datos sin outliers.
+(norm_price_test<-lillie.test(log10(dwo$price)))
 histogram (log10(dwo$price))
 qqnorm    (log10(dwo$price))
 qqline    (log10(dwo$price))
 
-
+#Se rechaza el contraste de Normalidad , pero tanto el Hitograma como el grafico Q-Q plot
+# nos dicen que no se aleja mucho de una distribución Normal. Por lo menos de forma intuitiva
+#sabemos que estamos incumpliendo la hipótesis de partida pero continuamos con el supuesto de
+# TCL ya que no hemos encontrado ninguna transformacion que nos ayude
 
 dwo$price_log<-(log10(dwo$price))
 
@@ -435,10 +436,6 @@ dwo$price_log<-(log10(dwo$price))
 #########################################################################################
 ###nos quedamos con la transformacion logaritmica log10 para los price sin ouliers#######
 #########################################################################################
-
-
-
-
 
 
 #### analisis normalidad para las siguientes valibles continuas#####
@@ -471,23 +468,7 @@ qqline(log10(dwo$sqft_living))
 
 dwo$sqft_livingt_log<-log10(dwo$sqft_living)
 
-#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
-# de los bandings
-
-#alternativa  bandings. Evitamos los problemas de Normalidad
-histogram ((dwo$sqft_living)) 
-summary (dwo$sqft_living)
-table(dwo$sqft_living)
-dwo$sqft_livingt_banding<-recode (dwo$sqft_living,
-                              "
-                             0:1370=0;
-                          1371:1800=1;
-                          1801:2320=2;
-                          2321:30000=3"
-)
-table(dwo$sqft_livingt_banding)
-
-
+#ninguna funcion  nos permite transforma a Normalidad. 
 
 
 
@@ -495,33 +476,38 @@ table(dwo$sqft_livingt_banding)
 #transformacion sqft_lot
 ###################################
 
-
+histogram (dwo$sqft_lot)
 (norm_price_test<-lillie.test(dwo$sqft_lot))
 #rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
-(norm_price_test<-lillie.test(log10(dwo$sqft_lot)))
 
-histogram (dwo$sqft_lot)
+
 histogram (log10(dwo$sqft_lot))
 qqnorm    (log10(dwo$sqft_lot))
 qqline    (log10(dwo$sqft_lot))
+(norm_price_test<-lillie.test(log10(dwo$sqft_lot)))
+#tambien rechazamos la hipotesis de normalidad , esta de forma mucho más notoria en el gráfico Q-Q
+#proponemos otras transformaciones
+
+#TRANSFORMACION raiz cuadrada
 histogram (sqrt(dwo$sqft_lot))
-histogram ((dwo$sqft_lot)*(dwo$sqft_lot))
+qqnorm    (sqrt(dwo$sqft_lot))
+qqline    (sqrt(dwo$sqft_lot))
+(norm_price_test<-lillie.test(sqrt(dwo$sqft_lot)))
+#tambien rechazamos la hipotesis de normalidad , esta de forma mucho más notoria en el gráfico Q-Q
+#proponemos otras transformaciones
 
-#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
-# de los bandings
+#TRANSFORMACION inversa
+histogram (1/(dwo$sqft_lot))
+qqnorm    (1/(dwo$sqft_lot))
+qqline    (1/(dwo$sqft_lot))
+(norm_price_test<-lillie.test(1/(dwo$sqft_lot)))
 
-#alternativa  bandings. Evitamos los problemas de Normalidad
-histogram ((dwo$sqft_lot)) 
-summary (dwo$sqft_lot)
-table(dwo$sqft_lot)
-dwo$sqft_lot_banding<-recode (dwo$sqft_lot,
-                            "
-                            0:5054='a';
-                          5044:7620='b';
-                          7621:10720='c';
-                          10721:300000000='d'"
-                        )
-table(dwo$sqft_lot_banding)
+
+
+#nos platearemos la inclusion o no en el modelo debido a la falta de Normalidad.
+#La distribución que más nos convence y apoyandonos en el TCL es la log10
+
+dwo$sqft_lot_log<-log10(dwo$sqft_lot)
 
 
 
@@ -530,30 +516,17 @@ table(dwo$sqft_lot_banding)
 #transformacion sqft_basement
 ##############################################################
 
-(norm_price_test<-lillie.test(dwo$sqft_basement))
-#rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
 
 histogram (dwo$sqft_basement)
+(norm_price_test<-lillie.test(dwo$sqft_basement))
+#rechazamos la Ho de normalidad.
+summary (dwo$sqft_basement)
+
+#Proponemos transformacion logaritmica
 histogram (log10(dwo$sqft_basement)) 
-histogram (1/(dwo$sqft_basement))
-histogram (sqrt(dwo$sqft_basement))
-#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
-# de los bandings
 
-#alternativa  bandings. Evitamos los problemas de Normalidad
-histogram ((dwo$sqft_basement)) 
-table(dwo$sqft_basement)
-dwo$sqft_basement_banding<-recode (dwo$sqft_basement,
-                               "0='a'; 
-                            1:200='b';
-                          201:400='c';
-                          401:600='d';
-                          601:800='e';
-                          801:1000='f';
-                          1001:10000='g'
-                        ")
+dwo$sqft_basement_log<-log10(dwo$sqft_basement)
 
-table(dwo$sqft_basement_banding)
 
 
 
@@ -562,36 +535,28 @@ table(dwo$sqft_basement_banding)
 #transformacion sqft_above######################################
 ##################################################################
 
+
+histogram (dwo$sqft_above)
 (norm_price_test<-lillie.test(dwo$sqft_above))
 #rechazamos la Ho de normalidad. Proponemos transformacion logaritmica
 
-histogram (dwo$sqft_above)
+
+
+(norm_price_test<-lillie.test(log10(dwo$sqft_above)))
 histogram (log10(dwo$sqft_above)) 
+qqnorm    (log10(dwo$sqft_above))
+qqline    (log10(dwo$sqft_above))
+
+#ninguna funcion  nos permite transforma a Normalidad. Pero visualmente se aproxima
+#y podria ser normal con el TCL
+
+dwo$sqft_above_log<-log10(dwo$sqft_above)
 
 
-#ninguna funcion  nos permite transforma a Normalidad. vamos a proponer al alternativa
-# de los bandings
-
-#alternativa  bandings. Evitamos los problemas de Normalidad
-histogram ((dwo$sqft_above)) 
-summary(dwo$sqft_above)
-table(dwo$sqft_above)
-dwo$sqft_above_banding<-recode (dwo$sqft_above,
-                            "
-                             0:1150='a';
-                          1151:1470='b';
-                          1471:2020='c';
-                          2021:10000='d'
-                        ")
-
-table(dwo$sqft_above_banding)
-
-
-
-
-
-
-#variables discretas
+#variables discretas. En este punto debemos tener en cuenta el pricipio de Parsimonia
+#Este término hace referencia a que el mejor modelo es aquel capaz de explicar con mayor precisión
+#la variabilidad observada en la variable respuesta empleando el menor número de predictores,
+#por lo tanto, con menos asunciones.
 
 ########################################################################
 # condition#####################################################
@@ -605,12 +570,6 @@ dwo$condition<-as.character(dwo$condition)
 aggregate(dwo$price, by=list(dwo$condition), FUN=mean)  
 
 
-dwo$condition_new<-recode (dwo$condition,
-                                      "c('1','2')='low'; 
-                                       c('3','4')='med'; 
-                                       c('5')    ='hig'"
-                                      )
-ggplot(dwo, aes(dwo$condition_new)) + geom_bar() + ggtitle("Condition new")
 
 #hemos recodificado esta variable en tres grupos alrededor de la media en relacion a su precio medio
 #veamos esta relacion antes y depues de la transformación
@@ -622,20 +581,10 @@ dwo %>%
   ggplot(aes(x=condition, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Condicion")
 
-#nos llama la atencion el grupo 1 y 2 precios en medio mucho menor que los otros 3 grupos
-#si aplicamos la transformacion
-
-
-dwo %>%
-  group_by(condition_new) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=condition_new, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por Condicion New")
 
 
 
-#podemos afirmar a priori y visualmente que existe una relación entre el precio y la 
-#condicion de la vivienda que se refleja claramente en el grupo LOW
+#podemos afirmar a priori y visualmente que existe una relación entre el precio y la condicion
 
 
 
@@ -825,7 +774,7 @@ dwo$grade_new<-recode (dwo$grade,
 
 table(dwo$grade_new)
 aggregate(dwo$price, by=list(dwo$grade_new), FUN=mean)  
-
+# en esta tabla vemos que existen diferencias muy notables entre los distintos grupos
 
 dwo %>%
   group_by(grade) %>% 
@@ -848,10 +797,14 @@ dwo %>%
 
 #extraemos en mes por si existe una estcionalidad en la compra
 
+
+
+#puede que nos estemos encontrando con un problema de serie temporal de forma velada
+# por lo que vamos a incluir esta variable dentro del modelo de forma categórica y no continua
+
 dwo$mes<-month(as.POSIXlt(dwo$date, format="%m/%d/%Y"))
 table(dwo$mes)
 aggregate(dwo$price, by=list(dwo$mes), FUN=mean)  
-
 
 dwo %>%
   group_by(mes) %>% 
@@ -859,12 +812,28 @@ dwo %>%
   ggplot(aes(x=mes, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por mes")
 
-###no parece a priori que presente una gran variabilidad
+dwo$mes_new<-recode (dwo$mes,
+ "1='enero'; 
+2	=	'febrero';
+3	=	'marzo';
+4	=	'abril';
+5	=	'mayo';
+6	=	'junio';
+7	=	'julio';
+8	=	'agosto';
+9	=	'septiembre';
+10	=	'octubre';
+11	=	'noviembre';
+12	=	'diciembre'")
+
+                             
+table (dwo$mes_new)
 
 ################################################################################
 ### anyo de construccion 
 ###############################################################################
-
+#parece que en esta variable tambien existe un fuerte componente estacional
+#provaremos a meterla en el modelo y ver como funciona
 
 table(dwo$yr_built)
 aggregate(dwo$price, by=list(dwo$yr_built), FUN=mean)  
@@ -905,7 +874,7 @@ set.seed(737)
 test <- t.test(m0$price,m1$price) # Prueba t de Student
 print(test)
 #rechazamos la Ho , existen diferencias sginifcativas entre ambos milenios para la variable precio
-boxplot(m0$price,m1$price,names=c("m_1900","m_2000"))
+
 
 
 
@@ -975,7 +944,7 @@ year1 <- as.numeric(format(date1,'%Y'))
 tabla.frec  <- table(year1)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
 
-dwo$antiguedad<-(year1-dwo$yr_built)
+dwo$antiguedad<-(year1-dwo$yr_built)+2
 tabla.frec  <- table(dwo$antiguedad)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
 hist(dwo$antiguedad, xlab="antiguedad",ylab="frecuencia",
@@ -988,32 +957,40 @@ dwo %>%
   ggtitle("Precio Medio por antiguedad")
 
 
-##vamos a realizar una transformacion logaritmica
+
 histogram ((dwo$antiguedad))
+summary ((dwo$antiguedad))
+##vamos a realizar una transformacion logaritmica
 
-# el mejor tratamiento a esta variable es hacer banding discretos, así esquivamos los problemas con norm
-tabla.frec
-dwo$ant_clas<-recode (dwo$antiguedad,
-                        "-100:30='a'; 
-                          31:40='d';
-                          41:50='e';
-                          51:60='f';
-                          61:70='g';
-                          71:80='h';
-                          81:90='i';
-                          91:200000='z';
-                      ")
-
-table(dwo$ant_clas)
-
-dwo %>%
-  group_by(ant_clas) %>% 
-  summarise(avg_price = mean(price)) %>%
-  ggplot(aes(x=ant_clas, y=avg_price)) + geom_bar(stat = "identity") + 
-  ggtitle("Precio Medio por  antiguedad banding")
+histogram (log10(dwo$antiguedad))
+qqnorm    (log10(dwo$antiguedad))
+qqline    (log10(dwo$antiguedad))
+(norm_price_test<-lillie.test(log10(dwo$antiguedad)))
+###rechazamos la hipotesis de Normalidad en la transformacion logaritmica
 
 
+##vamos a realizar una transformacion cuadratica
 
+histogram (sqrt(dwo$antiguedad))
+qqnorm    (sqrt(dwo$antiguedad))
+qqline    (sqrt(dwo$antiguedad))
+(norm_price_test<-lillie.test(sqrt(dwo$antiguedad)))
+
+###rechazamos la hipotesis de Normalidad en la transformacion cuadrática
+
+
+##vamos a realizar una transformacion inversa
+
+histogram (1/(dwo$antiguedad))
+qqnorm    (1/(dwo$antiguedad))
+qqline    (1/(dwo$antiguedad))
+(norm_price_test<-lillie.test(1/(dwo$antiguedad)))
+#esta es la que peor funciona.
+#nos plantemos si introducir la variable en el modelo ya que no es normal.
+# de momento la transformacion que más nos convence es la raiz cuadrada.
+
+
+dwo$antiguedad_raiz<-(sqrt(dwo$antiguedad))
 
 
 #############################################################################
@@ -1030,26 +1007,14 @@ dwo %>%
 #cuando es la combinación lineal de otros predictores
 
 
+summary(dwo)
 
-#listado de variables de las que vamos a partir
+chart.Correlation(dwo[c(23,24,26,27,36,37,38)], histogram = F, pch = 19)
 
-#price       
-#sqft_living_banding 
-#sqft_lot_banding 
-#sqft_basement_banding 
-#sqft_above_banding  
-#condition_new       
-#bedrooms_new   
-#bathrooms_new  
-#floors_new
-#view_flag          
-#grade_new             
-#mes         
-#flag_milenio     
-#flag_reforma
-#ant_clas
-#waterfront
 
+# a partir del analisis de correlaciones 
+# nos quedamos con la variables
+1-sqft_livingt_log
 
 
 #ANALISIS DE LAS ASOCIACIONES ENTRE VARIABLES CON EL V DE CRAMER
@@ -1099,14 +1064,6 @@ cv.test(x=dwo$ant_clas,y=dwo$flag_milenio)
 
 
 
-#eliminadas
-
-#bathrooms_new
-#sqft_living_banding
-#sqft_basement_banding 
-#sqft_above_banding 
-#flag_milenio
-#mes
 
 
 
@@ -1127,25 +1084,45 @@ cv.test(x=dwo$ant_clas,y=dwo$flag_milenio)
 #####semma4 modelo ###################################################
 ######################################################################
 
+#modelo1 . Seleccion de Predictores
+#Método de entrada forzada: se introducen todos los predictores simultáneamente
+
 modelo1 <- lm(formula = price_log ~ condition_new+ bedrooms_new+ floors_new+
                 view_flag + grade  + ant_clas + flag_reforma + waterfront_flag
-               , data = dwo)
+               
+                ,data = dwo)
 modelo1
 summary(modelo1)
 
-# una primera vision de los resultados de este modelo nos dicen que todas
-#un primer visionado de los datos nos dice que tenemos que realizar recodificaciones 
-# en la variable grade porque algunos grupos no son significativos
-#                     Estimate Std. Error t value Pr(>|t|) 
-# grades            -0.324945   0.135617  -2.396 0.016585 * 
-modback <- stepAIC(modelo1, trace=TRUE, direction="backward")
+#El modelo con todas las variables introducidas como predictores tiene un R2 alta (0.7501),
+#es capaz de explicar el 75,01% de la variabilidad observada en la esperanza de vida. 
+#El p-value del modelo es significativo (3.787e-10) por lo que se puede aceptar 
+#que el modelo no es por azar, al menos uno de los coeficientes parciales de regresión 
+#es distinto de 0. Muchos de ellos no son significativos, 
+#lo que es un indicativo de que podrían no contribuir al modelo.
 
-###-50345 akaike 
 
-# analisis de los residuos del modelos
-names(modelo1)
-plot(modelo1)
+#3.Selección de los mejores predictores
+#En este caso se van a emplear la estrategia de stepwise mixto. 
+#El valor matemático empleado para determinar la calidad del modelo va a ser Akaike(AIC).
+step(object = modelo1, direction = "both", trace = 1)
 
-lillie.test(modelo1$residuals)
-modelo1$residuals
+
+#El mejor modelo resultante del proceso de selección ha sido:
+  
+  modelo <- (lm(formula = price_log ~ , data = dwo))
+  
+summary(modelo)
+
+#intervalos de confianza para los predictores del modelo
+
+
+#analisis de los residuos del modelos. siguen una distribucion normal
+qqnorm(modelo$residuals)
+qqline(modelo$residuals)
+
+#test de normalidad de los residuos.
+lillie.test(modelo$residuals)
+
+#Variabilidad constante de los residuos 
 
