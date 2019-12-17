@@ -1,33 +1,6 @@
 
 #librerias
-#install.packages("expss")
-#install.packages("egg")
-#install.packages("GGally")
-#install.packages("ISLR")
-#install.packages("car")
-#install.packages("DMwR2")
-#install.packages("faraway")
-#install.packages("mlbench")
-#install.packages("kableExtra")
-#install.packages("bsplus")
-#install.packages("VIM")
-#install.packages("mice")
-#install.packages("lattice")
-#install.packages("rbind")
-#install.packages("GUI")
-#install.packages("expss")
-#install.packages("dplyr")
-#install.packages("gridExtra")
-#install.packages("carData")
-#install.packages("sos")
-#install.packages("brew")
-#install.packages("dplyr")
-#install.packages("magrittr") 
-#install.packages("caret")
-#install.packages("bestNormalize")
-#install.packages("rcompanion")
-#install.packages("GoodmanKruskal")
-#install.packages("PerformanceAnalytics")
+
 library(PerformanceAnalytics)
 library(GoodmanKruskal)
 library(rcompanion)
@@ -95,7 +68,7 @@ library(vcd)
 
 #TRAIN 70% / CONTROL 20% / TEST 10%
 
-datos_miss <-read.csv2 (file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_data_missing3.csv",
+datos_miss <-read.csv2 (file="C:/Users/Pablo/Desktop/FAD_Pr?ctica/kc_house_data_missing3.csv",
                         header=TRUE, na = c("", "NA"), )
 summary (datos_miss)
 histogram(datos_miss$price)
@@ -118,7 +91,7 @@ price_testing  <- slice(aux, -intest)
 #price_testing  2.159  obs
 
 #guardamos los datos despues del proceso de impudato###
-write.csv(price_testing, file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_price_testing.csv")
+write.csv(price_testing, file="C:/Users/Pablo/Desktop/FAD_Pr?ctica/kc_house_price_testing.csv")
 
 ###############################################
 #SEMMA 2. ANALISIS EXPLORATORIO DE LOS DATOS ##
@@ -126,7 +99,7 @@ write.csv(price_testing, file="C:/Users/Pablo/Desktop/FAD_Práctica/kc_house_pric
 
 #price_training
 
-##3 Análisis exploratorio de datos faltantes: VIM##
+##3 An?lisis exploratorio de datos faltantes: VIM##
 aggr_plot <- aggr(price_training, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
                   labels=names(price_training), cex.axis=.7, gap=1, 
                   ylab=c("Histogram of missing data","Pattern"))
@@ -156,7 +129,7 @@ aggr_plot <- aggr(price_training, col=c('navyblue','red'), numbers=TRUE, sortVar
 vec_miss <- price_training
 
 
-##Para las variables continuas podríamos hacer una imputacion a la media##
+##Para las variables continuas podr?amos hacer una imputacion a la media##
 
 #sqft_living
 price_training$sqft_living[is.na(price_training$sqft_living)] <- 
@@ -237,7 +210,7 @@ summary (price_training)
 
 
 ## ALTERNATIVA 2. ESUDIO DE LOS MISSING A TRAVES DE FUNCION MICE 
-#Usaríamos  MICE  en el caso de querer imputación múltiple
+#Usar?amos  MICE  en el caso de querer imputaci?n m?ltiple
 #asume que los datos faltantes son debidos al azar MAR, lo que implica que la ausencia de 
 #un valor puede predecirse a partir de otros 
 
@@ -281,7 +254,7 @@ discreta$imp$grade
 discreta$imp$yr_built  
 discreta$imp$yr_renovated  
 
-#nos quedamos con el primer método por sencillez, pero tenemos las bases deL Mice
+#nos quedamos con el primer m?todo por sencillez, pero tenemos las bases deL Mice
 
 dat2<-mice::complete(discreta, 2)
 dat1<-mice::complete(continuas,2)
@@ -299,15 +272,15 @@ dat <-vec_miss [c(1,2,3)]
 #SEMMA 2. EXPLORE
 #######################
 
-#Hipotesis. Realizaremos un modelo lineal para estimar el precio de la vivienda en función 
+#Hipotesis. Realizaremos un modelo lineal para estimar el precio de la vivienda en funci?n 
 # de las variables independientes como beds, baths, etc
 
 #principios Modelo lineal Multiple
 
 #No colinialidad
 #Parsimonia
-#Relación lineal entre los predictores numéricos y la variable respuesta
-#Distribución normal de los residuos
+#Relaci?n lineal entre los predictores num?ricos y la variable respuesta
+#Distribuci?n normal de los residuos
 #Variabilidad constante de los residuos
 
 
@@ -326,11 +299,11 @@ dat <-vec_miss [c(1,2,3)]
 
 
 
-# Ver si cumple la hipotesis de Normalidad y si no es así realizar la transformacion 
+# Ver si cumple la hipotesis de Normalidad y si no es as? realizar la transformacion 
 # test de kolmogorov 
-# Ho: La muestra proviene de una distribución normal.
-# El nivel de significancia que se trabajará es de 0.05. Alfa=0.05
-# Criterio de Decisión
+# Ho: La muestra proviene de una distribuci?n normal.
+# El nivel de significancia que se trabajar? es de 0.05. Alfa=0.05
+# Criterio de Decisi?n
 # Si P < Alfa Se rechaza Ho
 
 
@@ -338,7 +311,7 @@ norm_price_test<-lillie.test(price_training$price)
 print (norm_price_test)
 
 
-# Rechazamos Ho para nuestra muestra. Price No sigue una distribución Normal
+# Rechazamos Ho para nuestra muestra. Price No sigue una distribuci?n Normal
 
 # posibles soluciones
 # 1.-Transformacion logaritmico 10
@@ -350,7 +323,7 @@ summary (price_training$price)
 norm_price_test<-lillie.test(log10(price_training$price))
 print (norm_price_test)
 histogram((price_training$price))
-# Rechazamos Ho para nuestra muestra.Log10 Price No sigue una distribución Normal
+# Rechazamos Ho para nuestra muestra.Log10 Price No sigue una distribuci?n Normal
 
 qqnorm(1/(price_training$price))
 qqline(1/(price_training$price))
@@ -361,28 +334,28 @@ qqline(1/(price_training$price))
 histogram(sqrt(price_training$price))
 norm_price_test<-lillie.test(sqrt(price_training$price))
 print (norm_price_test) 
-# Rechazamos Ho para nuestra muestra. Raiz cuadrada de Price No sigue una distribución Normal
+# Rechazamos Ho para nuestra muestra. Raiz cuadrada de Price No sigue una distribuci?n Normal
 
 
 #Prueba 3 . Inversa 1/x 
 histogram(1/(price_training$price))
 norm_price_test<-lillie.test(1/(price_training$price))
 print (norm_price_test) 
-# Rechazamos Ho para nuestra muestra. Inversa de  Price No sigue una distribución Normal
+# Rechazamos Ho para nuestra muestra. Inversa de  Price No sigue una distribuci?n Normal
 
 #Prueba 4 . x al cuadrado
 histogram((price_training$price*price_training$price))
 x2<-(price_training$price*price_training$price)
 norm_price_test<-lillie.test(x2)
 print (norm_price_test) 
-# Rechazamos Ho para nuestra muestra.  Price al cuadrado No sigue una distribución Normal
+# Rechazamos Ho para nuestra muestra.  Price al cuadrado No sigue una distribuci?n Normal
 
 
 
 
-#Transformación general de potencias: También llamada transformación de Box-Cox,
+#Transformaci?n general de potencias: Tambi?n llamada transformaci?n de Box-Cox,
 #ya que fue propuesta por Box y Cox (1964). 
-#Engloba a las anteriores mediante la siguiente fórmula general
+#Engloba a las anteriores mediante la siguiente f?rmula general
 
 #el lambda para la maxima  log likeihood obteniendo un minimo SSE es 0.707
 
@@ -395,8 +368,8 @@ print (norm_price_test)
 
 
 ###vamos a analizar si es un problema con los outliers#####
-#la distribucion del precio de la vivienda está muy dispersa y esto va a dificultar
-#la predicción del modelo. 
+#la distribucion del precio de la vivienda est? muy dispersa y esto va a dificultar
+#la predicci?n del modelo. 
 
 #Univariate -> boxplot. outside of 1.5 times inter-quartile range is an outlier.
 
@@ -418,7 +391,7 @@ dwo<-subset(price_training, price_training$price<extreme.threshold.upper &
 ###pasamos de 15119 a 14.344 observaciones
 (norm_price_test<-lillie.test((dwo$price)))
 
-#los datos siguen sin seguir una distribución Normal. Esto incumple los principios del lm
+#los datos siguen sin seguir una distribuci?n Normal. Esto incumple los principios del lm
 #provemos con la distribucion log10 sobre los datos sin outliers.
 (norm_price_test<-lillie.test(log10(dwo$price)))
 histogram (log10(dwo$price))
@@ -426,8 +399,8 @@ qqnorm    (log10(dwo$price))
 qqline    (log10(dwo$price))
 
 #Se rechaza el contraste de Normalidad , pero tanto el Hitograma como el grafico Q-Q plot
-# nos dicen que no se aleja mucho de una distribución Normal. Por lo menos de forma intuitiva
-#sabemos que estamos incumpliendo la hipótesis de partida pero continuamos con el supuesto de
+# nos dicen que no se aleja mucho de una distribuci?n Normal. Por lo menos de forma intuitiva
+#sabemos que estamos incumpliendo la hip?tesis de partida pero continuamos con el supuesto de
 # TCL ya que no hemos encontrado ninguna transformacion que nos ayude
 
 dwo$price_log<-(log10(dwo$price))
@@ -485,7 +458,7 @@ histogram (log10(dwo$sqft_lot))
 qqnorm    (log10(dwo$sqft_lot))
 qqline    (log10(dwo$sqft_lot))
 (norm_price_test<-lillie.test(log10(dwo$sqft_lot)))
-#tambien rechazamos la hipotesis de normalidad , esta de forma mucho más notoria en el gráfico Q-Q
+#tambien rechazamos la hipotesis de normalidad , esta de forma mucho m?s notoria en el gr?fico Q-Q
 #proponemos otras transformaciones
 
 #TRANSFORMACION raiz cuadrada
@@ -493,7 +466,7 @@ histogram (sqrt(dwo$sqft_lot))
 qqnorm    (sqrt(dwo$sqft_lot))
 qqline    (sqrt(dwo$sqft_lot))
 (norm_price_test<-lillie.test(sqrt(dwo$sqft_lot)))
-#tambien rechazamos la hipotesis de normalidad , esta de forma mucho más notoria en el gráfico Q-Q
+#tambien rechazamos la hipotesis de normalidad , esta de forma mucho m?s notoria en el gr?fico Q-Q
 #proponemos otras transformaciones
 
 #TRANSFORMACION inversa
@@ -505,7 +478,7 @@ qqline    (1/(dwo$sqft_lot))
 
 
 #nos platearemos la inclusion o no en el modelo debido a la falta de Normalidad.
-#La distribución que más nos convence y apoyandonos en el TCL es la log10
+#La distribuci?n que m?s nos convence y apoyandonos en el TCL es la log10
 
 dwo$sqft_lot_log<-log10(dwo$sqft_lot)
 
@@ -551,12 +524,12 @@ qqline    (log10(dwo$sqft_above))
 #y podria ser normal con el TCL
 
 dwo$sqft_above_log<-log10(dwo$sqft_above)
-#excluimos esta variable del análisis
+#excluimos esta variable del an?lisis
 
 
 #variables discretas. En este punto debemos tener en cuenta el pricipio de Parsimonia
-#Este término hace referencia a que el mejor modelo es aquel capaz de explicar con mayor precisión
-#la variabilidad observada en la variable respuesta empleando el menor número de predictores,
+#Este t?rmino hace referencia a que el mejor modelo es aquel capaz de explicar con mayor precisi?n
+#la variabilidad observada en la variable respuesta empleando el menor n?mero de predictores,
 #por lo tanto, con menos asunciones.
 
 ########################################################################
@@ -573,7 +546,7 @@ aggregate(dwo$price, by=list(dwo$condition), FUN=mean)
 
 
 #hemos recodificado esta variable en tres grupos alrededor de la media en relacion a su precio medio
-#veamos esta relacion antes y depues de la transformación
+#veamos esta relacion antes y depues de la transformaci?n
 
 
 dwo %>%
@@ -585,7 +558,7 @@ dwo %>%
 
 
 
-#podemos afirmar a priori y visualmente que existe una relación entre el precio y la condicion
+#podemos afirmar a priori y visualmente que existe una relaci?n entre el precio y la condicion
 
 
 
@@ -641,8 +614,8 @@ dwo %>%
   ggtitle("Precio Medio por Banyos")
 
 table(dwo$bathrooms)
-#la distribución a partir de 4 es muy pequeña. Poco estable para inferir
-#proponemos la recodificación a partir de este valor
+#la distribuci?n a partir de 4 es muy peque?a. Poco estable para inferir
+#proponemos la recodificaci?n a partir de este valor
 
 dwo$bathrooms_new<-recode (dwo$bathrooms,"4:8=4")
 table(dwo$bathrooms_new)
@@ -672,7 +645,7 @@ dwo %>%
   ggplot(aes(x=floors, y=avg_price)) + geom_bar(stat = "identity")  +
   ggtitle("Precio Medio por Plantas")
 
-#es una variable bastante estable en relación al precio.
+#es una variable bastante estable en relaci?n al precio.
 table(dwo$floors)
 aggregate(dwo$price, by=list(dwo$floors), FUN=mean) 
 
@@ -755,7 +728,7 @@ dwo %>%
 ################################################################################
 
 ggplot(dwo, aes(dwo$grade))    + geom_bar() + ggtitle("grade")
-#en este punto interesa crear una agrupación en función del precio que será nuestra variable objetivo
+#en este punto interesa crear una agrupaci?n en funci?n del precio que ser? nuestra variable objetivo
 dwo$grade<-as.character(dwo$grade)
 
 table(dwo$grade)
@@ -801,7 +774,7 @@ dwo %>%
 
 
 #puede que nos estemos encontrando con un problema de serie temporal de forma velada
-# por lo que vamos a incluir esta variable dentro del modelo de forma categórica y no continua
+# por lo que vamos a incluir esta variable dentro del modelo de forma categ?rica y no continua
 
 dwo$mes<-month(as.POSIXlt(dwo$date, format="%m/%d/%Y"))
 table(dwo$mes)
@@ -862,8 +835,8 @@ dwo %>%
   summarise(avg_price = mean(price)) %>%
   ggplot(aes(x=flag_milenio, y=avg_price)) + geom_bar(stat = "identity") + 
   ggtitle("Precio Medio por Milenio")
-#Parece a priori que existe una diferencia significativa entre la construccíon 
-# durante un milenio y otro. Comprobaremos nuestra Hipótesis con un test
+#Parece a priori que existe una diferencia significativa entre la construcc?on 
+# durante un milenio y otro. Comprobaremos nuestra Hip?tesis con un test
 # Suponiendo normalidad TCL
 # t test 
 # Ho : No existen diferencias significativas de precio entre las categorias Milenio 1900 y 2000 
@@ -938,7 +911,7 @@ as.data.frame(tabla.frec)
 
 tabla.frec  <- table(dwo$date)   # Crea la tabla de frecuencias
 as.data.frame(tabla.frec) 
-#tienen distinto formato por lo que nos quedamos con el año
+#tienen distinto formato por lo que nos quedamos con el a?o
 
 date1 <-  as.Date(dwo$date,'%m/%d/%Y')
 year1 <- as.numeric(format(date1,'%Y'))
@@ -977,7 +950,7 @@ qqnorm    (sqrt(dwo$antiguedad))
 qqline    (sqrt(dwo$antiguedad))
 (norm_price_test<-lillie.test(sqrt(dwo$antiguedad)))
 
-###rechazamos la hipotesis de Normalidad en la transformacion cuadrática
+###rechazamos la hipotesis de Normalidad en la transformacion cuadr?tica
 
 
 ##vamos a realizar una transformacion inversa
@@ -988,7 +961,7 @@ qqline    (1/(dwo$antiguedad))
 (norm_price_test<-lillie.test(1/(dwo$antiguedad)))
 #esta es la que peor funciona.
 #nos plantemos si introducir la variable en el modelo ya que no es normal.
-# de momento la transformacion que más nos convence es la raiz cuadrada.
+# de momento la transformacion que m?s nos convence es la raiz cuadrada.
 
 
 dwo$antiguedad_raiz<-(sqrt(dwo$antiguedad))
@@ -1001,11 +974,11 @@ dwo$antiguedad_raiz<-(sqrt(dwo$antiguedad))
 
 #No colinialidad o multicolinialidad:
   
-#  En los modelos lineales múltiples los predictores deben ser independientes, 
+#  En los modelos lineales m?ltiples los predictores deben ser independientes, 
 #no debe de haber colinialidad entre ellos.
-#La colinialidad ocurre cuando un predictor está linealmente relacionado
+#La colinialidad ocurre cuando un predictor est? linealmente relacionado
 #con uno o varios de los otros predictores del modelo o 
-#cuando es la combinación lineal de otros predictores
+#cuando es la combinaci?n lineal de otros predictores
 
 
 summary(dwo)
@@ -1025,11 +998,11 @@ chart.Correlation(dwo[c(23,24,26,27,36,37,38)], histogram = F, pch = 19)
 
 
 #ANALISIS DE LAS ASOCIACIONES ENTRE VARIABLES CON EL V DE CRAMER
-#La V de Cramer es muy habitual para medir la relación entre factores,
-#es menos susceptible a valores muestrales. También 0 implica independencia
-#y 1 una relación perfecta entre los factores. Habitualmente
-#valores superiores a 0,30 ya nos están indicando que hay una posible
-#relación entre las variables.
+#La V de Cramer es muy habitual para medir la relaci?n entre factores,
+#es menos susceptible a valores muestrales. Tambi?n 0 implica independencia
+#y 1 una relaci?n perfecta entre los factores. Habitualmente
+#valores superiores a 0,30 ya nos est?n indicando que hay una posible
+#relaci?n entre las variables.
 
 #flag_reforma
 #flag_milenio
@@ -1043,7 +1016,7 @@ chart.Correlation(dwo[c(23,24,26,27,36,37,38)], histogram = F, pch = 19)
 cv.test = function(x,y) {
   CV = sqrt(chisq.test(x, y, correct=FALSE)$statistic /
               (length(x) * (min(length(unique(x)),length(unique(y))) - 1)))
-  print.noquote("Cramér V / Phi:")
+  print.noquote("Cram?r V / Phi:")
   return(as.numeric(CV))
 }
 
@@ -1095,7 +1068,7 @@ cv.test(x=dwo$grade_new,y=dwo$condition)
 ######################################################################
 
 #modelo1 . Seleccion de Predictores
-#Método de entrada forzada: se introducen todos los predictores simultáneamente
+#M?todo de entrada forzada: se introducen todos los predictores simult?neamente
 
 modelo1 <- lm(formula = price ~sqft_livingt_log +sqft_lot_log + floors_new+
                 sqft_above_log+ antiguedad_raiz + flag_reforma + grade_new + 
@@ -1107,20 +1080,20 @@ summary(modelo1)
 #El modelo con todas las variables introducidas como predictores tiene un R2 nula 0,5133
 #es capaz de explicar el 51,01% de la variabilidad observada en la esperanza de vida. 
 #El p-value del modelo es significativo (p-value: < 2.2e-16) por lo que se puede aceptar 
-#que el modelo no es por azar, al menos uno de los coeficientes parciales de regresión 
+#que el modelo no es por azar, al menos uno de los coeficientes parciales de regresi?n 
 #es distinto de 0. Muchos de ellos no son significativos, 
-#lo que es un indicativo de que podrían no contribuir al modelo.
+#lo que es un indicativo de que podr?an no contribuir al modelo.
 
 #por ejemplo la variable condition es problable que sea conveniente eliminarla 
 
 
-#3.Selección de los mejores predictores
+#3.Selecci?n de los mejores predictores
 #En este caso se van a emplear la estrategia de stepwise mixto. 
-#El valor matemático empleado para determinar la calidad del modelo va a ser Akaike(AIC).
+#El valor matem?tico empleado para determinar la calidad del modelo va a ser Akaike(AIC).
 
 step(object = modelo1, direction = "backward", trace = 1)
 
-#El mejor modelo resultante del proceso de selección ha sido:
+#El mejor modelo resultante del proceso de selecci?n ha sido:
   
 modelo <- (lm(formula = price_log ~ sqft_livingt_log + sqft_lot_log + floors_new + 
                 sqft_above_log + antiguedad_raiz + flag_reforma + grade_new + 
@@ -1146,8 +1119,8 @@ lillie.test(modelo$residuals)
 #Al representar los residuos frente a los valores ajustados por el modelo,
 #los primeros se tienen que distribuir de forma aleatoria en torno a cero,
 #manteniendo aproximadamente la misma variabilidad a lo largo del eje X.
-#Si se observa algún patrón específico, por ejemplo forma cónica o mayor
-#dispersión en los extremos, significa que la variabilidad es dependiente del valor ajustado
+#Si se observa alg?n patr?n espec?fico, por ejemplo forma c?nica o mayor
+#dispersi?n en los extremos, significa que la variabilidad es dependiente del valor ajustado
 #y por lo tanto no hay homocedasticidad.
 
 fit_plot <- ggplot(dwo, aes(modelo$fitted.values, modelo$residuals))+
@@ -1159,17 +1132,17 @@ fit_plot <- ggplot(dwo, aes(modelo$fitted.values, modelo$residuals))+
 
 fit_plot
 #parece que no hay homocedasticidad a pesar de la poca calidad del modelo
-#parece que existe una ligera forma cónica en el extremo 
+#parece que existe una ligera forma c?nica en el extremo 
 
 
 
-# Análisis de Inflación de Varianza (VIF):
+# An?lisis de Inflaci?n de Varianza (VIF):
 vif(modelo)
 #la variable condition mucha una inflaccion de la varianza muy alta. Tenemos que
-#trabajarla para reducir su tamaño o eliminarla del modelo.
+#trabajarla para reducir su tama?o o eliminarla del modelo.
 
 
-#Autocorrelación:
+#Autocorrelaci?n:
 library(car)
 #Durbin-Watson Test For Autocorrelated Errors
 dwt(modelo, alternative = "two.sided")

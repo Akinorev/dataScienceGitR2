@@ -1,23 +1,24 @@
 ---
-title: "Practica FAD"
+title: "Memoria Fundamentos de Analisis de Datos."
 author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
 date: "11/29/2019"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     theme: united
     toc: yes
     toc_float: yes
 ---
 
-# Memoria Fundamentos de Analisis de Datos.
+---
 
-El objetivo de esta practica es elaborar y presentar un informe de un proyecto de Ciencia de Datos en R Markdown. Para esta practica hemos usado el siguiente dataset:
+## 00 Introducción a la práctica y librerías
 
-https://www.kaggle.com/swathiachath/kc-housesales-data
+Para la práctica hemos seleccionado una base de datos obtenida de Kaggle con los precios de viviendas del barrio King County en el estado de Washington (EEUU). Esta base de datos es de dominio público y consta de 21 variables con 21.613 observaciones.
 
-Las librerias usadas son las siguientes:
+La base de datos puede descargarse en el siguiente enlace: https://www.kaggle.com/swathiachath/kc-housesales-data
+
+
+Las librerias usadas para esta práctica son las siguientes:
 
  - Amelia
  - brew
@@ -81,13 +82,264 @@ library(readr)
 library(sos)
 library(tidyr)
 library(VIM)
+```
 
+```{r methods, include=FALSE}
+round_df <- function(x, digits) {
+    # round all numeric variables
+    # x: data frame 
+    # digits: number of digits to round
+    numeric_columns <- sapply(x, mode) == 'numeric'
+    x[numeric_columns] <-  round(x[numeric_columns], digits)
+    x
+}
+```
+
+## 01 Definición de objetivos y carga de datos
+1. Separación de los datos en 3 grupos de datos: trainning, control y test.
+    - El grupo training contiene el 70% de los datos, con el cual entrenaremos el modelo.
+    - El grupo control contiene el 20% de los datos, el cual nos servirá para comprobar y ajustar el buen funcionamiento del modelo.
+    - El grupo test contiene el 10% de los datos y se dejará como conjunto aislado hasta el final de la práctica como simulación de datos reales.
+
+2. Analisis exploratorio inicial
+    - Se llevará a cabo separando las variables categóricas de las cualitativas para su posterior estudio.
+    
+Carga de los datos (para la lectura correcta asegurarse de tener el archivo "kc_house_data_missing.csv")
+```{r load_data, include=TRUE}
 relPath <- getwd()
 setwd(relPath)
 datos_miss <- read.csv2 (file="./kc_house_data_missing.csv",
                        header=TRUE, na = c("", "NA"), )
-names (datos_miss)
-summary (datos_miss)
 ```
 
-## Analisis inicial
+# 02 Separación de datos en los grupos training, control y test
+Como ya hemos mencionado en el siguiente apartado dividimos la base de datos en 3 grupos de observaciones escogidas aleatoriamente:
+- Training: "price_training" (70% de observaciones)
+- Control: "price_control" (20% de observaciones)
+- Testesting: "price_testing" (10% de observaciones)
+
+```{r data_split, include=TRUE}
+set.seed(737)
+inTraining     <- createDataPartition(pull(datos_miss), p = .7, list = FALSE, times = 1)
+price_training <- slice(datos_miss, inTraining)
+aux            <- slice(datos_miss, -inTraining)
+intest         <- createDataPartition(pull(aux),
+                                      p = 2/3, list = FALSE, times = 1)
+
+price_control  <- slice(aux, intest)
+price_testing  <- slice(aux, -intest)
+```
+
+
+#price_training 15.119 obs
+#price_control  4.319  obs
+#price_testing  2.159  obs
+
+## 03 Análisis exploratorio inicial
+En este apartado realizamos un primer análisis para comprender las variables y el estado original en el que se encuentra la base de datos.
+
+```{r data_reader, include=TRUE}
+#Muestra de variables de la base de datos seleccionada
+names(datos_miss)
+
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(datos_miss)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(datos_miss)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+
+### Descripción de variables:
+- id: valor único (Primary key)
+- date: fecha de venta de la vivienda
+- price: precio de venta. Variable seleccionada para la aplicación del modelo y su posterior predicción.
+- bedrooms: número de habitaciones por vivienda.
+- bathrooms: número de baños por vivienda.
+- sqft_living: superficie de la vivienda en pies cuadrados (superficie escriturada).
+- sqft_lot: superficie de la parcela de la vivienda en pies cuadrados (superficie parcelaria).
+- floors: número de plantas por vivienda.
+- waterfront: si la vivienda tiene vistas al mar.
+- view: el número de veces que se ha visitado la vivienda desde su puesta en venta.
+- condition*: el estado de la vivienda establecido mediante una variable numérica del 1 al 5.
+- grade*: nota general de la vivienda propuesta por el sistema de puntuación de la zona del 1 al 13.
+- sqft_above: superficie de la vivienda sobre rasante en pies cuadrados.
+- sqft_basement: superficie de la vivienda bajo rasante en piés cuadrados
+- yr_built: año de construcción de la vivienda
+- yr_renovated: año de la renovación de la vivienda. En caso de no haber sido renovada este parámetro se ha igualado a 0.
+- zipcode: codigo postal de la vivienda.
+- lat: latitud de la coordenada de la vivienda medida en pies.
+- long: longitud de la coordenada de la vivienda medida en pies.
+- sqft_living15: superficie de la sala de estar en el año 2015 (admite renovaciones).
+- sqft_lot15: superficie de la parcela en el año 2015 (admite modificaciones)
+
+  \* *http://info.kingcounty.gov/assessor/esales/Glossary.aspx?type=r#g*
+
+## 04 Transformaciones de variables cuantitativas
+
+## 05 Procesado de variables cualitativas
+
+## 06 Detección, tratamiento e imputación de datos faltantes
+### Análisis previo
+```{r missing_01, include=TRUE}
+aggr_plot <- aggr(price_training, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
+                  labels=names(price_training), cex.axis=.7, gap=1, 
+                  ylab=c("Histogram of missing data","Pattern"))
+```
+
+### Opción I: imputación de variables mediante la media
+
+Imputación de las variables contínuas
+```{r missing_02, include=TRUE}
+vec_miss <- price_training
+
+
+##Para las variables continuas podr?amos hacer una imputacion a la media##
+
+#sqft_living
+price_training$sqft_living[is.na(price_training$sqft_living)] <- 
+                    mean(price_training$sqft_living, na.rm = TRUE)
+
+#sqft_lot
+price_training$sqft_lot[is.na(price_training$sqft_lot)] <- 
+  mean(price_training$sqft_lot, na.rm = TRUE)
+
+
+#sqft_above
+price_training$sqft_above[is.na(price_training$sqft_above)] <- 
+  mean(price_training$sqft_above, na.rm = TRUE)
+
+
+#sqft_basement
+price_training$sqft_basement[is.na(price_training$sqft_basement)] <- 
+  mean(price_training$sqft_basement, na.rm = TRUE)
+```
+
+Imputación de las variables discretas
+```{r missing_03, include=TRUE}
+# Create the function calculate the mode
+getmode <- function(v) {
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+mode_bedrooms   <- getmode(price_training$bedrooms)
+mode_bathrooms  <- getmode(price_training$bathrooms)
+mode_floors     <- getmode(price_training$floors)
+mode_waterfront <- getmode(price_training$waterfront )
+mode_view       <- getmode(price_training$view )
+mode_condition  <- getmode(price_training$condition )
+mode_grade      <- getmode(price_training$grade )
+mode_yr_built   <- getmode(price_training$yr_built )
+mode_yr_renovated     <- getmode(price_training$yr_renovated )
+
+
+#bedrooms
+price_training$bedrooms[is.na(price_training$bedrooms)] <- 
+  (mode_bedrooms)
+
+#bathrooms
+price_training$bathrooms[is.na(price_training$bathrooms)] <- 
+  (mode_bathrooms)
+
+#floors
+price_training$floors[is.na(price_training$floors)] <- 
+  (mode_floors)
+
+#waterfront
+price_training$waterfront[is.na(price_training$waterfront)] <- 
+  (mode_waterfront)
+
+#view
+price_training$view[is.na(price_training$view)] <- 
+  (mode_view)
+
+#condition
+price_training$condition[is.na(price_training$condition)] <- 
+  (mode_condition)
+
+#grade
+price_training$grade[is.na(price_training$grade)] <- 
+  (mode_grade)
+
+#yr_built
+price_training$yr_built[is.na(price_training$yr_built)] <- 
+  (mode_yr_built)
+
+#yr_renovated
+price_training$yr_renovated[is.na(price_training$yr_renovated)] <- 
+  (mode_yr_renovated)
+
+
+#chequeamos que no hay variables missing
+summary (price_training)
+
+```
+
+### Opción II: Imputación de variables mediante el método MICE [Da error]
+#```{r missing_mice, include=TRUE}
+
+## ALTERNATIVA 2. ESUDIO DE LOS MISSING A TRAVES DE FUNCION MICE 
+#Usar?amos  MICE  en el caso de querer imputaci?n m?ltiple
+#asume que los datos faltantes son debidos al azar MAR, lo que implica que la ausencia de 
+#un valor puede predecirse a partir de otros 
+
+#1.-seleccion de las variables PMM (Predictive Mean Matching)  - For numeric variables
+
+summary(vec_miss)
+continuas<- mice(vec_miss [c(6,7,13,14)], m=5, method = 'pmm', seed = 737)
+summary(continuas)
+
+continuas$imp$sqft_living
+continuas$imp$sqft_lot 
+continuas$imp$sqft_above 
+continuas$imp$sqft_basement 
+
+
+
+#polyreg(Bayesian polytomous regression) - For Factor Variables (>= 2 levels)
+#Proportional odds model (ordered, >= 2 levels)
+
+vec_miss$bedrooms<-as.character(vec_miss$bedrooms)
+vec_miss$bathrooms<-as.character(vec_miss$bathrooms)
+vec_miss$floors<-as.character(vec_miss$floors)
+vec_miss$waterfront<-as.character(vec_miss$waterfront)
+vec_miss$view<-as.character(vec_miss$view)
+vec_miss$condition<-as.character(vec_miss$condition)
+vec_miss$grade<-as.character(vec_miss$grade)
+
+
+
+
+summary(vec_miss)
+discreta <- mice(vec_miss [c(4,5,8,9,10,11,12)], m=5, method = 'polyreg', seed = 737)
+
+discreta$imp$bedrooms
+discreta$imp$bathrooms
+discreta$imp$floors
+discreta$imp$waterfront  
+discreta$imp$view  
+discreta$imp$condition  
+discreta$imp$grade
+discreta$imp$yr_built  
+discreta$imp$yr_renovated  
+
+#nos quedamos con el primer m?todo por sencillez, pero tenemos las bases deL Mice
+
+dat2<-mice::complete(discreta, 2)
+dat1<-mice::complete(continuas,2)
+dat <-vec_miss [c(1,2,3)]
+
+#```
+
+## 07 comprobación de reglas en datos
+
+
+
+## 08 Combinación de variables y reducción de la dimensionalidad
+
+
+## 08 Ajuste, interpretación y diagnosis del modelo de regresión lineal múltiple
+
