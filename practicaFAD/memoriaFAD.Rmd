@@ -280,7 +280,7 @@ summary (price_training)
 
 ### Opción II: Imputación de variables mediante el método MICE [Da error]
 #```{r missing_mice, include=TRUE}
-
+  
 ## ALTERNATIVA 2. ESUDIO DE LOS MISSING A TRAVES DE FUNCION MICE 
 #Usar?amos  MICE  en el caso de querer imputaci?n m?ltiple
 #asume que los datos faltantes son debidos al azar MAR, lo que implica que la ausencia de 
