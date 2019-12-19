@@ -82,80 +82,77 @@ library(readr)
 library(sos)
 library(tidyr)
 library(VIM)
+library(nortest)
+library(scales)
 ```
 
-```{r methods, include=FALSE}
-round_df <- function(x, digits) {
-    # round all numeric variables
-    # x: data frame 
-    # digits: number of digits to round
-    numeric_columns <- sapply(x, mode) == 'numeric'
-    x[numeric_columns] <-  round(x[numeric_columns], digits)
-    x
-}
-```
 
-## 01 Definición de objetivos y carga de datos
-1. Separación de los datos en 3 grupos de datos: trainning, control y test.
+## 01 Definición de objetivos
+1. Separación de los datos en 3 grupos de datos: trainning, control y testing.
     - El grupo training contiene el 70% de los datos, con el cual entrenaremos el modelo.
     - El grupo control contiene el 20% de los datos, el cual nos servirá para comprobar y ajustar el buen funcionamiento del modelo.
     - El grupo test contiene el 10% de los datos y se dejará como conjunto aislado hasta el final de la práctica como simulación de datos reales.
 
 2. Analisis exploratorio inicial
     - Se llevará a cabo separando las variables categóricas de las cualitativas para su posterior estudio.
-    
-Carga de los datos (para la lectura correcta asegurarse de tener el archivo "kc_house_data_missing.csv")
+
+## 02 Carga y aislamiento de datos TEST
+
+Carga de los datos (para la lectura correcta asegurarse de tener el archivo "kc_house_data.csv")
 ```{r load_data, include=TRUE}
 relPath <- getwd()
 setwd(relPath)
-datos_miss <- read.csv2 (file="./kc_house_data_missing.csv",
-                       header=TRUE, na = c("", "NA"), )
+price_tplusc <- read.csv(file="./kc_house_data_missing.csv", sep = ";", header=TRUE, na = c("", "NA"), )
+head(price_tplusc)
+
 ```
 
-# 02 Separación de datos en los grupos training, control y test
-Como ya hemos mencionado en el siguiente apartado dividimos la base de datos en 3 grupos de observaciones escogidas aleatoriamente:
-- Training: "price_training" (70% de observaciones)
-- Control: "price_control" (20% de observaciones)
-- Testesting: "price_testing" (10% de observaciones)
+Como ya hemos mencionado anteriormente, en este apartado excluimos de la base de datos el grupo TESTING (10% de los datos) para seguir trabajando con los grupos TRAINING + CONTROL a lo largo de la práctica.
 
-```{r data_split, include=TRUE}
+- Training + control: "price_tplusc" (90% de observaciones)
+- Testing: "price_testing" (10% de observaciones)
+
+```{r data_split01, include=TRUE}
 set.seed(737)
-inTraining     <- createDataPartition(pull(datos_miss), p = .7, list = FALSE, times = 1)
-price_training <- slice(datos_miss, inTraining)
-aux            <- slice(datos_miss, -inTraining)
-intest         <- createDataPartition(pull(aux),
-                                      p = 2/3, list = FALSE, times = 1)
-
-price_control  <- slice(aux, intest)
-price_testing  <- slice(aux, -intest)
+inTraining     <- createDataPartition(pull(price_tplusc), p = .9, list = FALSE, times = 1)
+price_tplusc   <- slice(price_tplusc, inTraining)
+price_testing  <- slice(price_tplusc, -inTraining)
 ```
 
+Finalmente obtenemos los siguientes grupos de observaciones
+```{r data_split02, echo=FALSE}
+data_table <- matrix(c('Grupo TRAINING + CONTROL 90%', dim(price_tplusc)[1], 'Grupo TESTING 10%', dim(price_testing)[1]), ncol=2,byrow=TRUE)
+colnames(data_table) <- c('Nombre del grupo', 'observaciones')
+kable(data_table) %>%
+  kable_styling()
+```
 
-#price_training 15.119 obs
-#price_control  4.319  obs
-#price_testing  2.159  obs
-
-## 03 Análisis exploratorio inicial
+## 03 Análisis exploratorio inicial. EDA
 En este apartado realizamos un primer análisis para comprender las variables y el estado original en el que se encuentra la base de datos.
 
-```{r data_reader, include=TRUE}
-#Muestra de variables de la base de datos seleccionada
-names(datos_miss)
-
+```{r data_reader, include=TRUE, warning=FALSE}
 #Muestra de las primeras 5 filas de la base de datos
-kable(head(datos_miss)) %>%
+kable(head(price_tplusc)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = TRUE)
+
+#Muestra de variables de la base de datos seleccionada
+show_df = data.frame(variable = names(price_tplusc),
+           classe = sapply(price_tplusc, typeof),
+           first_values = sapply(price_tplusc, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL)
+kable(show_df) %>%
+  kable_styling()
   
 #Tabla resumen con los principales estadísticos
-kable(summary(datos_miss)) %>%
+kable(summary(price_tplusc)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = TRUE)
 ```
 
-### Descripción de variables:
-- id: valor único (Primary key)
-- date: fecha de venta de la vivienda
+### Descripción de variables
+- id: valor único (Primary key).
+- date: fecha de venta de la vivienda.
 - price: precio de venta. Variable seleccionada para la aplicación del modelo y su posterior predicción.
 - bedrooms: número de habitaciones por vivienda.
 - bathrooms: número de baños por vivienda.
@@ -166,179 +163,420 @@ kable(summary(datos_miss)) %>%
 - view: el número de veces que se ha visitado la vivienda desde su puesta en venta.
 - condition*: el estado de la vivienda establecido mediante una variable numérica del 1 al 5.
 - grade*: nota general de la vivienda propuesta por el sistema de puntuación de la zona del 1 al 13.
-- sqft_above: superficie de la vivienda sobre rasante en pies cuadrados.
+- sqft_above: superficie de la huella perimetral de la vivienda sobre rasante en pies cuadrados.
 - sqft_basement: superficie de la vivienda bajo rasante en piés cuadrados
 - yr_built: año de construcción de la vivienda
 - yr_renovated: año de la renovación de la vivienda. En caso de no haber sido renovada este parámetro se ha igualado a 0.
 - zipcode: codigo postal de la vivienda.
 - lat: latitud de la coordenada de la vivienda medida en pies.
 - long: longitud de la coordenada de la vivienda medida en pies.
-- sqft_living15: superficie de la sala de estar en el año 2015 (admite renovaciones).
+- sqft_living15: superficie de la vivienda en el año 2015 (admite renovaciones).
 - sqft_lot15: superficie de la parcela en el año 2015 (admite modificaciones)
 
   \* *http://info.kingcounty.gov/assessor/esales/Glossary.aspx?type=r#g*
 
-## 04 Transformaciones de variables cuantitativas
+```{r funciones, include=FALSE, warning=FALSE}
 
-## 05 Procesado de variables cualitativas
+phist <- function(df, bns = 50, varname) {
+p = qplot(df, geom="histogram", bins = bns) + theme_light() +
+  ggtitle("Histograma de frecuencias") + xlab(varname) + ylab("Frecuencia") +
+  scale_x_continuous(labels = scales::comma) + geom_histogram(fill='#8bbabb', color="#464159")
+return(p)
+}
 
-## 06 Detección, tratamiento e imputación de datos faltantes
+pbox <- function(col, varname){
+p = qplot('1', col, geom="boxplot") +
+  geom_boxplot(fill='#8bbabb', color="#464159") +
+  ggtitle("Diagrama Boxplot") + ylab("Valores") + xlab(varname)
+return(p)
+}
+
+p_barras <-function(df = df_cualitativas, dx, dy, xlab){
+p = ggplot(df, aes(unlist(dx), fill=unlist(dy))) +
+  geom_bar(position="dodge") + 
+  labs(x= xlab, y = 'Frecuencia', fill=NULL)
+return(p)
+}
+
+
+```
+
+### A. Análisis univariante
+#### Estudio de variables cuantitativas
+
+```{r cuantitativas, include=TRUE, warning=FALSE}
+#Obtención de variables cuantitativas
+df_cuantitativas = price_tplusc %>% select(3, 6, 7, 13:16, 18:dim(price_tplusc)[2])
+
+data.frame(variable = names(df_cuantitativas),
+           classe = sapply(df_cuantitativas, typeof),
+           first_values = sapply(df_cuantitativas, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL) %>% kable() %>% kable_styling()
+```
+
+
+**Estudio de la variable "price" (precio de venta).**
+```{r var_price, include=TRUE, warning=FALSE}
+var_price = df_cuantitativas$price
+name = "sqft_living"
+
+# Descripción de la variable
+describe(var_price)
+
+# Visualización de la variable
+phist(var_price, 50, name)
+pbox(var_price, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(var_price)
+```
+Tras la visualización de la variable "price" mediente el histograma de frecuencias y el diagrama de caja, se puede observar que la variable no sigue una distribución normal y contiene múltiples outliars. Se ha realizado también una comprobación mediante el test de Kolmogorov-Smirnov rechazando Ho de que la distribución es normal.
+
+Las posibles soluciones a plantearnos para su transformación son:  
+1. Transformacion logaritmico 10  
+2. Raiz cuadrada  
+3. Inversa 1/x  
+
+
+**Estudio de las variables "sqft_living"  y "sqft_living15" (Superficie de la vivienda).**
+variable "sqft_living": superficie de la vivienda en pies cuadrados (superficie escriturada).
+```{r var_sqft, include=TRUE, warning=FALSE}
+var_sqft = df_cuantitativas$sqft_living
+name = "sqft_living"
+
+# Descripción de la variable
+describe(df_cuantitativas$sqft_living)
+
+# Visualización de la variable
+phist(var_sqft, 50, name)
+pbox(var_sqft, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(var_sqft)
+```
+
+variable "sqft_living15": superficie de la vivienda en pies cuadrados (superficie escriturada).
+```{r var_sqft15, include=TRUE, warning=FALSE}
+var_sqft15 = df_cuantitativas$sqft_living15
+name = "sqft_living15"
+
+# Descripción de la variable
+describe(df_cuantitativas$sqft_living15)
+
+# Visualización de la variable
+phist(var_sqft15, 50, name)
+pbox(var_sqft15, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(var_sqft15)
+```
+Tras la visualización de la variable "sqft_living" mediente el histograma de frecuencias y el diagrama de caja, se puede observar que la variable no sigue una distribución normal y contiene múltiples outliars. Se ha realizado también una comprobación mediante el test de Kolmogorov-Smirnov rechazando Ho de que la distribución es normal.
+
+Las posibles soluciones a plantearnos para su transformación son:  
+1. Transformacion logaritmico 10  
+2. Raiz cuadrada  
+3. Inversa 1/x  
+
+**Estudio de las variables "sqft_lot" y "sqft_lot15 (superficie de la parcela de la vivienda).**
+Variables "sqft_lot": superficie de la parcela de la vivienda en pies cuadrados (superficie parcelaria).
+```{r var_lot, include=TRUE, warning=FALSE}
+knitr::opts_chunk$set(message = FALSE)
+var_lot = df_cuantitativas$sqft_lot
+name = "sqft_lot"
+
+# Descripción de la variable
+describe(var_lot)
+
+# Visualización de la variable
+phist(var_lot, 50, name)
+pbox(var_lot, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(var_lot)
+```
+
+Variable "sqft_lot15":  superficie de la parcela en el año 2015 (admite modificaciones)
+```{r var_lot15, include=TRUE, warning=FALSE}
+var_lot15 = df_cuantitativas$sqft_lot15
+name = "sqft_lot15"
+
+# Descripción de la variable
+describe(var_lot15)
+
+# Visualización de la variable
+phist(var_lot15, 50, name)
+pbox(var_lot15, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(var_lot15)
+```
+
+Dado que la gran mayoría de viviendas aparentan ser unifamiliares las variables de superficies de parcela y de vivienda suelen estar muy correlacionadas entre si. De esta manera, se puede observar como producen visualizaciones y resultados similares, rechazando en todas ellas que la distribución sea normal.
+
+En los apartados de transformación nos plantearemos las posibles soluciones a aplicar.
+
+**Estudio de la variable "sqft_above" (superficie de la huella de la vivienda).**
+```{r var_above, include=TRUE, warning=FALSE}
+var_above = df_cuantitativas$sqft_above
+name = "sqft_above"
+
+# Descripción de la variable
+describe(var_above)
+
+# Visualización de la variable
+phist(var_above, 50, name)
+pbox(var_above, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(var_above)
+```
+Al tratarse de una variable de superficie de la huella, la variable coincidirá con la superficie de la vivienda en aquellos casos en los que la vivienda tenga una planta. De esta manera "sqft_above" no puede aceptarse como una variable de distribución normal. 
+
+En los apartados de transformación nos plantearemos las posibles soluciones a aplicar.
+
+**Estudio de la variable "sqft_basement" (superficie bajo rasante).**
+```{r var_base, include=TRUE, warning=FALSE}
+var_base = df_cuantitativas$sqft_basement
+name = "sqft_basement"
+
+# Descripción de la variable
+describe(var_base)
+
+# Visualización de la variable
+phist(var_base, 50, name)
+pbox(var_base, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(df_cuantitativas$sqft_basement)
+```
+En esta variable se han igualado a 0 aquellos casos en los que la vivienda no tenga sótano. Por otro lado hay que contar con que en la mayoría de los casos la superficie de sótano no computa con la de vivienda, aunque si puede influir en el valor de la vivienda.
+
+En los apartados de transformación nos plantearemos las posibles soluciones a aplicar.
+
+**Estudio de la variable "yr_built" (año de construcción de la vivienda).**
+```{r var_year, include=TRUE, warning=FALSE}
+var_year = df_cuantitativas$yr_built
+name = "yr_built"
+
+# Descripción de la variable
+describe(var_year)
+
+# Visualización de la variable
+phist(var_year, 50, "yr_built")
+pbox(var_year, "yr_built")
+```
+Se puede observar que hay mayor cantidad de viviendas modernas que de antiguas en la base de datos sin seguir una distribución normal, registranto el máximo entre el año 2000 y 2010.
+
+En los apartados de transformación nos plantearemos las posibles soluciones a aplicar.
+
+**Estudio de la variable "yr_renovated" (año de renovación de la vivienda).**
+```{r var_renove, include=TRUE, warning=FALSE}
+var_renove = df_cuantitativas$yr_renovated
+name = "yr_renovated"
+
+# Descripción de la variable
+describe(var_renove)
+
+# Visualización de la variable
+phist(var_renove, 25, name)
+pbox(var_renove, name)
+
+#comprobación de normalidad por Kolmogorov-Smirnov
+lillie.test(var_renove)
+```
+El problema que observamos en esta variable es que aquellas viviendas que no han sido renovadas se han igualado a 0, no permitiendo visualizar la variable correctamente.
+
+#### Estudio de variables cualitativas
+```{r cuantitativas, include=TRUE, warning=FALSE}
+#Obtención de variables cuantitativas
+df_cualitativas = price_tplusc %>% select(2, 4, 5, 8:12, 17)
+
+data.frame(variable = names(df_cualitativas),
+           classe = sapply(df_cualitativas, typeof),
+           first_values = sapply(df_cualitativas, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL) %>% kable() %>% kable_styling()
+```
+
+
+**Estudio de la variable "date" (fecha de venta de la vivienda):**
+Dado que el objetivo de la práctica es poder predecir el precio de la vivienda, sería interesante para nuestro modelo separar esta variable en mes y año ya que el precio de venta se puede ver influido por la estación y por el año en el que se realizó la venta.
+
+```{r var_date, include=TRUE, warning=FALSE}
+dates = data.frame(date = as.Date(df_cualitativas$date,"%m/%d/%Y"))
+dates %>% summarise(min = min(date), max = max(date))
+df_cualitativas$dates_m = format(dates,"%m")
+df_cualitativas$dates_y = format(dates,"%Y")
+head(df_cualitativas) %>%  kable()
+
+p_barras(df_cualitativas, df_cualitativas$dates_m, df_cualitativas$dates_y, xlab = 'Mes')
+
+
+```
+
+### B. Análisis multivariante
+
+
+## 04 Transformación de variables
+### Transformación de variables cuantitativas
+### Trasformaciṕn de variables categóricas
+
+## 05 Detección, tratamiento e imputación de datos faltantes
 ### Análisis previo
-```{r missing_01, include=TRUE}
-aggr_plot <- aggr(price_training, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
-                  labels=names(price_training), cex.axis=.7, gap=1, 
+```{r missing_01, include=TRUE, warning=FALSE}
+aggr_plot <- aggr(price_tplusc, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
+                  labels=names(price_tplusc), cex.axis=.7, gap=1, 
                   ylab=c("Histogram of missing data","Pattern"))
 ```
 
 ### Opción I: imputación de variables mediante la media
 
 Imputación de las variables contínuas
+
 ```{r missing_02, include=TRUE}
-vec_miss <- price_training
-
-
-##Para las variables continuas podr?amos hacer una imputacion a la media##
-
-#sqft_living
-price_training$sqft_living[is.na(price_training$sqft_living)] <- 
-                    mean(price_training$sqft_living, na.rm = TRUE)
-
-#sqft_lot
-price_training$sqft_lot[is.na(price_training$sqft_lot)] <- 
-  mean(price_training$sqft_lot, na.rm = TRUE)
-
-
-#sqft_above
-price_training$sqft_above[is.na(price_training$sqft_above)] <- 
-  mean(price_training$sqft_above, na.rm = TRUE)
-
-
-#sqft_basement
-price_training$sqft_basement[is.na(price_training$sqft_basement)] <- 
-  mean(price_training$sqft_basement, na.rm = TRUE)
+# vec_miss <- price_tplusc
+# 
+# 
+# ##Para las variables continuas podr?amos hacer una imputacion a la media##
+# 
+# #sqft_living
+# price_tplusc$sqft_living[is.na(price_tplusc$sqft_living)] <-
+#                     mean(price_tplusc$sqft_living, na.rm = TRUE)
+# 
+# #sqft_lot
+# price_tplusc$sqft_lot[is.na(price_tplusc$sqft_lot)] <-
+#   mean(price_tplusc$sqft_lot, na.rm = TRUE)
+# 
+# 
+# #sqft_above
+# price_tplusc$sqft_above[is.na(price_tplusc$sqft_above)] <-
+#   mean(price_tplusc$sqft_above, na.rm = TRUE)
+# 
+# 
+# #sqft_basement
+# price_tplusc$sqft_basement[is.na(price_tplusc$sqft_basement)] <-
+#   mean(price_tplusc$sqft_basement, na.rm = TRUE)
 ```
 
 Imputación de las variables discretas
 ```{r missing_03, include=TRUE}
-# Create the function calculate the mode
-getmode <- function(v) {
-  uniqv <- unique(v)
-  uniqv[which.max(tabulate(match(v, uniqv)))]
-}
-mode_bedrooms   <- getmode(price_training$bedrooms)
-mode_bathrooms  <- getmode(price_training$bathrooms)
-mode_floors     <- getmode(price_training$floors)
-mode_waterfront <- getmode(price_training$waterfront )
-mode_view       <- getmode(price_training$view )
-mode_condition  <- getmode(price_training$condition )
-mode_grade      <- getmode(price_training$grade )
-mode_yr_built   <- getmode(price_training$yr_built )
-mode_yr_renovated     <- getmode(price_training$yr_renovated )
-
-
-#bedrooms
-price_training$bedrooms[is.na(price_training$bedrooms)] <- 
-  (mode_bedrooms)
-
-#bathrooms
-price_training$bathrooms[is.na(price_training$bathrooms)] <- 
-  (mode_bathrooms)
-
-#floors
-price_training$floors[is.na(price_training$floors)] <- 
-  (mode_floors)
-
-#waterfront
-price_training$waterfront[is.na(price_training$waterfront)] <- 
-  (mode_waterfront)
-
-#view
-price_training$view[is.na(price_training$view)] <- 
-  (mode_view)
-
-#condition
-price_training$condition[is.na(price_training$condition)] <- 
-  (mode_condition)
-
-#grade
-price_training$grade[is.na(price_training$grade)] <- 
-  (mode_grade)
-
-#yr_built
-price_training$yr_built[is.na(price_training$yr_built)] <- 
-  (mode_yr_built)
-
-#yr_renovated
-price_training$yr_renovated[is.na(price_training$yr_renovated)] <- 
-  (mode_yr_renovated)
-
-
-#chequeamos que no hay variables missing
-summary (price_training)
-
+# # Create the function calculate the mode
+# getmode <- function(v) {
+#   uniqv <- unique(v)
+#   uniqv[which.max(tabulate(match(v, uniqv)))]
+# }
+# mode_bedrooms   <- getmode(price_tplusc$bedrooms)
+# mode_bathrooms  <- getmode(price_tplusc$bathrooms)
+# mode_floors     <- getmode(price_tplusc$floors)
+# mode_waterfront <- getmode(price_tplusc$waterfront )
+# mode_view       <- getmode(price_tplusc$view )
+# mode_condition  <- getmode(price_tplusc$condition )
+# mode_grade      <- getmode(price_tplusc$grade )
+# mode_yr_built   <- getmode(price_tplusc$yr_built )
+# mode_yr_renovated     <- getmode(price_tplusc$yr_renovated )
+# 
+# 
+# #bedrooms
+# price_tplusc$bedrooms[is.na(price_tplusc$bedrooms)] <-
+#   (mode_bedrooms)
+# 
+# #bathrooms
+# price_tplusc$bathrooms[is.na(price_tplusc$bathrooms)] <-
+#   (mode_bathrooms)
+# 
+# #floors
+# price_tplusc$floors[is.na(price_tplusc$floors)] <-
+#   (mode_floors)
+# 
+# #waterfront
+# price_tplusc$waterfront[is.na(price_tplusc$waterfront)] <-
+#   (mode_waterfront)
+# 
+# #view
+# price_tplusc$view[is.na(price_tplusc$view)] <-
+#   (mode_view)
+# 
+# #condition
+# price_tplusc$condition[is.na(price_tplusc$condition)] <-
+#   (mode_condition)
+# 
+# #grade
+# price_tplusc$grade[is.na(price_tplusc$grade)] <-
+#   (mode_grade)
+# 
+# #yr_built
+# price_tplusc$yr_built[is.na(price_tplusc$yr_built)] <-
+#   (mode_yr_built)
+# 
+# #yr_renovated
+# price_tplusc$yr_renovated[is.na(price_tplusc$yr_renovated)] <-
+#   (mode_yr_renovated)
+# 
+# 
+# #chequeamos que no hay variables missing
+# summary (price_tplusc)
 ```
 
 ### Opción II: Imputación de variables mediante el método MICE [Da error]
-#```{r missing_mice, include=TRUE}
-  
-## ALTERNATIVA 2. ESUDIO DE LOS MISSING A TRAVES DE FUNCION MICE 
-#Usar?amos  MICE  en el caso de querer imputaci?n m?ltiple
-#asume que los datos faltantes son debidos al azar MAR, lo que implica que la ausencia de 
-#un valor puede predecirse a partir de otros 
+```{r missing_mice, include=FALSE, echo=FALSE}
+#   
+# ## ALTERNATIVA 2. ESUDIO DE LOS MISSING A TRAVES DE FUNCION MICE 
+# #Usar?amos  MICE  en el caso de querer imputaci?n m?ltiple
+# #asume que los datos faltantes son debidos al azar MAR, lo que implica que la ausencia de 
+# #un valor puede predecirse a partir de otros 
+# 
+# #1.-seleccion de las variables PMM (Predictive Mean Matching)  - For numeric variables
+# 
+# summary(vec_miss)
+# continuas<- mice(vec_miss [c(6,7,13,14)], m=5, method = 'pmm', seed = 737)
+# summary(continuas)
+# 
+# continuas$imp$sqft_living
+# continuas$imp$sqft_lot 
+# continuas$imp$sqft_above 
+# continuas$imp$sqft_basement 
+# 
+# 
+# 
+# #polyreg(Bayesian polytomous regression) - For Factor Variables (>= 2 levels)
+# #Proportional odds model (ordered, >= 2 levels)
+# 
+# vec_miss$bedrooms<-as.character(vec_miss$bedrooms)
+# vec_miss$bathrooms<-as.character(vec_miss$bathrooms)
+# vec_miss$floors<-as.character(vec_miss$floors)
+# vec_miss$waterfront<-as.character(vec_miss$waterfront)
+# vec_miss$view<-as.character(vec_miss$view)
+# vec_miss$condition<-as.character(vec_miss$condition)
+# vec_miss$grade<-as.character(vec_miss$grade)
+# 
+# 
+# 
+#   
+# summary(vec_miss)
+# discreta <- mice(vec_miss [c(4,5,8,9,10,11,12)], m=5, printFlag=FALSE, method = 'polyreg', seed = 737)
+# #imp = mice(nhanes, m=5, printFlag=FALSE, maxit = 40, seed=2525)
+# 
+# discreta$imp$bedrooms
+# discreta$imp$bathrooms
+# discreta$imp$floors
+# discreta$imp$waterfront  
+# discreta$imp$view  
+# discreta$imp$condition  
+# discreta$imp$grade
+# discreta$imp$yr_built  
+# discreta$imp$yr_renovated  
+# 
+# #nos quedamos con el primer m?todo por sencillez, pero tenemos las bases deL Mice
+# 
+# dat2<-mice::complete(discreta, 2)
+# dat1<-mice::complete(continuas,2)
+# dat <-vec_miss [c(1,2,3)]
 
-#1.-seleccion de las variables PMM (Predictive Mean Matching)  - For numeric variables
+```
 
-summary(vec_miss)
-continuas<- mice(vec_miss [c(6,7,13,14)], m=5, method = 'pmm', seed = 737)
-summary(continuas)
-
-continuas$imp$sqft_living
-continuas$imp$sqft_lot 
-continuas$imp$sqft_above 
-continuas$imp$sqft_basement 
+## 06 Comprobación de los datos
 
 
-
-#polyreg(Bayesian polytomous regression) - For Factor Variables (>= 2 levels)
-#Proportional odds model (ordered, >= 2 levels)
-
-vec_miss$bedrooms<-as.character(vec_miss$bedrooms)
-vec_miss$bathrooms<-as.character(vec_miss$bathrooms)
-vec_miss$floors<-as.character(vec_miss$floors)
-vec_miss$waterfront<-as.character(vec_miss$waterfront)
-vec_miss$view<-as.character(vec_miss$view)
-vec_miss$condition<-as.character(vec_miss$condition)
-vec_miss$grade<-as.character(vec_miss$grade)
-
-
-
-
-summary(vec_miss)
-discreta <- mice(vec_miss [c(4,5,8,9,10,11,12)], m=5, method = 'polyreg', seed = 737)
-
-discreta$imp$bedrooms
-discreta$imp$bathrooms
-discreta$imp$floors
-discreta$imp$waterfront  
-discreta$imp$view  
-discreta$imp$condition  
-discreta$imp$grade
-discreta$imp$yr_built  
-discreta$imp$yr_renovated  
-
-#nos quedamos con el primer m?todo por sencillez, pero tenemos las bases deL Mice
-
-dat2<-mice::complete(discreta, 2)
-dat1<-mice::complete(continuas,2)
-dat <-vec_miss [c(1,2,3)]
-
-#```
-
-## 07 comprobación de reglas en datos
-
-
-
-## 08 Combinación de variables y reducción de la dimensionalidad
+## 07 Combinación de variables y reducción de la dimensionalidad
 
 
 ## 08 Ajuste, interpretación y diagnosis del modelo de regresión lineal múltiple

@@ -99,7 +99,7 @@ write.csv(price_testing, file="C:/Users/Pablo/Desktop/FAD_Pr?ctica/kc_house_pric
 
 #price_training
 
-##3 An?lisis exploratorio de datos faltantes: VIM##
+##3 Análisis exploratorio de datos faltantes: VIM##
 aggr_plot <- aggr(price_training, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
                   labels=names(price_training), cex.axis=.7, gap=1, 
                   ylab=c("Histogram of missing data","Pattern"))
