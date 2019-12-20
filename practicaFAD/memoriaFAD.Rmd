@@ -84,6 +84,7 @@ library(tidyr)
 library(VIM)
 library(nortest)
 library(scales)
+library(plyr)
 ```
 
 
@@ -191,18 +192,51 @@ p = qplot('1', col, geom="boxplot") +
 return(p)
 }
 
-p_barras <-function(df = df_cualitativas, dx, dy, xlab){
+p_barras2 <-function(df = df_cualitativas, dx, dy, xlab){
 p = ggplot(df, aes(unlist(dx), fill=unlist(dy))) +
   geom_bar(position="dodge") + 
-  labs(x= xlab, y = 'Frecuencia', fill=NULL)
+  labs(x= xlab, y = 'Frecuencia', fill=NULL) +
+  ggtitle("Diagrama de barras") + scale_fill_manual(values=c("#8bbabb", "#6c7b95"))
 return(p)
 }
 
+p_barras <-function(df = df_cualitativas, dx, xlab){
+p = ggplot(df, aes(unlist(dx), fill=unlist(dx))) +
+  geom_bar(position="dodge", fill='#8bbabb', color="#464159") + 
+  labs(x= xlab, y = 'Frecuencia', fill=NULL) +
+  ggtitle("Diagrama de barras")
+return(p)
+}
 
+p_densidad <- function(df = price_tplusc, varname){
+p = df %>% select(c("price", varname)) %>%
+  na.omit() %>%
+  ggplot(., aes(x=.[,1], colour=.[,2])) +
+  labs(title = "Diagrama de densidad", x = "price", colour = varname) + 
+  geom_density()
+  return(p)
+}
+
+p_densidad2 <- function(df = price_tplusc, varname1, varname2){
+p = df %>% select(c(varname2, varname1)) %>%
+  na.omit() %>%
+  ggplot(., aes(x=.[,1], colour=.[,2])) +
+  labs(title = "Diagrama de densidad", x = varname2, colour = varname1) + 
+  geom_density()
+  return(p)
+}
+
+structure <- function(df){
+  show_df = data.frame(variable = names(df),
+           classe = sapply(df, typeof),
+           first_values = sapply(df, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL)
+kable(show_df) %>%
+  kable_styling()
+}
 ```
 
-### A. Análisis univariante
-#### Estudio de variables cuantitativas
+### A. Análisis univariante cuantitativo
 
 ```{r cuantitativas, include=TRUE, warning=FALSE}
 #Obtención de variables cuantitativas
@@ -224,12 +258,14 @@ name = "sqft_living"
 describe(var_price)
 
 # Visualización de la variable
-phist(var_price, 50, name)
-pbox(var_price, name)
+p1 <- phist(var_price, 50, name)
+p2 <- pbox(var_price, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(var_price)
 ```
+
 Tras la visualización de la variable "price" mediente el histograma de frecuencias y el diagrama de caja, se puede observar que la variable no sigue una distribución normal y contiene múltiples outliars. Se ha realizado también una comprobación mediante el test de Kolmogorov-Smirnov rechazando Ho de que la distribución es normal.
 
 Las posibles soluciones a plantearnos para su transformación son:  
@@ -248,8 +284,9 @@ name = "sqft_living"
 describe(df_cuantitativas$sqft_living)
 
 # Visualización de la variable
-phist(var_sqft, 50, name)
-pbox(var_sqft, name)
+p1 <- phist(var_sqft, 50, name)
+p2 <- pbox(var_sqft, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(var_sqft)
@@ -264,12 +301,14 @@ name = "sqft_living15"
 describe(df_cuantitativas$sqft_living15)
 
 # Visualización de la variable
-phist(var_sqft15, 50, name)
-pbox(var_sqft15, name)
+p1 <- phist(var_sqft15, 50, name)
+p2 <- pbox(var_sqft15, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(var_sqft15)
 ```
+
 Tras la visualización de la variable "sqft_living" mediente el histograma de frecuencias y el diagrama de caja, se puede observar que la variable no sigue una distribución normal y contiene múltiples outliars. Se ha realizado también una comprobación mediante el test de Kolmogorov-Smirnov rechazando Ho de que la distribución es normal.
 
 Las posibles soluciones a plantearnos para su transformación son:  
@@ -288,8 +327,9 @@ name = "sqft_lot"
 describe(var_lot)
 
 # Visualización de la variable
-phist(var_lot, 50, name)
-pbox(var_lot, name)
+p1 <- phist(var_lot, 50, name)
+p2 <- pbox(var_lot, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(var_lot)
@@ -304,8 +344,9 @@ name = "sqft_lot15"
 describe(var_lot15)
 
 # Visualización de la variable
-phist(var_lot15, 50, name)
-pbox(var_lot15, name)
+p1 <- phist(var_lot15, 50, name)
+p2 <- pbox(var_lot15, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(var_lot15)
@@ -324,12 +365,14 @@ name = "sqft_above"
 describe(var_above)
 
 # Visualización de la variable
-phist(var_above, 50, name)
-pbox(var_above, name)
+p1 <- phist(var_above, 50, name)
+p2 <- pbox(var_above, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(var_above)
 ```
+
 Al tratarse de una variable de superficie de la huella, la variable coincidirá con la superficie de la vivienda en aquellos casos en los que la vivienda tenga una planta. De esta manera "sqft_above" no puede aceptarse como una variable de distribución normal. 
 
 En los apartados de transformación nos plantearemos las posibles soluciones a aplicar.
@@ -343,12 +386,14 @@ name = "sqft_basement"
 describe(var_base)
 
 # Visualización de la variable
-phist(var_base, 50, name)
-pbox(var_base, name)
+p1 <- phist(var_base, 50, name)
+p2 <- pbox(var_base, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(df_cuantitativas$sqft_basement)
 ```
+
 En esta variable se han igualado a 0 aquellos casos en los que la vivienda no tenga sótano. Por otro lado hay que contar con que en la mayoría de los casos la superficie de sótano no computa con la de vivienda, aunque si puede influir en el valor de la vivienda.
 
 En los apartados de transformación nos plantearemos las posibles soluciones a aplicar.
@@ -362,9 +407,11 @@ name = "yr_built"
 describe(var_year)
 
 # Visualización de la variable
-phist(var_year, 50, "yr_built")
-pbox(var_year, "yr_built")
+p1 <- phist(var_year, 50, "yr_built")
+p2 <- pbox(var_year, "yr_built")
+grid.arrange(p1, p2, nrow=1)
 ```
+
 Se puede observar que hay mayor cantidad de viviendas modernas que de antiguas en la base de datos sin seguir una distribución normal, registranto el máximo entre el año 2000 y 2010.
 
 En los apartados de transformación nos plantearemos las posibles soluciones a aplicar.
@@ -378,16 +425,18 @@ name = "yr_renovated"
 describe(var_renove)
 
 # Visualización de la variable
-phist(var_renove, 25, name)
-pbox(var_renove, name)
+p1 <- phist(var_renove, 25, name)
+p2 <- pbox(var_renove, name)
+grid.arrange(p1, p2, nrow=1)
 
 #comprobación de normalidad por Kolmogorov-Smirnov
 lillie.test(var_renove)
 ```
+
 El problema que observamos en esta variable es que aquellas viviendas que no han sido renovadas se han igualado a 0, no permitiendo visualizar la variable correctamente.
 
-#### Estudio de variables cualitativas
-```{r cuantitativas, include=TRUE, warning=FALSE}
+### B. Analisis univariante cualitativo
+```{r cualitativas, include=TRUE, warning=FALSE}
 #Obtención de variables cuantitativas
 df_cualitativas = price_tplusc %>% select(2, 4, 5, 8:12, 17)
 
@@ -403,34 +452,536 @@ Dado que el objetivo de la práctica es poder predecir el precio de la vivienda,
 
 ```{r var_date, include=TRUE, warning=FALSE}
 dates = data.frame(date = as.Date(df_cualitativas$date,"%m/%d/%Y"))
-dates %>% summarise(min = min(date), max = max(date))
 df_cualitativas$dates_m = format(dates,"%m")
 df_cualitativas$dates_y = format(dates,"%Y")
-head(df_cualitativas) %>%  kable()
 
-p_barras(df_cualitativas, df_cualitativas$dates_m, df_cualitativas$dates_y, xlab = 'Mes')
+# Límites del campo date
+dates %>% summarise(min = min(date), max = max(date))
+
+# Tablas de frecuencias en función al mes y al año
+table(df_cualitativas$dates_y) %>% kable(., col.names = c('Años', 'Frecuencia'))
+table(df_cualitativas$dates_m) %>% kable(., col.names = c('Meses', 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras2(df_cualitativas, df_cualitativas$dates_m, df_cualitativas$dates_y, xlab = 'Mes')
+```
+
+**Estudio de la variable "bedrooms" (Número de habitaciones por vivienda):**
+Curiosamente la variable bedrooms es decimal por lo que la redondearemos para simplificar su representación.
+```{r var_rooms, include=TRUE, warning=FALSE}
+var_rooms = df_cualitativas$bedrooms %>% round(., digits=0)
+name = "bedrooms"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_rooms) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_rooms, xlab = name)
+```
+
+La frecuencia máxima de habitaciones por vivienda se localiza en 3 habitaciones, probablemente deban categorizarse debido a que la distribución no es normal y contiene multiples outliers que la desequilibran.
+
+**Estudio de la variable "bathrooms" (Número de baños/aseos por vivienda):**
+Al igual que en el caso anterior la variable bathrooms es decimal por lo que la redondearemos para simplificar su representación.
+```{r var_bathrooms, include=TRUE, warning=FALSE}
+var_bathrooms = df_cualitativas$bathrooms %>%  round(., digits = 0)
+name = "bathrooms"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_bathrooms) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_bathrooms, xlab = name)
+```
+
+La variable "bathrooms" sigue una distribución muy similar a la de la variable "bedrooms" por lo que aplicaremos las mismas soluciones.
+
+**Estudio de la variable "floors" (Número de plantas por vivienda):**
+Como en los casos anteriores la variable "floors" es decimal, pero a diferencia de los anteriores solo encontramos decimales con saltos de 0.5 por lo que redondearlos hacia arriba o hacia abajo todos podría perjudicarnos posteriormente en el modelo. De esta manera mantendremos los datos como en el origen para su correcta visualización.
+```{r var_floors, include=TRUE, warning=FALSE}
+var_floors = df_cualitativas$floors
+name = "floors"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_floors) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_floors, xlab = name)
+```
+
+Se puede observar que el número de valores decimales es reducido en comparación con el resto, pero creemos que deberían mantenerse sin redondear.
+
+**Estudio de la variable "waterfront" (viviendas frente a grandes masas de agua):**
+```{r var_water, include=TRUE, warning=FALSE}
+var_waterfront = df_cualitativas$waterfront
+name = "waterfront"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_waterfront) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_waterfront, xlab = name)
+```
+
+Esta variable es de tipo dummy por lo que no necesitaría modificación alguna salvo por la imputación de datos faltantes. Se puede observar que tan solo el 1% de las viviendas de la base de datos están ubicadas frente a grandes masas de agua.
+
+**Estudio de la variable "view" (número de visitas que ha recibido la vivienda):**
+```{r var_view, include=TRUE, warning=FALSE}
+var_view = df_cualitativas$view
+name = "waterfront"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_view) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_view, xlab = name)
+```
+
+Dado que la mayoría de las viviendas no han recibido visitas, inicialmente no parece una variable que pueda afectar mucho al precio de la vivienda por lo que podría ser deshechada tras el análisis multivariante.
+
+**Estudio de la variable "condition" (estado de la vivienda del 1 al 5):**
+```{r var_condition, include=TRUE, warning=FALSE}
+var_condition = df_cualitativas$condition
+name = "condition"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_condition) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_condition, xlab = name)
+```
+
+La variable "condition" determina el estado de la vivienda clasificándola en una puntuación del 1 al 5, dado que la mayor parte de las viviendas se distribuyen en los puntos 3 y 4 podríamos simplificarla mediante una variable dummy.
+
+**Estudio de la variable "grade" (nota general de la vivienda del 1 al 13):**
+```{r var_grade, include=TRUE, warning=FALSE}
+var_grade = df_cualitativas$grade
+name = "grade"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_grade) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_grade, xlab = name)
+```
+
+Al igual que la anterior, la variable "grade" determina la nota general de la vivienda propuesta por la zona, dado que la mayor parte de las viviendas se distribuyen entre los valores del 6 al 10 podríamos simplificarla mediante una variable dummy.
+
+**Estudio de la variable "zipcode" (código postal):**
+```{r var_zipcode, include=TRUE, warning=FALSE}
+var_zipcode = df_cualitativas$view
+name = "zipcode"
+
+# Tablas de frecuencias en función al mes y al año
+table(var_zipcode) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+p_barras(df_cualitativas, var_zipcode, xlab = name)
+```
+
+La variable "zipcode" podría ser de ayuda pero debido a que el 90% de las viviendas en la base de datos se ubican bajo el mismo código postal, ésta podría ser deshechada.
+
+### c. Análisis multivariante cuantitativo
+Comentar procedimiento
+```{r multi_ct, include=TRUE, warning=FALSE, message=FALSE}
+
+numeric_cols <- c("sqft_living", "sqft_lot", "sqft_living15", "price", "sqft_basement", "sqft_above")
+
+df_cuantitativas %>% select(numeric_cols) %>%
+  na.omit() %>%
+  ggpairs(columns=1:6)
+
+numeric_cols2 <- c("yr_built", "yr_renovated", 'lat', 'long', "price")
+
+df_cuantitativas %>% select(numeric_cols2) %>%
+  na.omit() %>%
+  ggpairs(columns=1:5)
+```
+
+Comentar resultados
+
+### c. Análisis multivariante cualitativo
+Comentar procedimiento
+
+**Estudio de la variable "bedrooms" (número de habitaciones por vivienda):**
+```{r multi_bedrooms, include=TRUE}
+old = "bedrooms"
+new = "cat_bedrooms"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=4)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, new)
+```
+
+Comentar resultados
+
+**Estudio de la variable "bathrooms" (número de baños/aseos por vivienda):**
+```{r multi_bathrooms, include=TRUE}
+old = "bathrooms"
+new = "cat_bathrooms"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, new)
+```
+
+Comentar resultados
+
+**Estudio de la variable "floors" (número de plantas por vivienda):**
+```{r multi_floors, include=TRUE}
+old = "floors"
+new = "cat_floors"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, new)
+```
+
+Comentar los resultados
+
+**Estudio de la variable "waterfront" (número de plantas por vivienda):**
+```{r multi_water, include=TRUE}
+name = "waterfront"
+
+#mostramos su tabla de frecuencias
+table(price_tplusc[[name]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, name)
+
+#visualización de los datos categorizados con respecto a la variable "long"
+p1 = p_densidad2(price_tplusc, name, 'long')
+#visualización de los datos categorizados con respecto a la variable "lat"
+p2 = p_densidad2(price_tplusc, name, 'lat')
+
+# Creación de grid
+grid.arrange(p1, p2, nrow=1)
 
 
 ```
 
-### B. Análisis multivariante
+Comentar los resultados
+
+**Estudio de la variable "view" (número de plantas por vivienda):**
+```{r multi_view, include=TRUE}
+old = "view"
+new = "cat_view"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, new)
+```
+
+Comentar los resultados
+
+**Estudio de la variable "condition" (número de plantas por vivienda):**
+```{r multi_condition, include=TRUE}
+old = "condition"
+new = "cat_condition"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, new)
+```
+
+Comentar los resultados
+
+**Estudio de la variable "grade" (número de plantas por vivienda):**
+```{r multi_grade, include=TRUE}
+old = "grade"
+new = "cat_grade"
+
+#corrección reemplazando el string s por un "NA"
+table(price_tplusc[[old]])
+price_tplusc[[old]][price_tplusc[[old]] == "s"] <- NA
+price_tplusc[[old]] = as.numeric(price_tplusc[[old]])
+table(price_tplusc[[old]])
 
 
-## 04 Transformación de variables
-### Transformación de variables cuantitativas
-### Trasformaciṕn de variables categóricas
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=4)
+table(price_tplusc[[new]])
 
-## 05 Detección, tratamiento e imputación de datos faltantes
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, new)
+```
+
+Comentar los resultados
+
+**Estudio de la variable "zipcode" (código postal):**
+```{r multi_zipcode, include=TRUE}
+old = "zipcode"
+new = "cat_zipcode"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad(price_tplusc, new)
+```
+
+Comentar los resultados
+
+
+
+## 04 Detección, tratamiento e imputación de datos faltantes
 ### Análisis previo
 ```{r missing_01, include=TRUE, warning=FALSE}
-aggr_plot <- aggr(price_tplusc, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE,
+aggr_plot <- aggr(price_tplusc, col=c('#464159','#c7f0db'), numbers=TRUE, sortVars=TRUE,
                   labels=names(price_tplusc), cex.axis=.7, gap=1, 
                   ylab=c("Histogram of missing data","Pattern"))
 ```
 
-### Opción I: imputación de variables mediante la media
+#### Imputación de las variables contínuas:
+```{r varshow, include=TRUE}
+#Muestra de variables de la base de datos seleccionada
+structure(df_cuantitativas)
 
-Imputación de las variables contínuas
+#Muestra de variables missing
+sapply(df_cuantitativas, function(x) sum(is.na(x))) %>% kable()
+```
+<br/>
+**Imputación de la variable "sqft_living" (superficie de la vivienda):**
+La variable "sqft_living" es una de las más importantes debído a su alta correlación con la variable "price". Para asegurarnos de que no haya sesgo vamos a usar el método knn sobre las variables más relaciondas. Una de las variables que más nos va a ayudar a la imputación será "sqft_living15" ya que esla superficie de la vivienda medida en 2015.
+```{r miss_living, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(price, sqft_living, sqft_living15, bedrooms, sqft_lot, sqft_above, sqft_living15) %>% VIM::kNN(variable='sqft_living')
+
+#guardado de la variable
+price_tplusc$sqft_living_im = imputed$sqft_living
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "sqft_living", "sqft_living15")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(sqft_living15, sqft_living, sqft_living_imp)  %>% marginplot(., delimiter = '_imp')
+```
+<br/>
+Tras imputar la variable podemos ver que la correlación se mantiene y que no se producen grandes cambios.
+
+**Imputación de la variable "sqft_basement" (superficie del sótano):**
+La variable "sqft_basement" es una variable dificil de imputar debido a que si la vivienda no tiene sótano su valor es cero. Por ello para su correcta imputación debe estudiarse el análisis multivariante.
+
+Podemos observar que las variables con mayor correlación con respecto a "sqft_basement" son:
+- sqft_living con un 0.43
+- bedrooms con un 0.30
+- price con un 0.32
+- bathrooms con un 0.28
+
+Por ello usaremos estas variables para su imputación.
+```{r miss_basement, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(sqft_basement, price, sqft_living, bedrooms, bathrooms) %>%
+  VIM::kNN(variable='sqft_basement')
+
+#guardado de la variable
+price_tplusc$sqft_basement_im = imputed$sqft_basement
+head(price_tplusc)
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "sqft_basement", "sqft_living")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(sqft_living, sqft_basement, sqft_basement_imp)  %>% marginplot(., delimiter = '_imp')
+```
+<br/>
+**Imputación de la variable "sqft_lot" (superficie de la parcela):**
+La variable "sqft_lot" es una variable con baja correlación entre las demás salvo con "sqft_lot15" ya que es la misma variable actualizada en el año 2015, puediendo usarla directamente para imputarla.
+```{r miss_lot, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(price, sqft_lot, sqft_lot15) %>%
+  VIM::kNN(variable="sqft_lot")
+
+#guardado de la variable
+price_tplusc$sqft_lot_im = imputed$sqft_lot
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "sqft_lot", "sqft_lot15")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(sqft_lot15, sqft_lot, sqft_lot_imp)  %>% marginplot(., delimiter = '_imp')
+```
+<br/>
+**Imputación de la variable "sqft_above" (superficie de la parcela):**
+La variable "sqft_above" es una variable....
+```{r miss_above, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(price, sqft_above, sqft_living, sqft_living15) %>%
+  VIM::kNN(variable="sqft_above")
+
+#guardado de la variable
+price_tplusc$sqft_above_im = imputed$sqft_above
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "sqft_above")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(price, sqft_above, sqft_above_imp)  %>% marginplot(., delimiter = '_imp')
+```
+
+<br/>
+**Imputación de la variable "yr_built" (superficie de la parcela):**
+La variable "yr_built" es una variable con baja correlación entre las demás salvo con "long" probablemente por el crecimiento del barrio de manera direccional y con "yr_renovated" debido a que a más antiguo es el año de construcción más probable es su renovación.
+```{r miss_yr_built, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(price, yr_built, long, yr_renovated) %>%
+  VIM::kNN(variable="yr_built")
+
+#guardado de la variable
+price_tplusc$yr_built_im = imputed$yr_built
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "yr_built")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(long, yr_built, yr_built_imp)  %>% marginplot(., delimiter = '_imp')
+```
+<br/>
+**Resumen final tras la imputación de las variables:**
+```{r data_reader, include=TRUE, warning=FALSE}
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(price_tplusc)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+
+#Muestra de variables de la base de datos seleccionada
+show_df = data.frame(variable = names(price_tplusc),
+           classe = sapply(price_tplusc, typeof),
+           first_values = sapply(price_tplusc, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL)
+kable(show_df) %>%
+  kable_styling()
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(price_tplusc)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+<br/>
+
+#### Imputación de las variables discretas:
+```{r varshow, include=TRUE, message=FALSE, warning=FALSE}
+#Muestra de variables de la base de datos seleccionada
+structure(df_cualitativas)
+
+#Muestra de variables missing
+sapply(df_cualitativas, function(x) sum(is.na(x))) %>% kable()
+
+#Correlaciones entre variables discretas numéricas
+discretas_col <- c("bedrooms", "bathrooms", 'price', 'floors')
+
+price_tplusc %>% select(discretas_col) %>%
+  na.omit() %>%
+  ggpairs(columns=1:4)
+```
+
+<br/>
+**Imputación de la variable "bedrooms" (habitaciones por vivienda):**
+La variable "berooms" es una variable importante ya que está altamente relacionada con la superficie de la vivienda y con su precio.
+```{r miss_bedrooms, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(bedrooms, bathrooms, price, floors) %>%
+  VIM::kNN(variable="bedrooms")
+
+#guardado de la variable
+price_tplusc$bedrooms_im = imputed$bedrooms
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "bedrooms")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(price, bedrooms, bedrooms_imp)  %>% marginplot(., delimiter = '_imp')
+```
+<br/>
+**Imputación de la variable "bathrooms" (baños/aseos por vivienda):**
+La variable "bathrooms" es una variable importante ya que está altamente relacionada con la superficie de la vivienda y con su precio.
+```{r miss_bedrooms, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(bedrooms, bathrooms, price, floors) %>%
+  VIM::kNN(variable="bathrooms")
+
+#guardado de la variable
+price_tplusc$bathrooms_im = imputed$bathrooms
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "bathrooms")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(price, bathrooms, bathrooms_imp)  %>% marginplot(., delimiter = '_imp')
+```
+<br/>
+**Imputación de la variable "floors" (baños/aseos por vivienda):**
+La variable "floors" es una variable importante ya que está altamente relacionada con la superficie de la vivienda y con su precio.
+```{r miss_bedrooms, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(bedrooms, bathrooms, price, floors) %>%
+  VIM::kNN(variable="floors")
+
+#guardado de la variable
+price_tplusc$floors_im = imputed$floors
+
+#Visualización y comprobación de la varaible
+columns <- c("price", "floors")
+imputed %>% select(columns) %>%
+  na.omit() %>%
+  ggpairs(columns=1:length(columns))
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(price, floors, floors_imp)  %>% marginplot(., delimiter = '_imp')
+```
+<br/>
+**Imputación de la variable "waterfront" (vivienda con vistas):**
+La variable "waterfront" es una variable que influye de manera directa sobre el precio de la vivienda pero que no puede obtenerse de manera segura salvo con las variables de 
+```{r miss_bedrooms, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(waterfront, long, price) %>%
+  VIM::kNN(variable="waterfront")
+
+#guardado de la variable
+price_tplusc$waterfront_im = imputed$waterfront
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(long, waterfront, waterfront_imp)  %>% marginplot(., delimiter = '_imp')
+```
+
+
 
 ```{r missing_02, include=TRUE}
 # vec_miss <- price_tplusc
@@ -572,6 +1123,13 @@ Imputación de las variables discretas
 # dat <-vec_miss [c(1,2,3)]
 
 ```
+
+
+## 04 Transformación de variables
+**Resumen comentarios y toma de deci
+### Transformación de variables cuantitativas
+### Trasformaciṕn de variables categóricas
+
 
 ## 06 Comprobación de los datos
 
