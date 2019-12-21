@@ -85,6 +85,9 @@ library(VIM)
 library(nortest)
 library(scales)
 library(plyr)
+library(PerformanceAnalytics)
+library(corrplot)
+library(leaps)
 ```
 
 
@@ -179,9 +182,14 @@ kable(summary(price_tplusc)) %>%
 ```{r funciones, include=FALSE, warning=FALSE}
 
 phist <- function(df, bns = 50, varname) {
-p = qplot(df, geom="histogram", bins = bns) + theme_light() +
-  ggtitle("Histograma de frecuencias") + xlab(varname) + ylab("Frecuencia") +
-  scale_x_continuous(labels = scales::comma) + geom_histogram(fill='#8bbabb', color="#464159")
+  p = ggplot(df, aes(x = df[[varname]])) + 
+    geom_histogram(aes(y =..density..), 
+                   colour = "#464159", 
+                   fill = "#8bbabb", na.rm = TRUE) + 
+    ggtitle("Diagrama Boxplot") + 
+    ylab("Densidad") + xlab(varname) + 
+    scale_x_continuous(labels = scales::comma) +
+  stat_function(fun = dnorm, args = list(mean = mean(df[[varname]]), sd = sd(df[[varname]])))
 return(p)
 }
 
@@ -234,6 +242,21 @@ structure <- function(df){
 kable(show_df) %>%
   kable_styling()
 }
+
+qqplot.data <- function (vec) # argument: vector of numbers
+{
+  # following four lines from base R's qqline()
+  y <- quantile(vec[!is.na(vec)], c(0.25, 0.75))
+  x <- qnorm(c(0.25, 0.75))
+  slope <- diff(y)/diff(x)
+  int <- y[1L] - slope * x[1L]
+
+  d <- data.frame(resids = vec)
+
+  p = ggplot(d, aes(sample = resids)) + stat_qq() + geom_abline(slope = slope, intercept = int)
+  return(p)
+
+}
 ```
 
 ### A. Análisis univariante cuantitativo
@@ -252,13 +275,13 @@ data.frame(variable = names(df_cuantitativas),
 **Estudio de la variable "price" (precio de venta).**
 ```{r var_price, include=TRUE, warning=FALSE}
 var_price = df_cuantitativas$price
-name = "sqft_living"
+name = "price"
 
 # Descripción de la variable
 describe(var_price)
 
 # Visualización de la variable
-p1 <- phist(var_price, 50, name)
+p1 <- phist(df_cuantitativas, ., name)
 p2 <- pbox(var_price, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -284,7 +307,7 @@ name = "sqft_living"
 describe(df_cuantitativas$sqft_living)
 
 # Visualización de la variable
-p1 <- phist(var_sqft, 50, name)
+p1 <- phist(df_cuantitativas, ., name)
 p2 <- pbox(var_sqft, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -301,7 +324,7 @@ name = "sqft_living15"
 describe(df_cuantitativas$sqft_living15)
 
 # Visualización de la variable
-p1 <- phist(var_sqft15, 50, name)
+p1 <- phist(df_cuantitativas, 50, name)
 p2 <- pbox(var_sqft15, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -327,7 +350,7 @@ name = "sqft_lot"
 describe(var_lot)
 
 # Visualización de la variable
-p1 <- phist(var_lot, 50, name)
+p1 <- phist(df_cuantitativas, ., name)
 p2 <- pbox(var_lot, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -344,7 +367,7 @@ name = "sqft_lot15"
 describe(var_lot15)
 
 # Visualización de la variable
-p1 <- phist(var_lot15, 50, name)
+p1 <- phist(df_cuantitativas, ., name)
 p2 <- pbox(var_lot15, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -365,7 +388,7 @@ name = "sqft_above"
 describe(var_above)
 
 # Visualización de la variable
-p1 <- phist(var_above, 50, name)
+p1 <- phist(df_cuantitativas, 50, name)
 p2 <- pbox(var_above, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -386,7 +409,7 @@ name = "sqft_basement"
 describe(var_base)
 
 # Visualización de la variable
-p1 <- phist(var_base, 50, name)
+p1 <- phist(df_cuantitativas, 50, name)
 p2 <- pbox(var_base, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -407,7 +430,7 @@ name = "yr_built"
 describe(var_year)
 
 # Visualización de la variable
-p1 <- phist(var_year, 50, "yr_built")
+p1 <- phist(df_cuantitativas, 50, "yr_built")
 p2 <- pbox(var_year, "yr_built")
 grid.arrange(p1, p2, nrow=1)
 ```
@@ -425,7 +448,7 @@ name = "yr_renovated"
 describe(var_renove)
 
 # Visualización de la variable
-p1 <- phist(var_renove, 25, name)
+p1 <- phist(df_cuantitativas, 25, name)
 p2 <- pbox(var_renove, name)
 grid.arrange(p1, p2, nrow=1)
 
@@ -869,7 +892,7 @@ imputed %>% select(long, yr_built, yr_built_imp)  %>% marginplot(., delimiter = 
 ```
 <br/>
 **Resumen final tras la imputación de las variables:**
-```{r data_reader, include=TRUE, warning=FALSE}
+```{r data_readerdos, warning=FALSE}
 #Muestra de las primeras 5 filas de la base de datos
 kable(head(price_tplusc)) %>%
   kable_styling() %>%
@@ -882,16 +905,16 @@ show_df = data.frame(variable = names(price_tplusc),
            row.names = NULL)
 kable(show_df) %>%
   kable_styling()
-  
-#Tabla resumen con los principales estadísticos
-kable(summary(price_tplusc)) %>%
-  kable_styling() %>%
-  scroll_box(width = "100%", height = TRUE)
+
+# #Tabla resumen con los principales estadísticos
+# kable(summary(price_tplusc)) %>%
+#   kable_styling() %>%
+#   scroll_box(width = "100%", height = TRUE)
 ```
 <br/>
 
 #### Imputación de las variables discretas:
-```{r varshow, include=TRUE, message=FALSE, warning=FALSE}
+```{r varshowuno, include=TRUE, message=FALSE, warning=FALSE}
 #Muestra de variables de la base de datos seleccionada
 structure(df_cualitativas)
 
@@ -929,7 +952,7 @@ imputed %>% select(price, bedrooms, bedrooms_imp)  %>% marginplot(., delimiter =
 <br/>
 **Imputación de la variable "bathrooms" (baños/aseos por vivienda):**
 La variable "bathrooms" es una variable importante ya que está altamente relacionada con la superficie de la vivienda y con su precio.
-```{r miss_bedrooms, include=TRUE, message=FALSE, warning=FALSE}
+```{r miss_bathrooms, include=TRUE, message=FALSE, warning=FALSE}
 #método de imputación knn
 imputed <- price_tplusc %>% select(bedrooms, bathrooms, price, floors) %>%
   VIM::kNN(variable="bathrooms")
@@ -949,7 +972,7 @@ imputed %>% select(price, bathrooms, bathrooms_imp)  %>% marginplot(., delimiter
 <br/>
 **Imputación de la variable "floors" (baños/aseos por vivienda):**
 La variable "floors" es una variable importante ya que está altamente relacionada con la superficie de la vivienda y con su precio.
-```{r miss_bedrooms, include=TRUE, message=FALSE, warning=FALSE}
+```{r miss_floors, include=TRUE, message=FALSE, warning=FALSE}
 #método de imputación knn
 imputed <- price_tplusc %>% select(bedrooms, bathrooms, price, floors) %>%
   VIM::kNN(variable="floors")
@@ -968,8 +991,8 @@ imputed %>% select(price, floors, floors_imp)  %>% marginplot(., delimiter = '_i
 ```
 <br/>
 **Imputación de la variable "waterfront" (vivienda con vistas):**
-La variable "waterfront" es una variable que influye de manera directa sobre el precio de la vivienda pero que no puede obtenerse de manera segura salvo con las variables de 
-```{r miss_bedrooms, include=TRUE, message=FALSE, warning=FALSE}
+La variable "waterfront" es una variable que influye de manera directa sobre el precio de la vivienda pero que no puede obtenerse de manera segura salvo con las variables de
+```{r miss_waterfront, include=TRUE, message=FALSE, warning=FALSE}
 #método de imputación knn
 imputed <- price_tplusc %>% select(waterfront, long, price) %>%
   VIM::kNN(variable="waterfront")
@@ -980,162 +1003,467 @@ price_tplusc$waterfront_im = imputed$waterfront
 #Visualización y comprobación de los datos imputados
 imputed %>% select(long, waterfront, waterfront_imp)  %>% marginplot(., delimiter = '_imp')
 ```
+<br/>
+**Imputación de la variable "view" (vivienda con vistas):**
+La variable "view" es una variable que influye de manera directa sobre el precio de la vivienda pero que no puede obtenerse de manera segura salvo con las variables de
+```{r miss_view, include=TRUE, message=FALSE, warning=FALSE}
+#método de imputación knn
+imputed <- price_tplusc %>% select(view, sqft_above, sqft_living, price) %>%
+  VIM::kNN(variable="view")
 
+#guardado de la variable
+price_tplusc$view_im = imputed$view
 
-
-```{r missing_02, include=TRUE}
-# vec_miss <- price_tplusc
-# 
-# 
-# ##Para las variables continuas podr?amos hacer una imputacion a la media##
-# 
-# #sqft_living
-# price_tplusc$sqft_living[is.na(price_tplusc$sqft_living)] <-
-#                     mean(price_tplusc$sqft_living, na.rm = TRUE)
-# 
-# #sqft_lot
-# price_tplusc$sqft_lot[is.na(price_tplusc$sqft_lot)] <-
-#   mean(price_tplusc$sqft_lot, na.rm = TRUE)
-# 
-# 
-# #sqft_above
-# price_tplusc$sqft_above[is.na(price_tplusc$sqft_above)] <-
-#   mean(price_tplusc$sqft_above, na.rm = TRUE)
-# 
-# 
-# #sqft_basement
-# price_tplusc$sqft_basement[is.na(price_tplusc$sqft_basement)] <-
-#   mean(price_tplusc$sqft_basement, na.rm = TRUE)
+#Visualización y comprobación de los datos imputados
+imputed %>% select(price, view, view_imp)  %>% marginplot(., delimiter = '_imp')
 ```
+<br/>
+**Imputación de la variable "condition":**
+```{r miss_condition, include=TRUE, message=FALSE, warning=FALSE}
 
-Imputación de las variables discretas
-```{r missing_03, include=TRUE}
-# # Create the function calculate the mode
-# getmode <- function(v) {
-#   uniqv <- unique(v)
-#   uniqv[which.max(tabulate(match(v, uniqv)))]
-# }
-# mode_bedrooms   <- getmode(price_tplusc$bedrooms)
-# mode_bathrooms  <- getmode(price_tplusc$bathrooms)
-# mode_floors     <- getmode(price_tplusc$floors)
-# mode_waterfront <- getmode(price_tplusc$waterfront )
-# mode_view       <- getmode(price_tplusc$view )
-# mode_condition  <- getmode(price_tplusc$condition )
-# mode_grade      <- getmode(price_tplusc$grade )
-# mode_yr_built   <- getmode(price_tplusc$yr_built )
-# mode_yr_renovated     <- getmode(price_tplusc$yr_renovated )
-# 
-# 
-# #bedrooms
-# price_tplusc$bedrooms[is.na(price_tplusc$bedrooms)] <-
-#   (mode_bedrooms)
-# 
-# #bathrooms
-# price_tplusc$bathrooms[is.na(price_tplusc$bathrooms)] <-
-#   (mode_bathrooms)
-# 
-# #floors
-# price_tplusc$floors[is.na(price_tplusc$floors)] <-
-#   (mode_floors)
-# 
-# #waterfront
-# price_tplusc$waterfront[is.na(price_tplusc$waterfront)] <-
-#   (mode_waterfront)
-# 
-# #view
-# price_tplusc$view[is.na(price_tplusc$view)] <-
-#   (mode_view)
-# 
-# #condition
-# price_tplusc$condition[is.na(price_tplusc$condition)] <-
-#   (mode_condition)
-# 
-# #grade
-# price_tplusc$grade[is.na(price_tplusc$grade)] <-
-#   (mode_grade)
-# 
-# #yr_built
-# price_tplusc$yr_built[is.na(price_tplusc$yr_built)] <-
-#   (mode_yr_built)
-# 
-# #yr_renovated
-# price_tplusc$yr_renovated[is.na(price_tplusc$yr_renovated)] <-
-#   (mode_yr_renovated)
-# 
-# 
-# #chequeamos que no hay variables missing
-# summary (price_tplusc)
+numeric_cols4 <- c("condition", "yr_built", 'yr_renovated', 'long', 'bathrooms')
+
+price_tplusc %>% select(numeric_cols4) %>%
+  na.omit() %>%
+  ggpairs(columns=1:5)
+
+describe(price_tplusc$condition)
+price_tplusc %>% select(yr_built, condition)  %>% marginplot()
+
+#método de imputación knn
+imputed <- price_tplusc %>% select(condition, long, yr_built, bathrooms) %>%
+  VIM::kNN(variable="condition")
+
+#guardado de la variable
+price_tplusc$condition_im = imputed$condition
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(yr_built, condition, condition_imp)  %>% marginplot(., delimiter = '_imp')
 ```
+<br/>
+**Imputación de la variable "grade":**
+```{r miss_grade, include=TRUE, message=FALSE, warning=FALSE}
 
-### Opción II: Imputación de variables mediante el método MICE [Da error]
-```{r missing_mice, include=FALSE, echo=FALSE}
-#   
-# ## ALTERNATIVA 2. ESUDIO DE LOS MISSING A TRAVES DE FUNCION MICE 
-# #Usar?amos  MICE  en el caso de querer imputaci?n m?ltiple
-# #asume que los datos faltantes son debidos al azar MAR, lo que implica que la ausencia de 
-# #un valor puede predecirse a partir de otros 
-# 
-# #1.-seleccion de las variables PMM (Predictive Mean Matching)  - For numeric variables
-# 
-# summary(vec_miss)
-# continuas<- mice(vec_miss [c(6,7,13,14)], m=5, method = 'pmm', seed = 737)
-# summary(continuas)
-# 
-# continuas$imp$sqft_living
-# continuas$imp$sqft_lot 
-# continuas$imp$sqft_above 
-# continuas$imp$sqft_basement 
-# 
-# 
-# 
-# #polyreg(Bayesian polytomous regression) - For Factor Variables (>= 2 levels)
-# #Proportional odds model (ordered, >= 2 levels)
-# 
-# vec_miss$bedrooms<-as.character(vec_miss$bedrooms)
-# vec_miss$bathrooms<-as.character(vec_miss$bathrooms)
-# vec_miss$floors<-as.character(vec_miss$floors)
-# vec_miss$waterfront<-as.character(vec_miss$waterfront)
-# vec_miss$view<-as.character(vec_miss$view)
-# vec_miss$condition<-as.character(vec_miss$condition)
-# vec_miss$grade<-as.character(vec_miss$grade)
-# 
-# 
-# 
-#   
-# summary(vec_miss)
-# discreta <- mice(vec_miss [c(4,5,8,9,10,11,12)], m=5, printFlag=FALSE, method = 'polyreg', seed = 737)
-# #imp = mice(nhanes, m=5, printFlag=FALSE, maxit = 40, seed=2525)
-# 
-# discreta$imp$bedrooms
-# discreta$imp$bathrooms
-# discreta$imp$floors
-# discreta$imp$waterfront  
-# discreta$imp$view  
-# discreta$imp$condition  
-# discreta$imp$grade
-# discreta$imp$yr_built  
-# discreta$imp$yr_renovated  
-# 
-# #nos quedamos con el primer m?todo por sencillez, pero tenemos las bases deL Mice
-# 
-# dat2<-mice::complete(discreta, 2)
-# dat1<-mice::complete(continuas,2)
-# dat <-vec_miss [c(1,2,3)]
+numeric_cols4 <- c("grade", "sqft_living", 'view', 'condition', 'bathrooms')
 
+price_tplusc %>% select(numeric_cols4) %>%
+  na.omit() %>%
+  ggpairs(columns=1:5)
+
+describe(price_tplusc$grade)
+price_tplusc %>% select(sqft_living, grade)  %>% marginplot()
+
+#método de imputación knn
+imputed <- price_tplusc %>% select(grade, sqft_living, view, bathrooms) %>%
+  VIM::kNN(variable="grade")
+
+#guardado de la variable
+price_tplusc$grade_im = imputed$grade
+
+#Visualización y comprobación de los datos imputados
+imputed %>% select(sqft_living, grade, grade_imp)  %>% marginplot(., delimiter = '_imp')
 ```
+<br/>
+<br/>
+#MOVER A MULTIVARIANTE
+```{r view_study, message=FALSE, warning=FALSE}
+view_cols <- c("view", "sqft_lot", "sqft_living", "price", "sqft_basement", "sqft_above", 'yr_built')
 
-
+price_tplusc %>% select(view_cols) %>%
+  na.omit() %>%
+  ggpairs(columns=1:7)
+```
+<br/>
 ## 04 Transformación de variables
-**Resumen comentarios y toma de deci
+```{r show_dfss}
+#Muestra de variables de la base de datos seleccionada
+# show_df = data.frame(variable = names(price_tplusc),
+#            classe = sapply(price_tplusc, typeof),
+#            first_values = sapply(price_tplusc, function(x) paste0(head(x),  collapse = ", ")),
+#            row.names = NULL)
+# kable(show_df) %>%
+#   kable_styling()
+
+```
+
+
+
+Comentarios sobre las variables a estudiar tras el análisisi de cada una:
+1. id: no será usada ya que no se considera un parámetro de la vivienda.
+2. date: la fecha de venta de la vivienda no parece tener relación alguna con el precio ni sigue una distribución normal.
+3. price: 
+4.
+
 ### Transformación de variables cuantitativas
-### Trasformaciṕn de variables categóricas
+<br/>
+**Transformación de la variable "price" (valor de venta de la vivienda):**
+```{r tran_price, message=FALSE}
+# posibles soluciones
+# 1.-Transformacion logaritmico 10
+# 2.-Raiz cuadrada
+# 3.-Inversa 1/x
+
+#Prueba 1 . Logaritmo
+price_tplusc$price_trans = log10(price_tplusc$price)
+
+h1 = phist(price_tplusc, ., 'price')
+h2 = phist(price_tplusc, ., 'price_trans')
+grid.arrange(h1, h2, nrow=1)
+
+q1 = qqplot.data(price_tplusc$price)
+q2 = qqplot.data(price_tplusc$price_trans)
+grid.arrange(q1, q2, nrow=1)
+```
+<br/>
+**Transformación de la variable "sqft_living" (Superficie de la vivienda):**
+```{r tran_sqft_living}
+# posibles soluciones
+# 1.-Transformacion logaritmico 10
+# 2.-Raiz cuadrada
+# 3.-Inversa 1/x
+# 4.-Box-Cox
+
+#Prueba 1 . Logaritmo
+price_tplusc$sqft_living_trans = log10(price_tplusc$sqft_living_im)
+
+h1 = phist(price_tplusc, ., 'sqft_living_im')
+h2 = phist(price_tplusc, ., 'sqft_living_trans')
+grid.arrange(h1, h2, nrow=1)
+
+q1 = qqplot.data(price_tplusc$sqft_living_im)
+q2 = qqplot.data(price_tplusc$sqft_living_trans)
+grid.arrange(q1, q2, nrow=1)
+```
+<br/>
+**Transformación de la variable "sqft_basement" (Superficie del sótano):**
+```{r tran_basement}
+# posibles soluciones
+# 1.-Transformacion logaritmico 10
+# 2.-Raiz cuadrada
+# 3.-Inversa 1/x
+# 4.-Box-Cox
+
+#Prueba 2 . Raiz cuadrada
+price_tplusc$sqft_basement_trans = sqrt(price_tplusc$sqft_basement_im)
+
+h1 = phist(price_tplusc, ., 'sqft_basement_im')
+h2 = phist(price_tplusc, ., 'sqft_basement_trans')
+grid.arrange(h1, h2, nrow=1)
+
+q1 = qqplot.data(price_tplusc$sqft_basement_im)
+q2 = qqplot.data(price_tplusc$sqft_basement_trans)
+grid.arrange(q1, q2, nrow=1)
+```
+
+```{r trans_basement, include=FALSE}
+#dado que la variable contiene muchos ceros cuando la casa no tiene sótano esta variable va a ser categorizada.
+old = "basement_im"
+new = "trans_basement"
+
+# Convertimos la variable en dummy
+mutate(price_tplusc, trans_sqft_basement=cut(sqft_basement_im, breaks=c(-1, 0, Inf), labels=c(0, 1)))
+```
+<br/>
+**Transformación de la variable "sqft_lot" (Superficie de la vivienda):**
+```{r trans_sqft_lot}
+# posibles soluciones
+# 1.-Transformacion logaritmico 10
+# 2.-Raiz cuadrada
+# 3.-Inversa 1/x
+# 4.-Box-Cox
+
+summary(price_tplusc$sqft_lot_im)
+
+#Prueba 2 . Raiz cuadrada
+price_tplusc$sqft_lot_trans = sqrt(price_tplusc$sqft_lot_im)
+
+h1 = phist(price_tplusc, ., 'sqft_lot_im')
+h2 = phist(price_tplusc, ., 'sqft_lot_trans')
+grid.arrange(h1, h2, nrow=1)
+
+q1 = qqplot.data(price_tplusc$sqft_lot_im)
+q2 = qqplot.data(price_tplusc$sqft_lot_trans)
+grid.arrange(q1, q2, nrow=1)
+
+# Dado que la varaible es muy desigual vamos a categorizarla
+old = "sqft_lot_im"
+new = "sqft_lot_trans"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad2(price_tplusc, new, 'price_trans')
+```
+<br/>
+**Transformación de la variable "sqft_above" (Superficie de la vivienda):**
+```{r trans_sqft_above}
+# posibles soluciones
+# 1.-Transformacion logaritmico 10
+# 2.-Raiz cuadrada
+# 3.-Inversa 1/x
+# 4.-Box-Cox
+
+summary(price_tplusc$sqft_above_im)
+
+#Prueba 2 . Raiz cuadrada
+price_tplusc$sqft_above_trans = sqrt(price_tplusc$sqft_above_im)
+
+h1 = phist(price_tplusc, ., 'sqft_above_im')
+h2 = phist(price_tplusc, ., 'sqft_above_trans')
+grid.arrange(h1, h2, nrow=1)
+
+q1 = qqplot.data(price_tplusc$sqft_above_im)
+q2 = qqplot.data(price_tplusc$sqft_above_trans)
+grid.arrange(q1, q2, nrow=1)
+
+# Dado que la varaible es muy desigual vamos a categorizarla
+old = "sqft_above_im"
+new = "sqft_above_trans"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad2(price_tplusc, new, 'price_trans')
+```
+<br/>
+**Transformación de la variable "yr_build" (Superficie de la vivienda):**
+```{r trans_yr_build}
+# posibles soluciones
+# 1.-Transformacion logaritmico 10
+# 2.-Raiz cuadrada
+# 3.-Inversa 1/x
+# 4.-Box-Cox
+
+summary(price_tplusc$yr_built_im)
+
+#Prueba 1. Transformacion logaritmico 10.
+price_tplusc$yr_built_trans0 = log10(price_tplusc$yr_built_im)
+
+h1 = phist(price_tplusc, ., 'yr_built_im')
+h2 = phist(price_tplusc, ., 'yr_built_trans0')
+grid.arrange(h1, h2, nrow=1)
+
+q1 = qqplot.data(price_tplusc$yr_built_im)
+q2 = qqplot.data(price_tplusc$yr_built_trans)
+grid.arrange(q1, q2, nrow=1)
+
+#Prueba 2. Raiz cuadrada.
+price_tplusc$yr_built_trans1 = sqrt(price_tplusc$yr_built_im)
+
+h1 = phist(price_tplusc, ., 'yr_built_im')
+h2 = phist(price_tplusc, ., 'yr_built_trans1')
+grid.arrange(h1, h2, nrow=1)
+
+q1 = qqplot.data(price_tplusc$yr_built_im)
+q2 = qqplot.data(price_tplusc$yr_built_trans1)
+grid.arrange(q1, q2, nrow=1)
+
+#Categorizamos la variable
+# Dado que la varaible es muy desigual vamos a categorizarla
+old = "yr_built_im"
+new = "yr_built_trans"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+price_tplusc[[new]] = cut2(price_tplusc[[old]], g=3)
+table(price_tplusc[[new]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+p_densidad2(price_tplusc, new, 'price_trans')
+```
+<br/>
+<br/>
+### Trasformaciṕn de variables cualitativas
+```{r colors}
+colors = c('#6c7b95', '#8bbabb', '#c7f0db')
+```
+<br/>
+**Transformación de la variable "bedrooms_im":**
+```{r ImputationBedrooms}
+price_tplusc <- price_tplusc %>% mutate(bedrooms_trans = cut2(bedrooms_im, g=3))
+
+price_tplusc %>%
+  select(bedrooms_trans) %>% table()
+
+price_tplusc %>%
+          select(price_trans, bedrooms_trans) %>%
+          ggplot(aes(x=price_trans, colour=bedrooms_trans)) +
+          geom_density() + scale_color_manual(values=colors)
+
+price_tplusc %>%
+          select(price_trans, bedrooms_trans) %>%
+          ggplot(aes(y=price_trans, fill=bedrooms_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+
+```
+<br/>
+**Transformación de la variable "bathrooms_im":**
+```{r ImputationBathrooms}
+price_tplusc <- price_tplusc %>% mutate(bathrooms_trans = cut2(bathrooms_im, g=3))
+
+price_tplusc %>%
+  select(bathrooms_trans) %>% table()
+
+price_tplusc %>%
+          select(price_trans, bathrooms_trans) %>%
+          ggplot(aes(x=price_trans, colour=bathrooms_trans)) +
+          geom_density() + scale_color_manual(values=colors)
+
+price_tplusc %>%
+          select(price_trans, bathrooms_trans) %>%
+          ggplot(aes(y=price_trans, fill=bathrooms_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+```
+<br/>
+**Transformación de la variable "floors_im":**
+```{r Imputationfloors}
+price_tplusc <- price_tplusc %>% mutate(floors_trans = cut2(floors_im, g=3))
+
+price_tplusc %>%
+  select(floors_trans) %>% table()
+
+price_tplusc %>%
+          select(price_trans, floors_trans) %>%
+          ggplot(aes(x=price_trans, colour=floors_trans)) +
+          geom_density() + scale_color_manual(values=colors)
+
+price_tplusc %>%
+          select(price_trans, floors_trans) %>%
+          ggplot(aes(y=price_trans, fill=floors_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+
+
+price_tplusc <- price_tplusc %>% mutate(floors_trans = cut2(floors_im, g=2))
+
+price_tplusc %>%
+  select(floors_trans) %>% table()
+
+price_tplusc %>%
+          select(price_trans, floors_trans) %>%
+          ggplot(aes(x=price_trans, colour=floors_trans)) +
+          geom_density() + scale_color_manual(values=colors)
+
+price_tplusc %>%
+          select(price_trans, floors_trans) %>%
+          ggplot(aes(y=price_trans, fill=floors_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+```
+<br/>
+
+**Transformación de la variable "condition_im":**
+```{r ImputationCondition}
+ price_tplusc <- price_tplusc %>% mutate(condition_trans = cut2(condition_im, g=3))
+
+ price_tplusc %>%
+   select(condition_trans) %>% table()
+
+ price_tplusc %>%
+           select(price_trans, condition_trans) %>%
+           ggplot(aes(x=price_trans, colour=condition_trans)) +
+           geom_density() + scale_color_manual(values=colors)
+ 
+price_tplusc %>%
+          select(price_trans, condition_trans) %>%
+          ggplot(aes(y=price_trans, fill=condition_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+```
+<br/>
+**Transformación de la variable "grade_im":**
+```{r ImputationGrade}
+ price_tplusc <- price_tplusc %>% mutate(grade_trans = cut2(grade_im, g=3))
+
+ price_tplusc %>%
+   select(grade_trans) %>% table()
+
+ price_tplusc %>%
+           select(price_trans, grade_trans) %>%
+           ggplot(aes(x=price_trans, colour=grade_trans)) +
+           geom_density() + scale_color_manual(values=colors)
+ 
+price_tplusc %>%
+          select(price_trans, grade_trans) %>%
+          ggplot(aes(y=price_trans, fill=grade_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+
+```
+<br/>
+**Transformación de la variable "waterfront_im":**
+```{r ImputationWaterfront}
+ price_tplusc <- price_tplusc %>% mutate(waterfront_trans = cut2(waterfront_im, g=2))
+
+ price_tplusc %>%
+   select(waterfront_trans) %>% table()
+
+ price_tplusc %>%
+           select(price_trans, waterfront_trans) %>%
+           ggplot(aes(x=price_trans, colour=waterfront_trans)) +
+           geom_density() + scale_color_manual(values=colors)
+ 
+price_tplusc %>%
+          select(price_trans, waterfront_trans) %>%
+          ggplot(aes(y=price_trans, fill=waterfront_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+
+```
+<br/>
+**Transformación de la variable "view_im":**
+```{r ImputationView}
+ price_tplusc <- price_tplusc %>% mutate(view_trans = cut2(view_im, g=2))
+
+ price_tplusc %>%
+   select(view_trans) %>% table()
+
+ price_tplusc %>%
+           select(price_trans, view_trans) %>%
+           ggplot(aes(x=price_trans, colour=view_trans)) +
+           geom_density() + scale_color_manual(values=colors)
+ 
+price_tplusc %>%
+          select(price_trans, view_trans) %>%
+          ggplot(aes(y=price_trans, fill=view_trans)) +
+          geom_boxplot() + scale_fill_manual(values=colors)
+
+```
 
 
 ## 06 Comprobación de los datos
+```{r df_trans}
+columns <- c('price', 'price_trans', 'sqft_living_trans', 'sqft_basement_trans', 'sqft_lot_trans', 'sqft_above_trans', 'yr_built_trans', 'bedrooms_trans', 'bathrooms_trans', 'floors_trans', 'condition_trans', 'grade_trans', 'waterfront_trans', 'view_trans')
+
+# Creación de la nueva tabla
+df_transformadas <- select(price_tplusc, columns)
+
+# Estructura
+df_transformadas  %>% structure()
+
+view_cols <- c('price_trans', 'sqft_living_trans', 'sqft_basement_trans')
+
+#numeric
+df_transformadas %>% select(view_cols) %>%
+  ggpairs(columns=1:3)
+
+```
 
 
-## 07 Combinación de variables y reducción de la dimensionalidad
+## 07 Ajuste, interpretación y diagnosis del modelo de regresión lineal múltiple
 
+```{r model01}
+lm_model = lm(price_trans ~ sqft_living_trans + bedrooms_trans + bathrooms_trans + sqft_above_trans + grade_trans + condition_trans + view_trans + waterfront_trans + sqft_above_trans + yr_built_trans + sqft_lot_trans, data=df_transformadas)
 
-## 08 Ajuste, interpretación y diagnosis del modelo de regresión lineal múltiple
+summary(lm_model)
+```
+### Selección de variables automática
+```{r selvar}
+best_subsets_models <- regsubsets(price_trans~., data = df_transformadas, nvmax = 22)
+summary(best_subsets_models)
+for (metric in c("r2", "adjr2")){plot(best_subsets_models, scale=metric)}
+```
 
+```{r model02}
+lm_model = lm(price_trans ~ sqft_living_trans + bedrooms_trans + bathrooms_trans + sqft_above_trans + grade_trans + condition_trans + waterfront_trans + sqft_above_trans + yr_built_trans + sqft_lot_trans, data=df_transformadas)
+
+summary(lm_model)
+```
