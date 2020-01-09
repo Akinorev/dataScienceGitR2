@@ -1,0 +1,9 @@
+# Uso del script de MapReduce
+
+## Local
+
+python mrJobSimple.py --file AFINN-111.txt bigTwitter.json
+
+## AWS
+
+time python mrJobSimple.py -r emr --file AFINN-111.txt bigTwitter.json --output-dir=s3://hadoopdatasciencetest/output/
