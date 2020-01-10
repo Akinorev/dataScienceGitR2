@@ -817,7 +817,7 @@ sapply(df_cuantitativas, function(x) sum(is.na(x))) %>% kable()
 ```
 <br/>
 <br/>
-
+  
 ### Imputación de variables
 
 **Imputación de la variable "sqft_living" (superficie de la vivienda):**
