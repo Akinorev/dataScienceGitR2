@@ -10,12 +10,17 @@ Fecha de entrega: 15 de enero de 2020.
 @Equipo: Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez
 """
 
-# IMPORTADO DE LIBRERIAS
+
+# IMPORTADO DE LIBRERIAS Y AJUSTES DE PANDAS
 from bs4 import BeautifulSoup as bs
 import urllib.request
 import re
 import pandas as pd
+pd.set_option('display.max_rows', 20)
+pd.set_option('display.max_columns', 20)
+pd.set_option('display.width', 1000)
 
+### -------------------------------------------------------------
 
 # FUNCIONES
 def parser(url):
@@ -34,64 +39,79 @@ def get_lines(soup):
     main_content = soup.find('div', attrs={'class': regex}).find_all('a')
     semi_urls = [re.findall('\/.*aspx', str(i))[0] for i in main_content]
 
-    lineas_names = soup.find('div', attrs={'class': regex}).find_all('span', attrs={'class':'txt'})
-    lineas_names = [i(text=True)[0] for i in lineas_names]
-
     # completado de urls
     home = 'https://www.crtm.es/'
     lineas_urls = [home + i for i in semi_urls]
-    return(lineas_names, lineas_urls)
+
+    # extracción de los nombres de cada linea
+    lineas_names = soup.find('div', attrs={'class': regex}).find_all('span', attrs={'class':'txt'})
+    lineas_names = [i(text=True)[0] for i in lineas_names]
+
+    # extracción de los numeros de cada linea
+    lineas_numbers = soup.find('div', attrs={'class': regex}).find_all('span', attrs={'class': 'logo'})
+    lineas_numbers = [i(text=True)[0] for i in lineas_numbers]
+
+    return(lineas_names, lineas_urls, lineas_numbers)
 
 def get_stops(soup):
-    # esta funcion obtiene del html las estaciones ordenadas dentro de cada línea
+    # esta funcion obtiene de las webs con la lineas las estaciones ordenadas dentro de cada línea
     regex = re.compile('estaciones')
     main_content = soup.find('tbody').find_all('a', attrs={'href': regex})
     estaciones_names = [i(text=True)[0] for i in main_content]
     return(estaciones_names)
 
+### -------------------------------------------------------------
 
 # 01 CODIGO: CAPTURA LINEAS
+## links con las líneas de los diferentes trasportes y los títulos de cada transporte
 transportes_links = ['https://www.crtm.es/tu-transporte-publico/metro/lineas.aspx',
         'https://www.crtm.es/tu-transporte-publico/metro-ligero/lineas.aspx',
         'https://www.crtm.es/tu-transporte-publico/cercanias-renfe/lineas.aspx']
 
-transportes_nombres = ['metro', 'metro-ligero', 'cercanias-renfe']
+transportes = ['METRO', 'ML', 'CR']
 
-all_lineas_links = {}
-all_lineas_names = {}
-
+## ejecución del scraper para la obtención de las lineas de cada transporte
+lineas_links = {}
+lineas_names = {}
+lineas_numbers = {}
 for i in range(len(transportes_links)):
-    # 02 parseado la web
+    ## parseado la web
     html = parser(transportes_links[i])
 
-    # 03 recogida de links
-    urls = get_lines(html)
-    all_lineas_names[transportes_nombres[i]] = urls[0]
-    all_lineas_links[transportes_nombres[i]] = urls[1]
+    ## captura y guardado de los parametros de las lineas
+    scraped_lines = get_lines(html)
+    lineas_names[transportes[i]] = scraped_lines[0]
+    lineas_links[transportes[i]] = scraped_lines[1]
+    lineas_numbers[transportes[i]] = scraped_lines[2]
 
-print(all_lineas_links)
-print(all_lineas_names)
+### -------------------------------------------------------------
 
 # 02 CODIGO: CAPTURA DE ESTACIONES DE CADA LÍNEA
-## captura de las estaciones de metro
-lineas_links_metro = all_lineas_links['metro']
-lineas_names_metro = all_lineas_names['metro']
-
 dfs_list = []
-for i in range(len(lineas_links_metro)):
-    linea = lineas_links_metro[i]
-    html = parser(linea)
-    estaciones_metro = get_stops(html)
-    print(estaciones_metro)
-    df_temp = pd.DataFrame({str(lineas_names_metro[i]) + '_stops': estaciones_metro, str(lineas_names_metro[i]) + '_posicion': range(len(estaciones_metro))})
+## acceso a los diferentes transportes
+for transporte in transportes:
+    ## recorrido a cada uno de los indices de cada linea
+    for i in range(len(lineas_links[transporte])):
+        linea = lineas_links[transporte][i]
+        html = parser(linea)
+        estaciones_metro = get_stops(html)
 
-    print(df_temp)
+        ## creación del data frame por cada línea con todos los parámetros obtenidos del scraper
+        df_temp = pd.DataFrame({'transportmean_name': transporte,'line_number': lineas_numbers[transporte][i], 'line_name': lineas_names[transporte][i], 'order_number': range(len(estaciones_metro)), 'stop_name': estaciones_metro})
+        dfs_list.append(df_temp)
 
-## captura de las estaciones de cercanías
+## salvado y muestra del data frame
+df_scraper = pd.concat(dfs_list)
+print(df_scraper)
 
 
-## captura de las estaciones de metro ligero
-
-
-
-
+# 03 CODIGO: GENERACION DEL DATA FRAME FINAL Y EXPORTACIÓN A CSV
+## Tu parte Vero!! a darle caña si necesitas algo me dices, voy a ver si consigo hacerlo con scrapy, te he guardado toda la tabla en la variable 'df_scraper'
+'''
+Fichero de texto, en formato CSV, con información del medio de transporte, la línea y el conjunto de
+estaciones en el orden marcado por el itinerario de cada línea. Este fichero debe ser único y contener
+la información integrada de los tres medios de transporte. La cabecera de dicho fichero debe incluir
+los siguientes campos (en cursiva los propios de GTFS):
+transportmean_name,line_number,order_number,stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,z
+one_id,stop_url,location_type,parent_station,stop_timezone,wheelchair_boarding
+'''
