@@ -32,18 +32,36 @@ def openFile(file):
         print('Error opening file')
     return(data)
 
-def filterData(dataSet,filterStr):
-    return dataSet.loc[dataSet['stop_id'].str.contains(filterStr)]
+def filterData(dataSet,col,filterStr):
+    return dataSet.loc[dataSet[col].str.contains(filterStr)]
 
 # GUARDAMOS LOS FICHEROS EN VARIABLES
 # FILTRAMOS LOS DATASET DE LOS STOP PARA OBTENER SOLO AQUELLAS ENTRADAS QUE NOS INTERESAN
-scraperFile = pd.read_csv("scraper_output.csv")
+scraperFile = pd.read_csv("scraper_output.csv", encoding='utf8')
+#CONVIERTO LOS NOMBRES DE LAS ESTACIONES A MINUSCULAS
+scraperFile['stop_name'] = scraperFile['stop_name'].str.lower()
+# FILTRO EN SUBSETS
+scraperMetro = filterData(scraperFile,"transportmean_name","METRO")
+scraperLigero = filterData(scraperFile,"transportmean_name","ML")
+scraperCercanias = filterData(scraperFile,"transportmean_name","CR")
 
-metroStops = pd.read_csv("stops_metro.txt")
-metroStopsSubset = filterData(metroStops,"est")
+# FILTRO EN SUBSETS PARA QUEDARNOS SOLO CON LAS ESTACIONES
+metroStops = pd.read_csv("stops_metro.txt", encoding='utf8')
+metroStops['stop_name'] = metroStops['stop_name'].str.lower()
+metroStopsSubset = filterData(metroStops,"stop_id","est")
 
-ligeroStops = pd.read_csv("stops_ligero.txt")
-ligeroStopsSubset = filterData(metroStops,"est")
+ligeroStops = pd.read_csv("stops_ligero.txt", encoding='utf8')
+ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
+ligeroStopsSubset = filterData(ligeroStops,"stop_id","est")
 
-cercaniasStops = pd.read_csv("stops_cercanias.txt")
-cercaniasStopsSubset = filterData(metroStops,"est")
+cercaniasStops = pd.read_csv("stops_cercanias.txt", encoding='utf8')
+cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.lower()
+cercaniasStopsSubset = filterData(cercaniasStops,"stop_id","est")
+
+# LEFT JOIN DONDE SCRAPER* ESTARA A LA IZQ Y LA INFO DE LAS ESTACIONES A LA DRCH
+mergedMetro = pd.merge(left=scraperMetro, right=metroStopsSubset, how='left', left_on='stop_name', right_on='stop_name')
+mergedLigero = pd.merge(left=scraperLigero, right=ligeroStopsSubset, how='left', left_on='stop_name', right_on='stop_name')
+mergedCercanias = pd.merge(left=scraperCercanias, right=cercaniasStopsSubset, how='left', left_on='stop_name', right_on='stop_name')
+
+print(mergedMetro)
+mergedMetro.to_csv('merged_test_output.csv', index=False)
