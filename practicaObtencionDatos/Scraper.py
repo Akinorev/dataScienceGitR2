@@ -101,17 +101,7 @@ for transporte in transportes:
         dfs_list.append(df_temp)
 
 ## salvado y muestra del data frame
-df_scraper = pd.concat(dfs_list)
+df_scraper = pd.concat(dfs_list).reset_index()
 print(df_scraper)
+df_scraper.to_csv('scraper_output.csv', index=False)
 
-
-# 03 CODIGO: GENERACION DEL DATA FRAME FINAL Y EXPORTACIÓN A CSV
-## Tu parte Vero!! a darle caña si necesitas algo me dices, voy a ver si consigo hacerlo con scrapy, te he guardado toda la tabla en la variable 'df_scraper'
-'''
-Fichero de texto, en formato CSV, con información del medio de transporte, la línea y el conjunto de
-estaciones en el orden marcado por el itinerario de cada línea. Este fichero debe ser único y contener
-la información integrada de los tres medios de transporte. La cabecera de dicho fichero debe incluir
-los siguientes campos (en cursiva los propios de GTFS):
-transportmean_name,line_number,order_number,stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,z
-one_id,stop_url,location_type,parent_station,stop_timezone,wheelchair_boarding
-'''
