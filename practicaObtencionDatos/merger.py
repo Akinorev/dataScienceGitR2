@@ -37,7 +37,10 @@ def filterData(dataSet,col,filterStr):
     return dataSet.loc[dataSet[col].str.contains(filterStr)]
 
 def remove_accents(text):
-    return unicodedata.normalize('NFKD', text).encode('ASCII', 'ignore')
+    textNoSpaces = text.lstrip()
+    cleanText = unicodedata.normalize('NFKD', textNoSpaces).encode('ASCII', 'ignore')
+    print(cleanText)
+    return cleanText
 
 # GUARDAMOS LOS FICHEROS EN VARIABLES
 # FILTRAMOS LOS DATASET DE LOS STOP PARA OBTENER SOLO AQUELLAS ENTRADAS QUE NOS INTERESAN
