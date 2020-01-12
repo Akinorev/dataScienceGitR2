@@ -14,7 +14,7 @@ import pandas as pd
 
 
 
-stops_df = pd.read_csv("C:/Users/Pablo/Desktop/obtencion_datos/dataScienceGitR2-master/practicaObtencionDatos/merged_test_output.csv", sep=',', encoding='latin-1')
+stops_df = pd.read_csv("merged_test_output.csv", sep=',', encoding='latin-1')
 stops_df.head()
 g = Graph()
 
@@ -103,5 +103,5 @@ for index, row in stops_df.iterrows():
     order_id = u'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(row["order_number"])
     g.add ( (obd_ln[line_id], URIRef(order_id), obd_st[stop_id]) )
     
-output_file = 'C:/Users/Pablo/Desktop/obtencion_datos/dataScienceGitR2-master/practicaObtencionDatos/obd.rdf'
+output_file = 'obd.rdf'
 g.serialize(output_file, format='xml')    
