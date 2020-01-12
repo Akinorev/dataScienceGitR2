@@ -58,24 +58,25 @@ scraperCercanias = filterData(scraperFile,"transportmean_name","CR")
 metroStops = pd.read_csv("stops_metro.txt")
 metroStops['stop_name'] = metroStops['stop_name'].str.lower()
 metroStops['stop_name'] = metroStops['stop_name'].apply(remove_accents)
-metroStopsSubset = filterData(metroStops,"stop_id","est")
+metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
 
 ligeroStops = pd.read_csv("stops_ligero.txt")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(remove_accents)
-ligeroStopsSubset = filterData(ligeroStops,"stop_id","est")
+ligeroStopsSubset = ligeroStops[~ligeroStops.stop_name.isin(["est", "par"])]
 
 cercaniasStops = pd.read_csv("stops_cercanias.txt")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.lower()
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(remove_accents)
-cercaniasStopsSubset = filterData(cercaniasStops,"stop_id","est")
+cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_name.isin(["est", "par"])]
 
 # LEFT JOIN DONDE SCRAPER* ESTARA A LA IZQ Y LA INFO DE LAS ESTACIONES A LA DRCH
 mergedMetro = pd.merge(left=scraperMetro, right=metroStopsSubset, how='left', left_on='stop_name', right_on='stop_name', copy=True)
 mergedLigero = pd.merge(left=scraperLigero, right=ligeroStopsSubset, how='left', left_on='stop_name', right_on='stop_name', copy=True)
 mergedCercanias = pd.merge(left=scraperCercanias, right=cercaniasStopsSubset, how='left', left_on='stop_name', right_on='stop_name', copy=True)
 
-print(mergedMetro)
-mergedMetro.to_csv('merged_test_metro_output.csv', index=False)
-mergedLigero.to_csv('merged_test_ligero_output.csv', index=False)
-mergedCercanias.to_csv('merged_test_cercanias_output.csv', index=False)
+# CONCATENAMOS LAS TRES TABLAS PARA GENERAR UN UNICO FICHERO
+allTablas = [mergedMetro, mergedLigero, mergedCercanias]
+allTablas = pd.concat(allTablas)
+
+allTablas.to_csv('merged_test_output.csv', index=False)
