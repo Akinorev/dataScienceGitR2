@@ -21,7 +21,7 @@ g = Graph()
 #ontologias
 
 sch         = Namespace('https://schema.org')
-mao         = Namespace('http://com.vortic3.MANTO#')         
+mao         = Namespace('http://com.vortic3.MANTO#')   
 obd_st      = Namespace("urn:transit_stations:community_of_madrid:")
 obd_ln      = Namespace("urn:transit_routes:community_of_madrid:")
 gtfs_ns     = Namespace('http://vocab.gtfs.org/terms#')
@@ -45,14 +45,14 @@ g.bind('obd-ln', obd_ln)
 
 
 
-# agency resource creation
+# creacion de la agencia
 ctm = wikidata_ns['Q8350122']
 
 g.add( (ctm, RDF.type, gtfs_ns.Agency) )
 g.add( (ctm, FOAF.name, Literal('Consorcio Regional de Transportes de la Comunidad de Madrid')) )
 g.add( (ctm, FOAF.page, Literal('http://www.crtm.es/')) )
 
-# route types creation
+# creacion de los tipos de rutas
 madrid_metro = wikidata_ns['Q191987']
 g.add( (madrid_metro, RDF.type, gtfs_ns.Subway) )
 g.add( (madrid_metro, FOAF.name, Literal('Metro de Madrid')) )
@@ -99,8 +99,7 @@ for index, row in stops_df.iterrows():
         g.add ( (obd_ln[line_id], gtfs_ns.routeType, transportmean_resource[row['transportmean_name']]) )
         print (line_id)
         print (stop_id)
-        print (transportmean_name)       
-        
+        print (transportmean_name)            
     order_id = u'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(row["order_number"])
     g.add ( (obd_ln[line_id], URIRef(order_id), obd_st[stop_id]) )
     
