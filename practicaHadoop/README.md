@@ -1,6 +1,8 @@
 # Sistemas distribuidos: Analisis de
 sentimientos con Hadoop
 
+[TOC]
+
 ## 0. Descripción
 
 El objetivo de este código consiste en realizar un análisis de sentimientos usando la técnica de paralelismo de *MapReduce* a partir de un gran conjunto de datos de Twitter capturados previamente.
@@ -15,7 +17,6 @@ Asegurate de tener python 2.7.x instalado en tu pc. Puedes obtener la última ve
 
 https://www.python.org/downloads/release/python-2717/
 
-
 ### Configuración del EMR en Amazon
 
 - Crear una cuenta en [Amazon Web Services](http://aws.amazon.com/)
@@ -26,7 +27,6 @@ https://www.python.org/downloads/release/python-2717/
 export AWS_ACCESS_KEY_ID=<chorreteID>
 export AWS_SECRET_ACCESS_KEY=<chorreteIDKEY>
 ```
-
 
 ### Preparación de la ejecución
 
@@ -47,7 +47,6 @@ Para la reproducción del práctica deberá ejecutarse la siguiente linea de com
 ```
 time python mrJobSimple.py -r emr --file AFINN-111.txt bigTwitter.json --output-dir=s3://hadoopdatasciencetest/output/
 ```
-
 
 ### Ejecución en local:
 
