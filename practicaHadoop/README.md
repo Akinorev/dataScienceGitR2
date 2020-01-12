@@ -1,6 +1,4 @@
-# Sistemas distribuidos: Analisis de
-sentimientos con Hadoop
-
+# Sistemas distribuidos: Analisis de sentimientos con Hadoop
 [TOC]
 
 ## 0. Descripción
@@ -58,7 +56,7 @@ time python mrJobSimple.py --file AFINN-111.txt bigTwitter.json
 
 
 
-## 6. Otros links
+## 3. Otros links
 
 El repositorio de esta práctica puede descargarse del siguiente enlace: 
 
