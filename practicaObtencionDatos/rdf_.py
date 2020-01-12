@@ -7,7 +7,6 @@ Created on Sun Jan 12 08:57:01 2020
 
 
 
-import csv
 from rdflib.namespace import RDF, FOAF, SKOS, RDFS
 from rdflib import Namespace
 from rdflib import Graph, Literal, URIRef
@@ -16,7 +15,6 @@ import pandas as pd
 
 
 stops_df = pd.read_csv("C:/Users/Pablo/Desktop/obtencion_datos/dataScienceGitR2-master/practicaObtencionDatos/merged_test_output.csv", sep=',', encoding='latin-1')
-csvReader = csv.reader(stops_df, delimiter=';', lineterminator='\n')
 stops_df.head()
 g = Graph()
 
@@ -85,25 +83,6 @@ transportmean_resource = {'METRO': madrid_metro,
                           'ML': madrid_ml
                      }
 
-from sklearn.feature_extraction.text import CountVectorizer
-
-for index, row in stops_df.iterrows():
-  # line creation
-#stops_df = pd.read_csv('stops.csv', sep=',', encoding='latin-1')
-#stops_ordered_pd = pd.concat(g for _, g in stops_df.groupby("stop_id")).sort_values(by="stop_name")
-
-stops_df['order_number'] = stops_df.apply(lambda row: trim_order_index(row['line_number'], row['order_number']), axis=1)
-stops_df.sort_values(by=["transportmean_name", "line_number", "order_number"], inplace=True)
-
-transportmean_name = {'METRO': u'Metro', 
-                      'CR': u'Cercanías', 
-                      'ML': u'Metro Ligero/Tranvía'
-                     }
-transportmean_resource = {'METRO': madrid_metro, 
-                          'CR': madrid_cr, 
-                          'ML': madrid_ml
-                     }
-
 
 
 lln = None
@@ -125,5 +104,5 @@ for index, row in stops_df.iterrows():
     order_id = u'http://www.w3.org/1999/02/22-rdf-syntax-ns#_' + str(row["order_number"])
     g.add ( (obd_ln[line_id], URIRef(order_id), obd_st[stop_id]) )
     
-    
+output_file = 'C:/Users/Pablo/Desktop/obtencion_datos/dataScienceGitR2-master/practicaObtencionDatos/obd.rdf'
 g.serialize(output_file, format='xml')    
