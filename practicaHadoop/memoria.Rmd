@@ -215,7 +215,24 @@ Nuestro mayor hueso, por asi llamarlo fue la curva de aprendizaje de AWS y la li
 
 El script que hemos generado se podria mejorar en varios puntos, entre ellos quizas el mas importante seria la funcion de combiner. Actualmente esta funcion realiza un sumatorio, que deberia estar mas orientado a la parte del reduce. La mejora podria ser que combiner simplemente eliminase aquellas palabras que tienen un valor 0. Estos valores meten "ruido" tanto en la solucion volcada como en el siguiente reduce que se ejecuta a continuacion.
 
+
 En esta practica al tratarse de un fichero pequeño, entendemos que no habria una gran diferencia en carga y tiempo entre usar el combiner o no. Hemos decidido mantenerlo ya que nos parece un paso interesante con el que se podria trabajar mas en detalle.
+
+Dentro del equipo y como proyecto a futuro habiamos planteado la idea de un analisis de sentimientos a partir de los contadores MapReduce, cuyo objetivo fundamental es el analisis computacional de opiniones, sentimientos, subjetividad en textos. En nuestro caso tweets.
+Podriamos plantearlo por estados, dias y momentos horarios determinados o directamente por hashtags.
+A partir de esta informacion recogida como positiva, negativa o 'stopwords' (signos  de puntuacion, nombre de usuario,links ,digitos ,en definitiva cualquier palabra que no aporte informacion al analisis de sentimientos)
+Podriamos calcular diferentes indices y Scores:
+
+- Total_word_analyisis= (total_words - stops_words)
+- Sentimiento         = (positives   - negatives)   / Total_word_analyisis
+- Positive_Score      = Positives                   / Total_word_analyisis
+- Negative_Score      = Negatives                   / Total_word_analyisis
+ 
+Objetivos de uso:
+valoracion de opinion de productos y servicios; posicionamiento online, reputacion, analisis de mercado.
+
+Nuestro objetivo es plantearnos una primera aproximacion a la tecnica, somos conscientes de que es un analisis muy complejo y desarrollado dentro del Big Data.
+
 
 ### Tiempo dedicado
 
