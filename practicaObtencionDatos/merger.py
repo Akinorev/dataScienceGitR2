@@ -39,7 +39,6 @@ def filterData(dataSet,col,filterStr):
 def remove_accents(text):
     textNoSpaces = text.lstrip()
     cleanText = unicodedata.normalize('NFKD', textNoSpaces).encode('ASCII', 'ignore')
-    print(cleanText)
     return cleanText
 
 # GUARDAMOS LOS FICHEROS EN VARIABLES
@@ -48,6 +47,9 @@ scraperFile = pd.read_csv("scraper_output.csv")
 #CONVIERTO LOS NOMBRES DE LAS ESTACIONES A MINUSCULAS
 scraperFile['stop_name'] = scraperFile['stop_name'].str.lower()
 scraperFile['stop_name'] = scraperFile['stop_name'].apply(remove_accents)
+#NOS ASEGURAMOS DE TENER EL FORMATO EN TIPO CHAR, YA QUE AL QUITAR LOS ACENTOS LOS CONVERTIMOS EN TIPO BYTE
+scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: x.decode("utf-8"))
+#print(scraperFile['stop_name'].head())
 
 # FILTRO EN SUBSETS
 scraperMetro = filterData(scraperFile,"transportmean_name","METRO")
@@ -58,16 +60,19 @@ scraperCercanias = filterData(scraperFile,"transportmean_name","CR")
 metroStops = pd.read_csv("stops_metro.txt")
 metroStops['stop_name'] = metroStops['stop_name'].str.lower()
 metroStops['stop_name'] = metroStops['stop_name'].apply(remove_accents)
+metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
 metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
 
 ligeroStops = pd.read_csv("stops_ligero.txt")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(remove_accents)
+ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
 ligeroStopsSubset = ligeroStops[~ligeroStops.stop_name.isin(["est", "par"])]
 
 cercaniasStops = pd.read_csv("stops_cercanias.txt")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.lower()
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(remove_accents)
+cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(lambda x: x.decode("utf-8"))
 cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_name.isin(["est", "par"])]
 
 # LEFT JOIN DONDE SCRAPER* ESTARA A LA IZQ Y LA INFO DE LAS ESTACIONES A LA DRCH
