@@ -1,0 +1,2027 @@
+{
+  "@context": {
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "gtfs": "http://vocab.gtfs.org/terms#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-1",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea C-1 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-1",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:principepio"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:piramides"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:aeropuertot4"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:delicias"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:mendezalvaro"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:recoletos"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:fuentemora"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:valdebebas"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-2",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea C-2 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-2",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:guadalajara"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:azuqueca"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:vicalvaro"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:santaeugenia"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:vallecas"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:pozo"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:asambleamadridentrevias"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:recoletos"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:meco"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:alcalahenaresuniversidad"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:alcalahenares"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:garena"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:sotohenares"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:torrejonardoz"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:sanfernando"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:coslada"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-3",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea C-3 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-3",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:aranjuez"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:ciempozuelos"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:sol"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:valdemoro"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:pinto"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:getafeindustrial"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:casar"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:sancristobalindustrial"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:sancristobalangeles"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdebajo"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-5",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea C-5 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-5",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:mostolessoto"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:mostoles"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:embajadores"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:mendezalvaro"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:doceoctubre"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:orcasitas"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:puentealcocer"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdealto"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:zarzaquemada"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:leganes"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:parquepolvoranca"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:retamas"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:serna"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:fuenlabrada"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:humanes"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:alcorcon"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:sanjosevalderas"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:cuatrovientos"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:aguilas"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:fanjul"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:aluche"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:laguna"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-7",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea C-7 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-7",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:alcalahenares"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:garena"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:asambleamadridentrevias"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:recoletos"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:ramoncajal"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:mirasierrapacolucia"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:pitis"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:rozas"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:majadahonda"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:sotohenares"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:barrialc.c.pozuelo"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:pozuelo"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:aravaca"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:principepio"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:torrejonardoz"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:sanfernando"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:coslada"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:vicalvaro"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:santaeugenia"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:vallecas"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:pozo"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-8",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea C-8 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-8",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:guadalajara"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:azuqueca"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:vicalvaro"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:santaeugenia"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:vallecas"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:pozo"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:asambleamadridentrevias"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:recoletos"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:ramoncajal"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:meco"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:mirasierrapacolucia"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:pitis"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:pinarrozas"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:matas"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:torrelodones"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:galapagarnavata"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:villalba"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:negrales"
+      },
+      "rdf:_28": {
+        "@id": "urn:transit_stations:community_of_madrid:alpedrete"
+      },
+      "rdf:_29": {
+        "@id": "urn:transit_stations:community_of_madrid:colladomediano"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:alcalahenaresuniversidad"
+      },
+      "rdf:_30": {
+        "@id": "urn:transit_stations:community_of_madrid:molinos"
+      },
+      "rdf:_31": {
+        "@id": "urn:transit_stations:community_of_madrid:cercedilla"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:alcalahenares"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:garena"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:sotohenares"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:torrejonardoz"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:sanfernando"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:coslada"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-9",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea C-9 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-9",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:cercedilla"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:puertonavacerrada"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:cotos"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-4a",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea C-4a de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-4a",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:parla"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:getafesector3"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:fuencarral"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:cantoblancouniversidad"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:universidadp.comillas"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:valdelasfuentes"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:alcobendass.s.reyes"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:getafecentro"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:margaritasuniversidad"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdealto"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdebajo"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:sol"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-4b",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea C-4b de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-4b",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:parla"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:getafesector3"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:fuencarral"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:cantoblancouniversidad"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:goloso"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:trescantos"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:colmenarviejo"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:getafecentro"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:margaritasuniversidad"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdealto"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdebajo"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:sol"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      }
+    },
+    {
+      "@id": "https://www.wikidata.org/entity/Q939283",
+      "@type": "gtfs:LightRail",
+      "foaf:name": "Metro Ligero/Tranvía de Madrid"
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:12",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 12 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "12",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:puertasur"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:parquelisboa"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:hospitalfuenlabrada"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:parqueeuropa"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:fuenlabradacentral"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:parque"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:arroyoculebro"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:conservatorio"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:alonsomendoza"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:getafecentral"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:juancierva"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:casar"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:alcorconcentral"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:espartales"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:bercial"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:carrascal"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:julianbesteiro"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:casareloj"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:hospitalseveroochoa"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:leganescentral"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:sannicasio"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:parqueoeste"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:universidadreyjuancarlos"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:mostolescentral"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:pradillo"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:hospitalmostoles"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:manuelamalasana"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:loranca"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:11",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea 11 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "11",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:plazaeliptica"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:abrantes"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:panbendito"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:sanfrancisco"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:carabanchelalto"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:peseta"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:fortuna"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:10",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 10 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "10",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:hospitalinfantasofia"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:reyescatolicos"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:tresolivos"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:fuencarral"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:begona"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:plazacastilla"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:cuzco"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:santiagobernabeu"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:gregoriomaranon"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:alonsomartinez"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:baunatal"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:tribunal"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:plazaespana"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:principepio"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:lago"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:batan"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:casacampo"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:coloniajardin"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:aviacionespanola"
+      },
+      "rdf:_28": {
+        "@id": "urn:transit_stations:community_of_madrid:cuatrovientos"
+      },
+      "rdf:_29": {
+        "@id": "urn:transit_stations:community_of_madrid:joaquinvilumbrales"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:manuelfalla"
+      },
+      "rdf:_30": {
+        "@id": "urn:transit_stations:community_of_madrid:puertasur"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:marquesvaldavia"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:moraleja"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:granja"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:rondacomunicacion"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:tablas"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:montecarmelo"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:9",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea 9 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "9",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:pacolucia"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:mirasierra"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:cruzrayo"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidaamerica"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:nunezbalboa"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:principevergara"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:ibiza"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:sainzbaranda"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:estrella"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:vinateros"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:artilleros"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:pavones"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:herreraoria"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:valdebernardo"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:vicalvaro"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:sancipriano"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:puertaarganda"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:rivasurbanizaciones"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:rivasfutura"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:rivasvaciamadrid"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:poveda"
+      },
+      "rdf:_28": {
+        "@id": "urn:transit_stations:community_of_madrid:argandarey"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:barriopilar"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:ventilla"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:plazacastilla"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:duquepastrana"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:pioxii"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:colombia"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:conchaespina"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:8",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea 8 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "8",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:colombia"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:pinarrey"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:marcristal"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:feriamadrid"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:aeropuertot1t2t3"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:barajas"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:aeropuertot4"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:3",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 3 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "3",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdealto"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:sancristobal"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:embajadores"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:lavapies"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:sol"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:callao"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:plazaespana"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:venturarodriguez"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:arguelles"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:moncloa"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdebajocruce"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:ciudadangeles"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:sanferminorcasur"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:hospital12octubre"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:almendrales"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:legazpi"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:delicias"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:palosfrontera"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:2",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 2 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "2",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:rosas"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidaguadalajara"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:bancoespana"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:sevilla"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:sol"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:opera"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:santodomingo"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:noviciado"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:sanbernardo"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:quevedo"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:canal"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:cuatrocaminos"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:alsacia"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:almudena"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:elipa"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:ventas"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:manuelbecerra"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:goya"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:principevergara"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:retiro"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:1",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 1 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "1",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:pinarchamartin"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:bambu"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:iglesia"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:bilbao"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:tribunal"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:granvia"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:sol"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:tirsomolina"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:antonmartin"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:estacionarte"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:menendezpelayo"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:pacifico"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:puentevallecas"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevanumancia"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:portazgo"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:buenosaires"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:altoarenal"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:miguelhernandez"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:sierraguadalupe"
+      },
+      "rdf:_28": {
+        "@id": "urn:transit_stations:community_of_madrid:villavallecas"
+      },
+      "rdf:_29": {
+        "@id": "urn:transit_stations:community_of_madrid:congosto"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:plazacastilla"
+      },
+      "rdf:_30": {
+        "@id": "urn:transit_stations:community_of_madrid:gavia"
+      },
+      "rdf:_31": {
+        "@id": "urn:transit_stations:community_of_madrid:suertes"
+      },
+      "rdf:_32": {
+        "@id": "urn:transit_stations:community_of_madrid:valdecarros"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:valdeacederas"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:tetuan"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:estrecho"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:alvarado"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:cuatrocaminos"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:riosrosas"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:7",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea 7 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "7",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:hospitalhenares"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:henares"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:simancas"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:garcianoblejas"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:ascao"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:pueblonuevo"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:barrioconcepcion"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:parqueavenidas"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:cartagena"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidaamerica"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:gregoriomaranon"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:alonsocano"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:jarama"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:canal"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:islasfilipinas"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:guzmanbueno"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:francosrodriguez"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:valdezarza"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:antoniomachado"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:penagrande"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidailustracion"
+      },
+      "rdf:_28": {
+        "@id": "urn:transit_stations:community_of_madrid:lacoma"
+      },
+      "rdf:_29": {
+        "@id": "urn:transit_stations:community_of_madrid:arroyofresno"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:sanfernando"
+      },
+      "rdf:_30": {
+        "@id": "urn:transit_stations:community_of_madrid:pitis"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:rambla"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:cosladacentral"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:barriopuerto"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:estadiometropolitano"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:musas"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:sanblas"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:6",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 6 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "6",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:laguna"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:carpetana"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:pacifico"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:condecasal"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:sainzbaranda"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:odonnell"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:manuelbecerra"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:diegoleon"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidaamerica"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:republicaargentina"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:cuatrocaminos"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:oporto"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:guzmanbueno"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:vicentealeixandre"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:ciudaduniversitaria"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:moncloa"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:arguelles"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:principepio"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:puertaangel"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:altoextremadura"
+      },
+      "rdf:_28": {
+        "@id": "urn:transit_stations:community_of_madrid:lucero"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:opanel"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:plazaeliptica"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:usera"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:legazpi"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:arganzuelaplanetario"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:mendezalvaro"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:5",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 5 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "5",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:alamedaosuna"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:capricho"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:diegoleon"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:nunezbalboa"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:rubendario"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:alonsomartinez"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:chueca"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:granvia"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:callao"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:opera"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:latina"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:puertatoledo"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:canillejas"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:acacias"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:piramides"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:marquesvadillo"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:urgel"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:oporto"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:vistaalegre"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:carabanchel"
+      },
+      "rdf:_27": {
+        "@id": "urn:transit_stations:community_of_madrid:eugeniamontijo"
+      },
+      "rdf:_28": {
+        "@id": "urn:transit_stations:community_of_madrid:aluche"
+      },
+      "rdf:_29": {
+        "@id": "urn:transit_stations:community_of_madrid:empalme"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:torrearias"
+      },
+      "rdf:_30": {
+        "@id": "urn:transit_stations:community_of_madrid:campamento"
+      },
+      "rdf:_31": {
+        "@id": "urn:transit_stations:community_of_madrid:casacampo"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:suanzes"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:ciudadlineal"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:pueblonuevo"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:quintana"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:carmen"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:ventas"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:4",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 4 de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "4",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:arguelles"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:sanbernardo"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidaamerica"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:prosperidad"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:alfonsoxiii"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidapaz"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:arturosoria"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:esperanza"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:canillas"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:marcristal"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:sanlorenzo"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:parquesantamaria"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:bilbao"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:hortaleza"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:manoteras"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:pinarchamartin"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:alonsomartinez"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:colon"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:serrano"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:velazquez"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:goya"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:lista"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:diegoleon"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-3a",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea C-3a de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-3a",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:aranjuez"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:ciempozuelos"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:sol"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:ramoncajal"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:mirasierrapacolucia"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:pitis"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:pinarrozas"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:matas"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:torrelodones"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:galapagarnavata"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:valdemoro"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:villalba"
+      },
+      "rdf:_21": {
+        "@id": "urn:transit_stations:community_of_madrid:sanyago"
+      },
+      "rdf:_22": {
+        "@id": "urn:transit_stations:community_of_madrid:zorreras"
+      },
+      "rdf:_23": {
+        "@id": "urn:transit_stations:community_of_madrid:escorial"
+      },
+      "rdf:_24": {
+        "@id": "urn:transit_stations:community_of_madrid:zarzalejo"
+      },
+      "rdf:_25": {
+        "@id": "urn:transit_stations:community_of_madrid:robledochavela"
+      },
+      "rdf:_26": {
+        "@id": "urn:transit_stations:community_of_madrid:santamariaalameda"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:pinto"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:getafeindustrial"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:casar"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:sancristobalindustrial"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:sancristobalangeles"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:villaverdebajo"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      }
+    },
+    {
+      "@id": "https://www.wikidata.org/entity/Q8350122",
+      "@type": "gtfs:Agency",
+      "foaf:name": "Consorcio Regional de Transportes de la Comunidad de Madrid",
+      "foaf:page": "http://www.crtm.es/"
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:cr:C-10",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea C-10 de Cercanías",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q1054785"
+      },
+      "gtfs:shortName": "C-10",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:villalba"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:galapagarnavata"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:principepio"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:piramides"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:delicias"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:mendezalvaro"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:atocha"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:recoletos"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevosministerios"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:chamartin"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:fuentemora"
+      },
+      "rdf:_19": {
+        "@id": "urn:transit_stations:community_of_madrid:valdebebas"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:torrelodones"
+      },
+      "rdf:_20": {
+        "@id": "urn:transit_stations:community_of_madrid:aeropuertot4"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:matas"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:pinarrozas"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:rozas"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:majadahonda"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:barrialc.c.pozuelo"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:pozuelo"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:aravaca"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:metro:R",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea R de Metro",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q191987"
+      },
+      "gtfs:shortName": "R",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:opera"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:principepio"
+      }
+    },
+    {
+      "@id": "https://www.wikidata.org/entity/Q191987",
+      "@type": "gtfs:Subway",
+      "foaf:name": "Metro de Madrid",
+      "gtfs:agency": {
+        "@id": "https://www.wikidata.org/entity/Q8350122"
+      }
+    },
+    {
+      "@id": "https://www.wikidata.org/entity/Q1054785",
+      "@type": "gtfs:Rail",
+      "foaf:name": "Cercanías Madrid",
+      "gtfs:agency": {
+        "@id": "https://www.wikidata.org/entity/Q8350122"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:ml:4",
+      "@type": [
+        "rdf:Seq",
+        "gtfs:Route"
+      ],
+      "gtfs:longName": "Línea 4 de Metro Ligero/Tranvía",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q939283"
+      },
+      "gtfs:shortName": "4",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:estrellapolarnorte"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:estrellapolarsur"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:bulevarsur"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:reyescatolicos"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:isabelii"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:parqueparla"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidasistemasolar"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:tierranorte"
+      },
+      "rdf:_16": {
+        "@id": "urn:transit_stations:community_of_madrid:tierrasur"
+      },
+      "rdf:_17": {
+        "@id": "urn:transit_stations:community_of_madrid:venusnorte"
+      },
+      "rdf:_18": {
+        "@id": "urn:transit_stations:community_of_madrid:venussur"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:jaimeinorte"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:jaimeisur"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:poligonoindustrialciudadparla"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:plazatoros"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:julioromerotorres"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:ballena"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:parlacentrobulevarnorte"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:iglesiacentro"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:ml:2",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 2 de Metro Ligero/Tranvía",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q939283"
+      },
+      "gtfs:shortName": "2",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:coloniajardin"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:pradovega"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:avenidaeuropa"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:berna"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:estacionaravaca"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:coloniaangeles"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:pradorey"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:somosaguassur"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:somosaguascentro"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:pozuelooeste"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:belgica"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:doscastillas"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:campussomosaguas"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:ml:3",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 3 de Metro Ligero/Tranvía",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q939283"
+      },
+      "gtfs:shortName": "3",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:coloniajardin"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:ciudadimagen"
+      },
+      "rdf:_10": {
+        "@id": "urn:transit_stations:community_of_madrid:ferialboadilla"
+      },
+      "rdf:_11": {
+        "@id": "urn:transit_stations:community_of_madrid:boadillacentro"
+      },
+      "rdf:_12": {
+        "@id": "urn:transit_stations:community_of_madrid:nuevomundo"
+      },
+      "rdf:_13": {
+        "@id": "urn:transit_stations:community_of_madrid:sigloxxi"
+      },
+      "rdf:_14": {
+        "@id": "urn:transit_stations:community_of_madrid:infantedonluis"
+      },
+      "rdf:_15": {
+        "@id": "urn:transit_stations:community_of_madrid:puertaboadilla"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:joseisbert"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:ciudadcine"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:cocheras"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:retamares"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:monteprincipe"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:ventorrocano"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:pradoespino"
+      },
+      "rdf:_9": {
+        "@id": "urn:transit_stations:community_of_madrid:cantabria"
+      }
+    },
+    {
+      "@id": "urn:transit_routes:community_of_madrid:ml:1",
+      "@type": [
+        "gtfs:Route",
+        "rdf:Seq"
+      ],
+      "gtfs:longName": "Línea 1 de Metro Ligero/Tranvía",
+      "gtfs:routeType": {
+        "@id": "https://www.wikidata.org/entity/Q939283"
+      },
+      "gtfs:shortName": "1",
+      "rdf:_0": {
+        "@id": "urn:transit_stations:community_of_madrid:pinarchamartin"
+      },
+      "rdf:_1": {
+        "@id": "urn:transit_stations:community_of_madrid:fuentemora"
+      },
+      "rdf:_2": {
+        "@id": "urn:transit_stations:community_of_madrid:virgencortijo"
+      },
+      "rdf:_3": {
+        "@id": "urn:transit_stations:community_of_madrid:antoniosaura"
+      },
+      "rdf:_4": {
+        "@id": "urn:transit_stations:community_of_madrid:alvarezvillaamil"
+      },
+      "rdf:_5": {
+        "@id": "urn:transit_stations:community_of_madrid:blascoibanez"
+      },
+      "rdf:_6": {
+        "@id": "urn:transit_stations:community_of_madrid:mariatudor"
+      },
+      "rdf:_7": {
+        "@id": "urn:transit_stations:community_of_madrid:palasrey"
+      },
+      "rdf:_8": {
+        "@id": "urn:transit_stations:community_of_madrid:tablas"
+      }
+    }
+  ]
+}
