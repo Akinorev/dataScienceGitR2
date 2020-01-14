@@ -16,6 +16,10 @@ import urllib.request
 import re
 import pandas as pd
 import unicodedata
+from nltk.corpus import stopwords
+import nltk
+
+
 
 # FUNCIONES
 
@@ -41,6 +45,11 @@ def remove_accents(text):
     cleanText = unicodedata.normalize('NFKD', textNoSpaces).encode('ASCII', 'ignore')
     return cleanText
 
+#IMPORTO STOPWORDS PARA ELIMINAR DE LA TABLA
+nltk.download('stopwords')
+#CARGO LAS STOPWORDS EN ESPAÑOL
+stop = stopwords.words('spanish')
+
 # GUARDAMOS LOS FICHEROS EN VARIABLES
 # FILTRAMOS LOS DATASET DE LOS STOP PARA OBTENER SOLO AQUELLAS ENTRADAS QUE NOS INTERESAN
 scraperFile = pd.read_csv("scraper_output.csv")
@@ -55,6 +64,8 @@ scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(ida\)","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(vuelta\)","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("renfe","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("rda.","ronda")
+scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
+#scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: [item for item in x if item not in stop])
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("-","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.rstrip()
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace(" ","")
@@ -71,6 +82,7 @@ metroStops['stop_name'] = metroStops['stop_name'].str.lower()
 metroStops['stop_name'] = metroStops['stop_name'].apply(remove_accents)
 metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
 metroStops['stop_name'] = metroStops['stop_name'].str.replace("avda.","avenida")
+metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
 metroStops['stop_name'] = metroStops['stop_name'].str.replace(" ","")
 metroStops['stop_name'] = metroStops['stop_name'].str.replace("-","")
 metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
@@ -81,6 +93,7 @@ ligeroStops = pd.read_csv("stops_ligero.txt")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(remove_accents)
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
+ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.replace(" ","")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.replace("-","")
 ligeroStopsSubset = ligeroStops[~ligeroStops.stop_name.isin(["est", "par"])]
@@ -89,6 +102,7 @@ cercaniasStops = pd.read_csv("stops_cercanias.txt")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.lower()
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(remove_accents)
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(lambda x: x.decode("utf-8"))
+cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace(" ","")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace("-","")
 #cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.rstrip(" el")
