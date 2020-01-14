@@ -50,7 +50,7 @@ index,transportmean_name,line_number,line_name,order_number,stop_name,stop_id,st
 16,METRO,1,Pinar de Chamartín-Valdecarros,16,anton martin,est_4_14,14.0,Calle de Atocha 50,40.412459999999996,-3.6993699999999996,A,http://www.crtm.es,1.0,,Europe/Madrid,0.0
 17,METRO,1,Pinar de Chamartín-Valdecarros,17,estacion del arte,par_4_15,15.0,Plaza del Emperador Carlos V 11,40.40885,-3.6924900000000003,A,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 17,METRO,1,Pinar de Chamartín-Valdecarros,17,estacion del arte,est_4_15,15.0,Plaza del Emperador Carlos V 11,40.40885,-3.6924900000000003,A,http://www.crtm.es,1.0,,Europe/Madrid,0.0
-18,METRO,1,Pinar de Chamartín-Valdecarros,18,atocha renfe,,,,,,,,,,,
+18,METRO,1,Pinar de Chamartín-Valdecarros,18,atocha,acc_4_15_51,15.0,Plaza del Emperador Carlos V 11,40.409,-3.6924699999999997,,http://www.crtm.es,2.0,est_4_15,,0.0
 19,METRO,1,Pinar de Chamartín-Valdecarros,19,menendez pelayo,par_4_17,17.0,Avda de la Ciudad de Barcelona 23,40.40445,-3.6809800000000004,A,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 19,METRO,1,Pinar de Chamartín-Valdecarros,19,menendez pelayo,est_4_17,17.0,Avda de la Ciudad de Barcelona 23,40.40445,-3.6809800000000004,A,http://www.crtm.es,1.0,,Europe/Madrid,0.0
 20,METRO,1,Pinar de Chamartín-Valdecarros,20,pacifico,par_4_18,18.0,Avda de la Ciudad de Barcelona 79,40.40126,-3.6751400000000003,A,http://www.crtm.es,0.0,,Europe/Madrid,0.0
@@ -142,10 +142,12 @@ index,transportmean_name,line_number,line_name,order_number,stop_name,stop_id,st
 0,METRO,3,Villaverde Alto-Moncloa,0,villaverde alto,est_4_273,273.0,Calle del Valle de Tobalina 56,40.341229999999996,-3.71199,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
 1,METRO,3,Villaverde Alto-Moncloa,1,san cristobal,par_4_272,272.0,Avda de Andalucía 81,40.34154,-3.6931800000000004,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
 1,METRO,3,Villaverde Alto-Moncloa,1,san cristobal,est_4_272,272.0,Avda de Andalucía 81,40.34154,-3.6931800000000004,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
-2,METRO,3,Villaverde Alto-Moncloa,2,villaverde bajo cruce,,,,,,,,,,,
+2,METRO,3,Villaverde Alto-Moncloa,2,villaverde bajo cruce,par_4_271,271.0,Avda de Andalucía 38,40.35089,-3.69265,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
+2,METRO,3,Villaverde Alto-Moncloa,2,villaverde bajo cruce,est_4_271,271.0,Avda de Andalucía 38,40.35089,-3.69265,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
 3,METRO,3,Villaverde Alto-Moncloa,3,ciudad de los angeles,par_4_270,270.0,Avda de Andalucía 38,40.359590000000004,-3.69363,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
 3,METRO,3,Villaverde Alto-Moncloa,3,ciudad de los angeles,est_4_270,270.0,Avda de Andalucía 38,40.359590000000004,-3.69363,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
-4,METRO,3,Villaverde Alto-Moncloa,4,san fermin orcasur,,,,,,,,,,,
+4,METRO,3,Villaverde Alto-Moncloa,4,san fermin orcasur,par_4_269,269.0,Avda de Andalucía 9,40.36999,-3.6941800000000002,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
+4,METRO,3,Villaverde Alto-Moncloa,4,san fermin orcasur,est_4_269,269.0,Avda de Andalucía 9,40.36999,-3.6941800000000002,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
 5,METRO,3,Villaverde Alto-Moncloa,5,hospital 12 de octubre,par_4_268,268.0,Avda de Córdoba 49,40.375029999999995,-3.69585,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
 5,METRO,3,Villaverde Alto-Moncloa,5,hospital 12 de octubre,est_4_268,268.0,Avda de Córdoba 49,40.375029999999995,-3.69585,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
 6,METRO,3,Villaverde Alto-Moncloa,6,almendrales,par_4_267,267.0,Avda de Córdoba 21,40.38409,-3.6978800000000005,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
@@ -345,7 +347,8 @@ index,transportmean_name,line_number,line_name,order_number,stop_name,stop_id,st
 6,METRO,6,Circular,6,legazpi,par_4_43,43.0,Plaza de Legazpi 2 B,40.39116,-3.6951099999999997,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
 6,METRO,6,Circular,6,legazpi,est_4_43,43.0,Plaza de Legazpi 2 B,40.39116,-3.6951099999999997,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
 6,METRO,6,Circular,6,legazpi,par_4_110,110.0,Plaza de Legazpi 2 B,40.39116,-3.69505,A,http://www.crtm.es,0.0,est_4_43,,2.0
-7,METRO,6,Circular,7,arganzuela planetario,,,,,,,,,,,
+7,METRO,6,Circular,7,arganzuela planetario,par_4_259,259.0,Calle del Bronce 1 A,40.3931,-3.6886400000000004,A,http://www.crtm.es,0.0,,Europe/Madrid,2.0
+7,METRO,6,Circular,7,arganzuela planetario,est_4_259,259.0,Calle del Bronce 1 A,40.3931,-3.6886400000000004,A,http://www.crtm.es,1.0,,Europe/Madrid,2.0
 8,METRO,6,Circular,8,,,,,,,,,,,,
 9,METRO,6,Circular,9,mendez alvaro,par_4_111,111.0,Calle del Ombu 16,40.395379999999996,-3.67814,A,http://www.crtm.es,0.0,est_90_13,,0.0
 10,METRO,6,Circular,10,pacifico,par_4_18,18.0,Avda de la Ciudad de Barcelona 79,40.40126,-3.6751400000000003,A,http://www.crtm.es,0.0,,Europe/Madrid,0.0

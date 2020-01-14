@@ -54,6 +54,7 @@ scraperFile['stop_name']=scraperFile['stop_name'].str.replace("- ","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("'","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(ida\)","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(vuelta\)","")
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace("renfe","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.rstrip()
 #print(scraperFile['stop_name'].head())
 
@@ -67,13 +68,14 @@ metroStops = pd.read_csv("stops_metro.txt")
 metroStops['stop_name'] = metroStops['stop_name'].str.lower()
 metroStops['stop_name'] = metroStops['stop_name'].apply(remove_accents)
 metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
-
+metroStops['stop_name'] = metroStops['stop_name'].str.replace("-"," ")
 metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
 
 ligeroStops = pd.read_csv("stops_ligero.txt")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(remove_accents)
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
+
 ligeroStopsSubset = ligeroStops[~ligeroStops.stop_name.isin(["est", "par"])]
 
 cercaniasStops = pd.read_csv("stops_cercanias.txt")
