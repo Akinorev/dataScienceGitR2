@@ -59,17 +59,15 @@ scraperFile['stop_name'] = scraperFile['stop_name'].apply(remove_accents)
 #NOS ASEGURAMOS DE TENER EL FORMATO EN TIPO CHAR, YA QUE AL QUITAR LOS ACENTOS LOS CONVERTIMOS EN TIPO BYTE
 scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: x.decode("utf-8"))
 #ELIMINO GUIONES Y DEMAS CARACTERES ESPECIALES (CORNER CASES)
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace("'","")
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(ida\)","")
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(vuelta\)","")
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace("renfe","")
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace("rda.","ronda")
+scraperFile['stop_name'] = scraperFile['stop_name'].str.replace("'","")
+scraperFile['stop_name'] = scraperFile['stop_name'].str.replace("\(ida\)","")
+scraperFile['stop_name'] = scraperFile['stop_name'].str.replace("\(vuelta\)","")
+scraperFile['stop_name'] = scraperFile['stop_name'].str.replace("renfe","")
+scraperFile['stop_name'] = scraperFile['stop_name'].str.replace("rda.","ronda")
 scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
-#scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: [item for item in x if item not in stop])
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace("-","")
-scraperFile['stop_name']=scraperFile['stop_name'].str.rstrip()
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace(" ","")
-#print(scraperFile['stop_name'].head())
+scraperFile['stop_name'] = scraperFile['stop_name'].str.replace("-","")
+scraperFile['stop_name'] = scraperFile['stop_name'].str.rstrip()
+scraperFile['stop_name'] = scraperFile['stop_name'].str.replace(" ","")
 
 # FILTRO EN SUBSETS
 scraperMetro = filterData(scraperFile,"transportmean_name","METRO")
@@ -86,8 +84,6 @@ metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: ' '.join([word
 metroStops['stop_name'] = metroStops['stop_name'].str.replace(" ","")
 metroStops['stop_name'] = metroStops['stop_name'].str.replace("-","")
 metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
-
-metroStopsSubset.to_csv('TESTMETRO.csv', index=False)
 
 ligeroStops = pd.read_csv("stops_ligero.txt")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
@@ -107,8 +103,6 @@ cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace("-la","")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace(" ","")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace("-","")
-#cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.rstrip(" el")
-
 cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_name.isin(["est", "par"])]
 
 # LEFT JOIN DONDE SCRAPER* ESTARA A LA IZQ Y LA INFO DE LAS ESTACIONES A LA DRCH
@@ -120,7 +114,10 @@ mergedCercanias = pd.merge(left=scraperCercanias, right=cercaniasStopsSubset, ho
 allTablas = [mergedMetro, mergedLigero, mergedCercanias]
 allTablas = pd.concat(allTablas)
 
-allTablas.to_csv('merged_test_output.csv', index=False)
+#REORDENAMOS COLUMNAS Y ELIMINAMOS AQUELLAS QUE NO NECESITAMOS
+finalTabla = allTablas[['transportmean_name','line_number','order_number','stop_id','stop_code','stop_name','stop_desc','stop_lat','stop_lon','zone_id','stop_url','location_type','parent_station','stop_timezone','wheelchair_boarding']]
+
+finalTabla.to_csv('merged_test_output.csv', index=False)
 
 null_columns=allTablas.columns[allTablas.isnull().any()]
 
