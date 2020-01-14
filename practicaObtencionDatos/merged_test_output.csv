@@ -897,7 +897,7 @@ index,transportmean_name,line_number,line_name,order_number,stop_name,stop_id,st
 16,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,16,pinarrozas,par_5_55,55.0,,40.5223060941516,-3.8820657658893998,B2,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 17,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,17,matas,par_5_44,44.0,,40.5525253841785,-3.8967411356931203,B2,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 18,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,18,torrelodones,par_5_82,82.0,,40.574513990894,-3.95644911190209,B3,http://www.crtm.es,0.0,,Europe/Madrid,1.0
-19,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,19,galapagarnavata,,,,,,,,,,,
+19,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,19,galapagarnavata,par_5_33,33.0,,40.6001201927881,-3.98176360815813,B3,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 20,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,20,villalba,par_5_91,91.0,,40.6263702008332,-4.00800585940991,B3,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 21,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,21,sanyago,par_5_74,74.0,,40.6178702391272,-4.03101363862753,C1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 22,CR,C-3a,Aranjuez-Atocha-Sol-Chamartín-El Escorial,22,zorreras,par_5_96,96.0,,40.6094209154972,-4.045966653208771,C1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
@@ -985,7 +985,7 @@ index,transportmean_name,line_number,line_name,order_number,stop_name,stop_id,st
 17,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,17,pitis,par_5_58,58.0,,40.495115042597604,-3.72575435236588,A,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 18,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,18,rozas,par_5_68,68.0,,40.494242023891395,-3.8680333825642204,B2,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 19,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,19,majadahonda,par_5_42,42.0,,40.474285233963705,-3.8452561987825202,B2,http://www.crtm.es,0.0,,Europe/Madrid,1.0
-20,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,20,barrialc.c.pozuelo,,,,,,,,,,,
+20,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,20,barrialc.c.pozuelo,par_5_13,13.0,,40.4653831832569,-3.8076474278486403,B1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 21,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,21,pozuelo,par_5_60,60.0,,40.4472743567471,-3.8000251574227204,B1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 22,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,22,aravaca,par_5_9,9.0,,40.4483360938325,-3.78576906207162,A,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 23,CR,C-7,Alcalá de Henares-Atocha-Chamartín-Príncipe Pío,23,principepio,par_5_61,61.0,,40.4210790188043,-3.7201723106450295,A,http://www.crtm.es,0.0,est_90_18,,0.0
@@ -1016,7 +1016,7 @@ index,transportmean_name,line_number,line_name,order_number,stop_name,stop_id,st
 22,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,22,pinarrozas,par_5_55,55.0,,40.5223060941516,-3.8820657658893998,B2,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 23,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,23,matas,par_5_44,44.0,,40.5525253841785,-3.8967411356931203,B2,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 24,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,24,torrelodones,par_5_82,82.0,,40.574513990894,-3.95644911190209,B3,http://www.crtm.es,0.0,,Europe/Madrid,1.0
-25,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,25,galapagarnavata,,,,,,,,,,,
+25,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,25,galapagarnavata,par_5_33,33.0,,40.6001201927881,-3.98176360815813,B3,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 26,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,26,villalba,par_5_91,91.0,,40.6263702008332,-4.00800585940991,B3,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 27,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,27,negrales,par_5_50,50.0,,40.6385815868385,-4.02180081138074,C1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 28,CR,C-8,Guadalajara-Alcalá de Henares-Atocha-Chamartín-Villalba-Cercedilla,28,alpedrete,par_5_6,6.0,,40.658165812941,-4.03496961859464,C1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
@@ -1027,13 +1027,13 @@ index,transportmean_name,line_number,line_name,order_number,stop_name,stop_id,st
 1,CR,C-9,Cercedilla-Cotos,1,puertonavacerrada,par_5_63,63.0,,40.784415667070604,-4.00464386263311,C2,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 2,CR,C-9,Cercedilla-Cotos,2,cotos,par_5_23,23.0,,40.8222601406103,-3.96443439316078,C2,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 0,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,0,villalba,par_5_91,91.0,,40.6263702008332,-4.00800585940991,B3,http://www.crtm.es,0.0,,Europe/Madrid,1.0
-1,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,1,galapagarnavata,,,,,,,,,,,
+1,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,1,galapagarnavata,par_5_33,33.0,,40.6001201927881,-3.98176360815813,B3,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 2,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,2,torrelodones,par_5_82,82.0,,40.574513990894,-3.95644911190209,B3,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 3,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,3,matas,par_5_44,44.0,,40.5525253841785,-3.8967411356931203,B2,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 4,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,4,pinarrozas,par_5_55,55.0,,40.5223060941516,-3.8820657658893998,B2,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 5,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,5,rozas,par_5_68,68.0,,40.494242023891395,-3.8680333825642204,B2,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 6,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,6,majadahonda,par_5_42,42.0,,40.474285233963705,-3.8452561987825202,B2,http://www.crtm.es,0.0,,Europe/Madrid,1.0
-7,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,7,barrialc.c.pozuelo,,,,,,,,,,,
+7,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,7,barrialc.c.pozuelo,par_5_13,13.0,,40.4653831832569,-3.8076474278486403,B1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 8,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,8,pozuelo,par_5_60,60.0,,40.4472743567471,-3.8000251574227204,B1,http://www.crtm.es,0.0,,Europe/Madrid,0.0
 9,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,9,aravaca,par_5_9,9.0,,40.4483360938325,-3.78576906207162,A,http://www.crtm.es,0.0,,Europe/Madrid,1.0
 10,CR,C-10,Villalba-Príncipe Pío-Atocha-Recoletos-Chamartín-Aeropuerto T4,10,principepio,par_5_61,61.0,,40.4210790188043,-3.7201723106450295,A,http://www.crtm.es,0.0,est_90_18,,0.0
