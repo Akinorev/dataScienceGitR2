@@ -49,6 +49,12 @@ scraperFile['stop_name'] = scraperFile['stop_name'].str.lower()
 scraperFile['stop_name'] = scraperFile['stop_name'].apply(remove_accents)
 #NOS ASEGURAMOS DE TENER EL FORMATO EN TIPO CHAR, YA QUE AL QUITAR LOS ACENTOS LOS CONVERTIMOS EN TIPO BYTE
 scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: x.decode("utf-8"))
+#ELIMINO GUIONES Y DEMAS CARACTERES ESPECIALES (CORNER CASES)
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace("- ","")
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace("'","")
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(ida\)","")
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(vuelta\)","")
+scraperFile['stop_name']=scraperFile['stop_name'].str.rstrip()
 #print(scraperFile['stop_name'].head())
 
 # FILTRO EN SUBSETS
@@ -61,6 +67,7 @@ metroStops = pd.read_csv("stops_metro.txt")
 metroStops['stop_name'] = metroStops['stop_name'].str.lower()
 metroStops['stop_name'] = metroStops['stop_name'].apply(remove_accents)
 metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
+
 metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
 
 ligeroStops = pd.read_csv("stops_ligero.txt")
@@ -85,3 +92,7 @@ allTablas = [mergedMetro, mergedLigero, mergedCercanias]
 allTablas = pd.concat(allTablas)
 
 allTablas.to_csv('merged_test_output.csv', index=False)
+
+null_columns=allTablas.columns[allTablas.isnull().any()]
+
+print(allTablas[allTablas["stop_id"].isnull()][null_columns])
