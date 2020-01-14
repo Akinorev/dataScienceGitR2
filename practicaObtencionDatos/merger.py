@@ -50,12 +50,14 @@ scraperFile['stop_name'] = scraperFile['stop_name'].apply(remove_accents)
 #NOS ASEGURAMOS DE TENER EL FORMATO EN TIPO CHAR, YA QUE AL QUITAR LOS ACENTOS LOS CONVERTIMOS EN TIPO BYTE
 scraperFile['stop_name'] = scraperFile['stop_name'].apply(lambda x: x.decode("utf-8"))
 #ELIMINO GUIONES Y DEMAS CARACTERES ESPECIALES (CORNER CASES)
-scraperFile['stop_name']=scraperFile['stop_name'].str.replace("- ","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("'","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(ida\)","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("\(vuelta\)","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.replace("renfe","")
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace("rda.","ronda")
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace("-","")
 scraperFile['stop_name']=scraperFile['stop_name'].str.rstrip()
+scraperFile['stop_name']=scraperFile['stop_name'].str.replace(" ","")
 #print(scraperFile['stop_name'].head())
 
 # FILTRO EN SUBSETS
@@ -68,20 +70,29 @@ metroStops = pd.read_csv("stops_metro.txt")
 metroStops['stop_name'] = metroStops['stop_name'].str.lower()
 metroStops['stop_name'] = metroStops['stop_name'].apply(remove_accents)
 metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
-metroStops['stop_name'] = metroStops['stop_name'].str.replace("-"," ")
+metroStops['stop_name'] = metroStops['stop_name'].str.replace("avda.","avenida")
+metroStops['stop_name'] = metroStops['stop_name'].str.replace(" ","")
+metroStops['stop_name'] = metroStops['stop_name'].str.replace("-","")
 metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
+
+metroStopsSubset.to_csv('TESTMETRO.csv', index=False)
 
 ligeroStops = pd.read_csv("stops_ligero.txt")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(remove_accents)
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(lambda x: x.decode("utf-8"))
-
+ligeroStops['stop_name'] = ligeroStops['stop_name'].str.replace(" ","")
+ligeroStops['stop_name'] = ligeroStops['stop_name'].str.replace("-","")
 ligeroStopsSubset = ligeroStops[~ligeroStops.stop_name.isin(["est", "par"])]
 
 cercaniasStops = pd.read_csv("stops_cercanias.txt")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.lower()
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(remove_accents)
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(lambda x: x.decode("utf-8"))
+cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace(" ","")
+cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace("-","")
+#cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.rstrip(" el")
+
 cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_name.isin(["est", "par"])]
 
 # LEFT JOIN DONDE SCRAPER* ESTARA A LA IZQ Y LA INFO DE LAS ESTACIONES A LA DRCH
