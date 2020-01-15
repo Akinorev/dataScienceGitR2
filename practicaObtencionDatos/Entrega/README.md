@@ -23,7 +23,7 @@ La entrega se compone de 9 ficheros:
 6. stops_cercanias (datos GTFS de cercanias renfe)
 7. scraper_output.csv (fichero salida del scraper)
 8. transportes.csv (fichero con la base de datos final tras la unión)
-9. rdf.xml (fichero RDF )
+9. obd.rdf (fichero RDF )
 
 
 
@@ -101,17 +101,23 @@ Una vez guardados todos los ficheros en el mismo directorio se deberán ejecutar
 
 ## 5. Figuras generadas
 
-Insertar el grafico/s del RDF en este apartado.
+A partir del RDF se ha generado un grafo de las líneas de metro ligero con sus paradas correspondientes. Para una correcta visualización, se ha seleccionado solo este transporte, ya que los demás transportes complicaban su lectura debido a sus grandes dimensiones.
 
 
+
+![RDF_Graph](/mnt/laptopspace/Datos/01_Proyectos actuales/00_MasterDataScience/dataScienceGitR2/practicaObtencionDatos/RDF_Graph.png)
+
+
+
+Este grafo ha sido generado a través de la web: https://www.w3.org/RDF/Validator/
 
 ##  6. Posibles mejoras
 
 El *scraper* se podria realizar con la libreria scrapy en lugar de usar BS4 y expresiones regulares y teniendo ambos codigos comparar cual de los dos es mas eficiente.
 
-Posibles mejoras del merger.
+El *merger* actualmente funciona con una limpieza exhaustiva de cada una de las columnas con el nombre de las estaciones. Sería interesante probar expresiones regulares para la combinación de estas dos columnas reduciendo así el código.
 
-Posibles mejores del generator.
+El *rdf_generator* podría exportarse en formato turtle para conseguir una visualización basada en clusters y no tan lineal.
 
 No siendo necesariamente una mejora, en lugar de fraccionar el codigo en 3 archivos diferentes y ejecutarlos en un orden determinado, podra haberse realizado todo en un solo codigo. Aunque hace más compleja la lectura del código y su detección de errores, si que permite generar todos los archivos necesarios en una sola ejecución.
 
@@ -122,4 +128,5 @@ No siendo necesariamente una mejora, en lugar de fraccionar el codigo en 3 archi
 - Datos abiertos del Consorcio Regional de Transporte de Madrid (CRTM), [Datos.](http://datos.crtm.es/)
 - Google Transit Feed Specification (GTFS), [GoogleTransit.](https://developers.google.com/transit/gtfs/reference?hl=es-419)
 - Información de los medios de transporte en el CRTM, [CRTM.](http://www.crtm.es/tu-transporte-publico.aspx)
+- Visualizador de RDF: [RDF Grapher](https://www.w3.org/RDF/Validator/)
 - Repositorio con el conenido de esta práctica, [Repositiorio.](https://github.com/Akinorev/dataScienceGitR2/tree/master/practicaObtencionDatos)
