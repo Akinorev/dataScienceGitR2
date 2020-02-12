@@ -1,0 +1,402 @@
+---
+title: "Cluster analysis"
+author: "Master Data Science"
+date: "9/2/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(cluster)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(factoextra)
+library(Rtsne)
+library(tidyverse)
+library(plotly)
+
+
+#para poder usa TSNE es necesario
+#install.packages("Rtsne")
+#if(!require(devtools)) install.packages("devtools") devtools::install_github("jkrijthe/Rtsne")
+
+```
+
+## Técnicas No Supervisadas. Analisis Cluster
+
+Necesitamos analizar los datos de tipo mixto, número, órdinal y nominal.
+Nos vamos a enfocar en clasificación no supervisada usando R
+CLUSTERING ALGORITHM: PARTITIONING AROUND MEDOIDS (PAM)
+
+```{r pwd ruta fichero}
+
+setwd("C:/Users/olmosp/Desktop/pie/PRACTICA_R_ML")
+df_root <- read.csv ("kc_house_data.csv")
+#set.seeds=737
+#df_mas  <- sample_n(df_root, size = 15000)
+```
+
+## Distancia de Gower
+La distancia es una medida numérica de cuán separados están los individuos, es decir una métrica utilizada para medir la proximidad o similitud entre individuos;
+
+La distancia de Gower se calcula como el promedio de las diferencias parciales entre individuos.
+Para cada tipo de variable, se usa una métrica de distancia particular que funciona bien para ese tipo y se escala para caer entre 0 y 1
+
+Para las variables cuantitativa La Distancia de Manhattan
+Para las Variables Ordinales la Distancia un ajuste especial de la Manhattan despúes de haber sido ordenadas
+Para las Nominales primero se convierte en k columnas Binarias ( para cada categoria de cada variable norminal) y posteriormente se usa el coeficiente de Dice
+
+El coeficiente de Dice [0,1] para medir la similitud entre 2 muestras
+
+Se escala de la siguiente Manera
+Se define la distancia de Gower como d2ij = 1 − sij , 
+donde sij = p1h=1 (1 − |xih − xjh|/Gh) + a + α p1 + (p2 − d) + p3 es el coeficiente de similaridad de Gower,
+
+p1 es el numero de variables cuantitativas continuas,
+p2 es el numero de variables binarias,
+p3 es el numero de variables cualitativas(no binarias),
+a es el numero de coincidencias (1, 1) en las variables binarias,
+d es el numero de coincidencias (0, 0) en las variables binarias,
+α es el numero de coincidencias en las variables cualitativas (no binarias) y
+Gh es el rango (o recorrido) de la h-esima variable cuantitativa.
+
+
+
+
+```{r distancia de Gower}
+
+gower_dist <- daisy(df_root, metric = "gower")
+gower_mat  <- as.matrix(gower_dist)
+
+```
+
+## Ejemplo de Casas Más similares, basado en la distancia de Gower
+
+```{r mas similares}
+df_root[which(gower_mat == min(gower_mat[gower_mat != min(gower_mat)]), 
+              arr.ind = TRUE)[1, ], ]
+
+```
+
+## Ejemplo de Casas Más Disimilares, basado en la distancia de Gower
+
+```{r mas disimilares}
+df_root[which(gower_mat == max(gower_mat[gower_mat != max(gower_mat)]), 
+              arr.ind = TRUE)[1, ], ]
+
+```
+
+## Selección del algoritmo PAM
+
+Una vez calculada la matriz de distancia emplearemos el algoritmo PAM, basado en una partición de medoids (El término medoids se refiere a un objeto dentro de un grupo para el cual la diferencia promedio entre este y todos los demás miembros del grupo es mínima, es decir el punto más centralmente ubicado del conjunto de datos), en cambio en el método K-means cada Cluster está representado por su centroide.
+Es un método muy similar a k-means, pero es mucho más robusto a la presencia de Outliers como es en nuestro caso.
+Es un procedimiento de agrupación iterativa que implica los siguientes pasos:
+
+
+# Step1.-Elejir k entidades aleatorias para convertirse en los Medoids
+# Step2.-Asignamos a cada entidad, en nuestro caso a cada "casa" el medoide más cercano basado en la distancia de Gower anteriormente calculada.
+# Step3.-Para cada Cluster identificar la observación que produciría la distancia promedio más baja si fuera reasiganada como el Medoid, si fuera así hay que hacer de esta observación el nuevo Medoid. Si al menos un Medoid ha cambiado volvemos Step2, en caso contrario Step4
+# Step4.- FIN
+
+K Means intenta mininizar el ECM total K Medoids minimiza la suma de las diferencias entre los puntos etiquetados para estar en un grupo y un punto designado como el centro de ese grupo Mediod.
+
+
+## Selección del Número óptimo de Clústers
+
+Silhouette, Validación y consistencia dentro de los datos. 
+
+Es una medida de cuan similar es objeto dentro del grupo de pertenencia y cuan disimilar con los otros grupos.
+
+Varía entre -1 y 1. Un valor alto indica que un objeto está bien emparejado dentro de su grupo y mal con el resto.
+Un valor muy bajo o negativo implica una revisión del número de cluster al alza o a la baja
+
+
+
+```{r Clúster number selection }
+
+sil_width <- c(NA)
+for(i in 2:10){  
+  pam_fit <- pam(gower_dist, diss = TRUE, k = i)  
+  sil_width[i] <- pam_fit$silinfo$avg.width  
+}
+plot(1:10, sil_width,
+     xlab = "Numero de clusters",
+     ylab = "Silhouette")
+lines(1:10, sil_width)
+
+```
+
+Después de calcular el Silhouette para el algoritmo PAM vemos que 2 grupos producen el valor más alto. 
+Aún asi nosotros seleccionamos 3 Cluster para dividir la dispersión del Trabajo y facilitar el entendimiento de los siguientes análisis.
+
+## Seleccionamos 3 Clusters 
+
+```{r Clúster interpretacion }
+
+set.seed=737
+k <- 3
+pam_fit <- pam(gower_dist, diss = TRUE, k)
+pam_results <- df_root %>%
+  mutate(cluster = pam_fit$clustering) %>%
+  group_by(cluster) %>%
+  do(the_summary = summary(.))
+
+
+
+#frecuencia del número de casas en cada Clúster
+ftable(pam_fit$clustering)
+
+#descriptivo en cada Clúster
+pam_results$the_summary
+```
+## Pequeña Interpretación de los 3 Clusters
+
+## Cluster 1. Valores en Media
+
+Nº de Observaciones   7.255 
+Precio medio        498.294  
+Nº de habitaciones    3.111    
+Nº de Banyos          1.663
+Nº de Plantas         1.22
+Metros cuadrado       1.679
+Vistas al mar         0.00634  
+Visitas               0.2571
+Condicion Media       3.47
+Grado Medio           7.065
+Anyo Contruccion      1944
+
+
+
+## Cluster 2. Valores en Media
+
+Nº de Observaciones    5.687
+Precio medio         412.375  
+Nº de habitaciones    3.345 
+Nº de Banyos          1.851
+Nº de Plantas         1.068
+Metros cuadrado       1.808
+Vistas al mar         0.006682
+Visitas               0.1721
+Condicion Media       3.775 
+Grado Medio           7.19
+Anyo Contruccion      1968
+
+
+
+## Cluster 3. Valores en Media
+
+Nº de Observaciones   8.655
+Precio medio        659.559  
+Nº de habitaciones    3.611
+Nº de Banyos          2.669
+Nº de Plantas         2.004
+Metros cuadrado       2.014
+Vistas al mar         0.00912
+Visitas               0.256
+Condicion Media       3.119  
+Grado Medio           8.463
+Anyo Contruccion      1996
+
+
+
+## Reducción de dimensionalidad para visualizar los Clústers.
+
+## Visualizacion  PCA (linear)
+
+El PCA es un algoritmo lienal, no podrá interpretar relaciones complejas polinómicas entre los items del dataset.
+Vemos que en los dos primeros componentes recogemos el 50,35% de la variabilidad
+Seleccionando aquellos componentes con autovalor mayor a 1,los Cuatro Primeros, explican el 71,5% de la variabilidad total.
+
+
+```{r pca dimensiones }
+
+data<- subset(df_root, select=c("price", "bedrooms","bathrooms","sqft_living","sqft_lot","floors","waterfront",                                        "view","condition","grade","sqft_above","sqft_basement","sqft_living15","sqft_lot15"))
+pca<- prcomp(data, scale=TRUE)
+
+summary (pca)
+
+```
+
+## ScreePlot refleja el porcentanje de variabilidad explicada por cada Componente Principal
+
+```{r pca screeplot }
+fviz_eig(pca)
+
+```
+
+## Interpretación de cada uno de los componentes Principales
+
+A través de los Scores de cada variable dentro del componente Principal podemos libremente afirmar y con fines explicativos;
+ 
+#PC1. Precio/m2       38% de la variabilidad
+#PC2. Espacio Sotano  12% de la variabilidad
+#PC3. Espacio Parcela 12% de la varibiliidad
+#PC4. Vistas al Mar    9% de la variabilidad
+
+```{r pca explicación }
+pca
+
+```
+## Cluster dentro de los PCA's 
+
+Visualizaremos nuestros 3 Clústeres dentro del plano PC1 y PC2, 
+Observamos que tenemos problemas los valores extremos por un lado y por otro la gran partes de los items se nos acumulan muy próximos lo cual no nos facilita la comprensión de los Grupos.
+
+Planteamos nuesvas alternativas al entender que el PCA es insuficiente para interpretar nuestros Clusters
+
+
+```{r PCA plano con los Clusteres }
+
+#join pca data y df cluster
+
+
+pam_fit$clustering <- as.character(pam_fit$clustering)
+pca_data <- data.frame(pca$x, cluster=pam_fit$clustering)
+
+ggplot(pca_data, aes(x=PC1, y=PC2, color=cluster)) + geom_point()
+
+
+
+```
+
+
+
+
+
+## Visualizacion  t-SNE (non-parametric/ nonlinear)
+## https://lvdmaaten.github.io/tsne/
+## https://cran.r-project.org/web/packages/tsne/tsne.pdf
+
+Algoritmo de reducción de dimensionalidad no lineal, encuentra patrones en los datos mediante la identificación de grupos observados basados en la similitud de puntos de datos con múltiples características.
+
+Esta técnica permite utilizar la métrica anteiormente creada, la Distancia de Gower, en nuestro caso se muestran los tres grupos que seleccionamos anteriorenteme con el algortimo PAM.
+
+Asigna los datos multidimensionales creados en la Distancia de Gower anteriormente calculada a un espacio dimensional menor.
+
+## Algoritmo  t-SNE
+
+  Muy útil para el "crowding problem" que implica "la maldición de la dimensión" y básicamente en nuestro caso afecta ya que al aumentar el número de dimensiones la distancia al vecino más próximo aumenta.
+
+## Step1
+  Comienza convirtiendo la distancia, nuestro caso Gower, entre los puntos de datos en medidas de probabilidad condicionales que representan similtud entre los datos.
+  Función Gaussiana, probabilidad alta y probabilidad Baja
+  Hay que prestar atención a las colas que son estrechas y pueden acumular mucha relación de puntos.
+  
+
+## Step2 
+  Representando la distribución de Probabilidad.
+  La idea intuitiva es realizar asignaciones de baja dimensión que representen distribuciones de probabilidad similares, aquí nos podemos encontrar con "crowding problem" debido a las "colas cortas" de las distribuciones Gaussianas. Para subsanar este problema y que los puntos tengan una "cola más larga" la t-sne usa uns distribución T-stundent con un grado de libertad.
+  La optimización de esta distribución t-student se realiza mediante una función Gradiente Descendiente que intuitivamenete representa la fuerza y la atracción-repulsión entre dos puntos. Gradiente positivo implica atracción y al contrario.
+  Este "push-and-pull" hace que los puntos se asienten en espacio de baja dimensionalidad.
+  
+## Step 3
+  Las t-snes no tienen parámetros y optimizan directamente a través de la función de Coste Gradiente que es No Convexa y puede darnos problemas con los mínimos locales.
+  Existen funciones para corregir este crecimiento de la función Gradiente sobre todo al comienzo del algoritmo.
+  Importante el concepto de vecino estocásticos lo cual implica que no está cerrada la frontera de los puntos que son  vecinos contra los puntos que no lo son permitiendo al algotimo tener en cuenta la estructura local como la global.( esto lo realizaremos con el parámetro perplexity)
+  
+  
+En la siguiente visualización aparecen los 3 clúster dentro los ejes X e Y
+El número de dimensiones por defecto es 2
+
+
+Perplexity es el parámetro que usamos para equilibrar el aspecto local y global de los datos, es en cierta medida determinar de forma supuesta cuanto es el número de vecinos quye tendría cada item ( en nuestro ejemplo casa) por defecto es 20, si lo concentramos mucho o lo dispersamos mucho 
+
+
+
+
+## perplexity=20
+
+```{r Clúster p20 }
+
+tsne_obj <- Rtsne(gower_dist,perplexity = 20, is_distance = TRUE)
+tsne_data <- tsne_obj$Y %>%
+  data.frame() %>%
+  setNames(c("X", "Y")) %>%
+  mutate(cluster = factor(pam_fit$clustering))
+
+ggplot(aes(x = X, y = Y), data = tsne_data) +  geom_point(aes(color = cluster))
+
+#join tsne data y df original
+
+df_join<-cbind(tsne_data,df_root) 
+
+plot_ly(
+  df_join, x = ~X, y = ~Y,
+  color = ~floors, size = ~price)
+
+
+```
+
+
+
+## perplexity=50
+
+```{r Clúster p50 }
+
+tsne_obj <- Rtsne(gower_dist,perplexity = 50, is_distance = TRUE)
+tsne_data <- tsne_obj$Y %>%
+  data.frame() %>%
+  setNames(c("X", "Y")) %>%
+  mutate(cluster = factor(pam_fit$clustering))
+
+ggplot(aes(x = X, y = Y), data = tsne_data) +
+  geom_point(aes(color = cluster))
+
+#join tsne data y df original
+
+df_join<-cbind(tsne_data,df_root) 
+
+plot_ly(
+  df_join, x = ~X, y = ~Y,
+  color = ~condition, size = ~sqft_living   )
+
+
+
+
+```
+
+
+
+## perplexity=80
+
+Observamos en esta representación que existen grupos mucho más identificables y detallados que en la representación PCA.
+
+```{r Clúster p80 }
+
+tsne_obj <- Rtsne(gower_dist,perplexity = 80, is_distance = TRUE)
+tsne_data <- tsne_obj$Y %>%
+  data.frame() %>%
+  setNames(c("X", "Y")) %>%
+  mutate(cluster = factor(pam_fit$clustering))
+
+ggplot(aes(x = X, y = Y), data = tsne_data) +
+  geom_point(aes(color = cluster))
+
+#join tsne data y df original
+
+df_join<-cbind(tsne_data,df_root) 
+
+plot_ly(
+  df_join, x = ~X, y = ~Y,
+  color = ~condition, size = ~sqft_living   )
+
+
+
+
+```
+
+Exportamos el fichero con la nueva variable Cluster para continuar con nuestros análisis.
+
+```{r tsne representación de las variables dentro del tsne }
+
+
+write.csv(df_join,file="cluster.csv")
+
+
+
+```
+
