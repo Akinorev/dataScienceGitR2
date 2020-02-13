@@ -1,0 +1,265 @@
+---
+title: "MachineLearning"
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
+date: "13/02/2020"
+output:
+  html_document:
+    theme: united
+    code_folding: "hide"
+    toc: yes
+    toc_float: yes
+---
+
+# Requisitos previos
+
+Las librerias usadas para esta práctica son las siguientes:
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(Amelia)
+library(brew)
+library(bsplus)
+library(DMwR2)
+library(car)
+library(carData)
+library(caret)
+library(cluster)
+library(dplyr)
+library(egg)
+library(expss)
+library(factoextra)
+library(faraway)
+library(gclus)
+library(GGally)
+library(ggplot2)
+library(gridExtra)
+library(Hmisc)
+library(htmltools)
+library(ISLR)
+library(kableExtra)
+library(knitr)
+library(lattice)
+library(magrittr)
+library(mice)
+library(mlbench)
+library(RColorBrewer)
+library(readr)
+library(Rtsne)
+library(sos)
+library(tidyr)
+library(tidyverse)
+library(VIM)
+library(nortest)
+library(scales)
+library(plyr)
+library(PerformanceAnalytics)
+library(corrplot)
+library(leaps)
+library(glmnet)
+library(plotly)
+
+
+relPath <- getwd()
+setwd(relPath)
+df_root <- read.csv(file="./kc_house_data.csv")
+```
+
+# Descripcion de las variables
+
+- id: valor único (Primary key).
+- date: fecha de venta de la vivienda.
+- price: precio de venta. Variable seleccionada para la aplicación del modelo y su posterior predicción.
+- bedrooms: número de habitaciones por vivienda.
+- bathrooms: número de baños por vivienda.
+- sqft_living: superficie de la vivienda en pies cuadrados (superficie escriturada).
+- sqft_lot: superficie de la parcela de la vivienda en pies cuadrados (superficie parcelaria).
+- floors: número de plantas por vivienda.
+- waterfront: si la vivienda tiene vistas al mar.
+- view: el número de veces que se ha visitado la vivienda desde su puesta en venta.
+- condition*: el estado de la vivienda establecido mediante una variable numérica del 1 al 5.
+- grade*: nota general de la vivienda propuesta por el sistema de puntuación de la zona del 1 al 13.
+- sqft_above: superficie de la huella perimetral de la vivienda sobre rasante en pies cuadrados.
+- sqft_basement: superficie de la vivienda bajo rasante en piés cuadrados
+- yr_built: año de construcción de la vivienda
+- yr_renovated: año de la renovación de la vivienda. En caso de no haber sido renovada este parámetro se ha igualado a 0.
+- zipcode: codigo postal de la vivienda.
+- lat: latitud de la coordenada de la vivienda medida en pies.
+- long: longitud de la coordenada de la vivienda medida en pies.
+- sqft_living15: superficie de la vivienda en el año 2015 (admite renovaciones).
+- sqft_lot15: superficie de la parcela en el año 2015 (admite modificaciones)
+
+
+```{r funciones auxiliares, include=FALSE, warning=FALSE}
+
+phist <- function(df, bns = 50, varname) {
+  p = ggplot(df, aes(x = df[[varname]])) + 
+    geom_histogram(aes(y =..density..), 
+                   colour = "#464159", 
+                   fill = "#8bbabb", na.rm = TRUE) + 
+    ggtitle("Diagrama Boxplot") + 
+    ylab("Densidad") + xlab(varname) + 
+    scale_x_continuous(labels = scales::comma) +
+  stat_function(fun = dnorm, args = list(mean = mean(df[[varname]]), sd = sd(df[[varname]])))
+return(p)
+}
+```
+
+# Estudio de la variable price
+
+Consideramos interesante analizar la variable price antes de crear los clusters. Ya que en principio buscamos crear clusters en funcion del precio de las viviendas y sus caracteristicas.
+
+```{r var_price, include=TRUE, warning=FALSE}
+#Obtención de variables cuantitativas
+df_cuantitativas = df_root %>% select(3, 6, 7, 13:16, 18:dim(df_root)[2])
+
+data.frame(variable = names(df_cuantitativas),
+           classe = sapply(df_cuantitativas, typeof),
+           first_values = sapply(df_cuantitativas, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL) %>% kable() %>% kable_styling()
+
+var_price = df_cuantitativas$price
+name = "price"
+
+# Descripción de la variable
+describe(var_price)
+
+# Visualización de la variable
+p1 <- phist(df_cuantitativas, ., name)
+p2 <- pbox(var_price, name)
+grid.arrange(p1, p2, nrow=1)
+```
+
+
+
+
+
+
+# Analisis del cluster
+
+## Técnicas No Supervisadas. Analisis Cluster
+
+Necesitamos analizar los datos de tipo mixto, número, órdinal y nominal.
+Nos vamos a enfocar en clasificación no supervisada usando R
+CLUSTERING ALGORITHM: PARTITIONING AROUND MEDOIDS (PAM)
+
+## Distancia de Gower
+La distancia es una medida numérica de cuán separados están los individuos, es decir una métrica utilizada para medir la proximidad o similitud entre individuos;
+
+La distancia de Gower se calcula como el promedio de las diferencias parciales entre individuos.
+Para cada tipo de variable, se usa una métrica de distancia particular que funciona bien para ese tipo y se escala para caer entre 0 y 1
+
+Para las variables cuantitativa La Distancia de Manhattan
+Para las Variables Ordinales la Distancia un ajuste especial de la Manhattan despúes de haber sido ordenadas
+Para las Nominales primero se convierte en k columnas Binarias ( para cada categoria de cada variable norminal) y posteriormente se usa el coeficiente de Dice
+
+El coeficiente de Dice [0,1] para medir la similitud entre 2 muestras
+
+Se escala de la siguiente Manera
+Se define la distancia de Gower como d2ij = 1 − sij , 
+donde sij = p1h=1 (1 − |xih − xjh|/Gh) + a + α p1 + (p2 − d) + p3 es el coeficiente de similaridad de Gower,
+
+p1 es el numero de variables cuantitativas continuas,
+p2 es el numero de variables binarias,
+p3 es el numero de variables cualitativas(no binarias),
+a es el numero de coincidencias (1, 1) en las variables binarias,
+d es el numero de coincidencias (0, 0) en las variables binarias,
+α es el numero de coincidencias en las variables cualitativas (no binarias) y
+Gh es el rango (o recorrido) de la h-esima variable cuantitativa.
+
+
+
+
+```{r distancia de Gower}
+
+gower_dist <- daisy(df_root, metric = "gower")
+gower_mat  <- as.matrix(gower_dist)
+
+```
+
+## Ejemplo de Casas Más similares, basado en la distancia de Gower
+
+```{r mas similares}
+df_root[which(gower_mat == min(gower_mat[gower_mat != min(gower_mat)]), 
+              arr.ind = TRUE)[1, ], ]
+
+```
+
+## Ejemplo de Casas Más Disimilares, basado en la distancia de Gower
+
+```{r mas disimilares}
+df_root[which(gower_mat == max(gower_mat[gower_mat != max(gower_mat)]), 
+              arr.ind = TRUE)[1, ], ]
+
+```
+
+## Selección del algoritmo PAM
+
+Una vez calculada la matriz de distancia emplearemos el algoritmo PAM, basado en una partición de medoids (El término medoids se refiere a un objeto dentro de un grupo para el cual la diferencia promedio entre este y todos los demás miembros del grupo es mínima, es decir el punto más centralmente ubicado del conjunto de datos), en cambio en el método K-means cada Cluster está representado por su centroide.
+Es un método muy similar a k-means, pero es mucho más robusto a la presencia de Outliers como es en nuestro caso.
+Es un procedimiento de agrupación iterativa que implica los siguientes pasos:
+
+### Step 1
+   Elegir k entidades aleatorias para convertirse en los Medoids
+### Step 2
+   Asignamos a cada entidad, en nuestro caso a cada "casa" el medoide más cercano basado en la distancia de Gower anteriormente calculada.
+### Step 3
+   Para cada Cluster identificar la observación que produciría la distancia promedio más baja si fuera reasiganada como el Medoid, si fuera así hay que hacer de esta observación el nuevo Medoid. Si al menos un Medoid ha cambiado volvemos Step2, en caso contrario Step4
+### Step 4
+  FIN
+
+K Means intenta mininizar el ECM total K Medoids minimiza la suma de las diferencias entre los puntos etiquetados para estar en un grupo y un punto designado como el centro de ese grupo Mediod.
+
+
+## Selección del Número óptimo de Clústers
+
+Silhouette, Validación y consistencia dentro de los datos. 
+
+Es una medida de cuan similar es objeto dentro del grupo de pertenencia y cuan disimilar con los otros grupos.
+
+Varía entre -1 y 1. Un valor alto indica que un objeto está bien emparejado dentro de su grupo y mal con el resto.
+Un valor muy bajo o negativo implica una revisión del número de cluster al alza o a la baja
+
+
+
+```{r Clúster number selection }
+
+sil_width <- c(NA)
+for(i in 2:10){  
+  pam_fit <- pam(gower_dist, diss = TRUE, k = i)  
+  sil_width[i] <- pam_fit$silinfo$avg.width  
+}
+plot(1:10, sil_width,
+     xlab = "Numero de clusters",
+     ylab = "Silhouette")
+lines(1:10, sil_width)
+
+```
+
+Después de calcular el Silhouette para el algoritmo PAM vemos que 2 grupos producen el valor más alto. 
+Aún asi nosotros seleccionamos 3 Cluster para dividir la dispersión del Trabajo y facilitar el entendimiento de los siguientes análisis.
+
+## Seleccionamos 3 Clusters 
+
+```{r Clúster interpretacion }
+
+set.seed=737
+k <- 3
+pam_fit <- pam(gower_dist, diss = TRUE, k)
+pam_results <- df_root %>%
+  mutate(cluster = pam_fit$clustering) %>%
+  group_by(cluster) %>%
+  do(the_summary = summary(.))
+
+
+
+#frecuencia del número de casas en cada Clúster
+ftable(pam_fit$clustering)
+
+#descriptivo en cada Clúster
+pam_results$the_summary
+```
+
+# NEED TO CONTINUE ADDING CLUSTER ANALYSIS, JUMPING TO FAD
+
