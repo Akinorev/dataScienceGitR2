@@ -3,8 +3,8 @@ title: "Cluster analysis"
 author: "Master Data Science"
 date: "9/2/2020"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -90,6 +90,8 @@ df_root[which(gower_mat == max(gower_mat[gower_mat != max(gower_mat)]),
 
 ```
 
+
+
 ## Selección del algoritmo PAM
 
 Una vez calculada la matriz de distancia emplearemos el algoritmo PAM, basado en una partición de medoids (El término medoids se refiere a un objeto dentro de un grupo para el cual la diferencia promedio entre este y todos los demás miembros del grupo es mínima, es decir el punto más centralmente ubicado del conjunto de datos), en cambio en el método K-means cada Cluster está representado por su centroide.
@@ -97,10 +99,21 @@ Es un método muy similar a k-means, pero es mucho más robusto a la presencia d
 Es un procedimiento de agrupación iterativa que implica los siguientes pasos:
 
 
-# Step1.-Elejir k entidades aleatorias para convertirse en los Medoids
-# Step2.-Asignamos a cada entidad, en nuestro caso a cada "casa" el medoide más cercano basado en la distancia de Gower anteriormente calculada.
-# Step3.-Para cada Cluster identificar la observación que produciría la distancia promedio más baja si fuera reasiganada como el Medoid, si fuera así hay que hacer de esta observación el nuevo Medoid. Si al menos un Medoid ha cambiado volvemos Step2, en caso contrario Step4
-# Step4.- FIN
+## Step1
+
+  Elejir k entidades aleatorias para convertirse en los Medoids
+  
+## Step2
+
+  Asignamos a cada entidad, en nuestro caso a cada "casa" el medoide más cercano basado en la distancia de Gower anteriormente calculada.
+  
+## Step3
+
+  Para cada Cluster identificar la observación que produciría la distancia promedio más baja si fuera reasiganada como el Medoid, si fuera así hay que hacer de esta observación el nuevo Medoid. Si al menos un Medoid ha cambiado volvemos Step2, en caso contrario Step4
+  
+## Step4
+
+  FIN
 
 K Means intenta mininizar el ECM total K Medoids minimiza la suma de las diferencias entre los puntos etiquetados para estar en un grupo y un punto designado como el centro de ese grupo Mediod.
 
@@ -127,6 +140,9 @@ plot(1:10, sil_width,
      xlab = "Numero de clusters",
      ylab = "Silhouette")
 lines(1:10, sil_width)
+
+
+fviz_silhouette(pam_fit)
 
 ```
 
@@ -232,10 +248,21 @@ fviz_eig(pca)
 
 A través de los Scores de cada variable dentro del componente Principal podemos libremente afirmar y con fines explicativos;
  
-#PC1. Precio/m2       38% de la variabilidad
-#PC2. Espacio Sotano  12% de la variabilidad
-#PC3. Espacio Parcela 12% de la varibiliidad
-#PC4. Vistas al Mar    9% de la variabilidad
+##PC1
+
+  Precio/m2       38% de la variabilidad
+  
+##PC2
+
+  Espacio Sotano  12% de la variabilidad
+  
+##PC3
+
+  Espacio Parcela 12% de la varibilidad
+  
+##PC4
+
+  Vistas al Mar    9% de la variabilidad
 
 ```{r pca explicación }
 pca
@@ -382,35 +409,6 @@ df_join<-cbind(tsne_data,df_root)
 
 plot_ly(
   df_join, x = ~X, y = ~Y,
-  color = ~condition, size = ~sqft_living   )
-
-
-
-
-```
-
-
-## perplexity=150
-
-Observamos en esta representación que existen grupos mucho más identificables y detallados que en la representación PCA.
-
-```{r Clúster p150 }
-
-tsne_obj <- Rtsne(gower_dist,perplexity = 150, is_distance = TRUE)
-tsne_data <- tsne_obj$Y %>%
-  data.frame() %>%
-  setNames(c("X", "Y")) %>%
-  mutate(cluster = factor(pam_fit$clustering))
-
-ggplot(aes(x = X, y = Y), data = tsne_data) +
-  geom_point(aes(color = cluster))
-
-#join tsne data y df original
-
-df_join<-cbind(tsne_data,df_root) 
-
-plot_ly(
-  df_join, x = ~X, y = ~Y,
   color = ~yr_built, size = ~sqft_living   )
 
 
@@ -418,7 +416,48 @@ plot_ly(
 
 ```
 
-Exportamos el fichero con la nueva variable Cluster para continuar con nuestros análisis.
+
+
+
+## New CLUSTER After TSNE
+  
+  El objeto tsne_obj$Y contiene las coordenadas X-Y para cada caso de entrada.
+
+## Hierarchical clustering
+
+  Agrupaciones de Clusters anidados de forma Aglomerativa, cada observación comienza en su propio grupo, y los pares de grupos se van fusionando a medida que uno se mueve hacia arriba en la jerarquía.
+  El link Criteria que emplearemos será el de Ward que minimizala suma de diferencias entre los Clusters.
+
+  
+
+
+```{r Cluster Jerárquico dentro del TSNE }
+
+cluster_hierarchical=hclust(dist(tsne_obj$Y), method = "ward.D")
+plot(cluster_hierarchical, cex = 0.6, hang = -1)
+
+df_join$hclust = factor(cutree(cluster_hierarchical, 3))
+
+
+ggplot(aes(x = X, y = Y), data = df_join) +
+  geom_point(aes(color = hclust))
+
+plot_ly(
+  df_join, x = ~X, y = ~Y,
+  color = ~yr_built, size = ~sqft_living   )
+
+
+#frecuencia del número de casas en cada Clúster
+ftable(df_join$hclust)
+
+#descriptivo en cada Clúster
+
+
+by(df_join, df_join$hclust, summary)
+
+
+```
+
 
 ```{r tsne representación de las variables dentro del tsne }
 
