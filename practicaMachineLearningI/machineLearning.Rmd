@@ -104,6 +104,13 @@ phist <- function(df, bns = 50, varname) {
   stat_function(fun = dnorm, args = list(mean = mean(df[[varname]]), sd = sd(df[[varname]])))
 return(p)
 }
+
+pbox <- function(col, varname){
+p = qplot('1', col, geom="boxplot") +
+  geom_boxplot(fill='#8bbabb', color="#464159") +
+  ggtitle("Diagrama Boxplot") + ylab("Valores") + xlab(varname)
+return(p)
+}
 ```
 
 # Estudio de la variable price
