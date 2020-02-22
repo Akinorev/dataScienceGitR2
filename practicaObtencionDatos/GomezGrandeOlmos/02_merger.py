@@ -53,6 +53,9 @@ stop = stopwords.words('spanish')
 # GUARDAMOS LOS FICHEROS EN VARIABLES
 # FILTRAMOS LOS DATASET DE LOS STOP PARA OBTENER SOLO AQUELLAS ENTRADAS QUE NOS INTERESAN
 scraperFile = pd.read_csv("01_scraper_output.csv")
+
+
+
 #CONVIERTO LOS NOMBRES DE LAS ESTACIONES A MINUSCULAS
 scraperFile['stop_name'] = scraperFile['stop_name'].str.lower()
 scraperFile['stop_name'] = scraperFile['stop_name'].apply(remove_accents)
@@ -109,16 +112,21 @@ cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_name.isin(["est", "pa
 mergedMetro = pd.merge(left=scraperMetro, right=metroStopsSubset, how='left', left_on='stop_name', right_on='stop_name', copy=True)
 mergedLigero = pd.merge(left=scraperLigero, right=ligeroStopsSubset, how='left', left_on='stop_name', right_on='stop_name', copy=True)
 mergedCercanias = pd.merge(left=scraperCercanias, right=cercaniasStopsSubset, how='left', left_on='stop_name', right_on='stop_name', copy=True)
-
 # CONCATENAMOS LAS TRES TABLAS PARA GENERAR UN UNICO FICHERO
 allTablas = [mergedMetro, mergedLigero, mergedCercanias]
 allTablas = pd.concat(allTablas)
 
+
 #REORDENAMOS COLUMNAS Y ELIMINAMOS AQUELLAS QUE NO NECESITAMOS
 finalTabla = allTablas[['transportmean_name','line_number','order_number','stop_id','stop_code','stop_name','stop_desc','stop_lat','stop_lon','zone_id','stop_url','location_type','parent_station','stop_timezone','wheelchair_boarding']]
 
+# ELIMINAMOS LA FILA QUE POR ALGUN MOTIVO SE GENERA CON NANs
+finalTabla = finalTabla.drop([351],axis=0)
+# CONVERSION DE VARIABLE WHEELCHAIR A INTEGER
+finalTabla['wheelchair_boarding'] = finalTabla['wheelchair_boarding'].astype(int)
+
 finalTabla.to_csv('02_merger_output.csv', index=False)
 
-null_columns=allTablas.columns[allTablas.isnull().any()]
+null_columns=finalTabla.columns[finalTabla.isnull().any()]
 
-print(allTablas[allTablas["stop_id"].isnull()][null_columns])
+print(finalTabla[finalTabla["stop_id"].isnull()][null_columns])
