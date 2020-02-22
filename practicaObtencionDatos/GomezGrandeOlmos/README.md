@@ -115,7 +115,7 @@ A partir del RDF se ha generado un grafo de las líneas de metro ligero con sus 
 
 
 
-![RDF_Graph](/mnt/laptopspace/Datos/01_Proyectos actuales/00_MasterDataScience/dataScienceGitR2/practicaObtencionDatos/RDF_Graph.png)
+![RDF_Graph](./RDF_Graph.png)
 
 
 
