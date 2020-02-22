@@ -121,7 +121,8 @@ allTablas = pd.concat(allTablas)
 finalTabla = allTablas[['transportmean_name','line_number','order_number','stop_id','stop_code','stop_name','stop_desc','stop_lat','stop_lon','zone_id','stop_url','location_type','parent_station','stop_timezone','wheelchair_boarding']]
 
 # ELIMINAMOS LA FILA QUE POR ALGUN MOTIVO SE GENERA CON NANs
-finalTabla = finalTabla.drop([351],axis=0)
+finalTabla = finalTabla.loc[finalTabla.stop_id.notnull()]
+
 # CONVERSION DE VARIABLE WHEELCHAIR A INTEGER
 finalTabla['wheelchair_boarding'] = finalTabla['wheelchair_boarding'].astype(int)
 
