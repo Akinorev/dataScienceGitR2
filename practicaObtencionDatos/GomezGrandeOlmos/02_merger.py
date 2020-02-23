@@ -86,7 +86,8 @@ metroStops['stop_name'] = metroStops['stop_name'].str.replace("avda.","avenida")
 metroStops['stop_name'] = metroStops['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
 metroStops['stop_name'] = metroStops['stop_name'].str.replace(" ","")
 metroStops['stop_name'] = metroStops['stop_name'].str.replace("-","")
-metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
+#metroStopsSubset = metroStops[~metroStops.stop_name.isin(["est", "par"])]
+metroStopsSubset = metroStops[~metroStops.stop_id.isin(["est"])]
 
 ligeroStops = pd.read_csv("stops_ligero.txt")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.lower()
@@ -95,7 +96,8 @@ ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(lambda x: x.decode("ut
 ligeroStops['stop_name'] = ligeroStops['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.replace(" ","")
 ligeroStops['stop_name'] = ligeroStops['stop_name'].str.replace("-","")
-ligeroStopsSubset = ligeroStops[~ligeroStops.stop_name.isin(["est", "par"])]
+#ligeroStopsSubset = ligeroStops[~ligeroStops.stop_name.isin(["est", "par"])]
+ligeroStopsSubset = ligeroStops[~ligeroStops.stop_id.isin(["est"])]
 
 cercaniasStops = pd.read_csv("stops_cercanias.txt")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.lower()
@@ -106,7 +108,9 @@ cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace("-la","")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].apply(lambda x: ' '.join([word for word in x.split() if word not in (stop)]))
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace(" ","")
 cercaniasStops['stop_name'] = cercaniasStops['stop_name'].str.replace("-","")
-cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_name.isin(["est", "par"])]
+#cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_name.isin(["est", "par"])]
+cercaniasStopsSubset = cercaniasStops[~cercaniasStops.stop_id.isin(["est"])]
+
 
 # LEFT JOIN DONDE SCRAPER* ESTARA A LA IZQ Y LA INFO DE LAS ESTACIONES A LA DRCH
 mergedMetro = pd.merge(left=scraperMetro, right=metroStopsSubset, how='left', left_on='stop_name', right_on='stop_name', copy=True)
@@ -122,6 +126,8 @@ finalTabla = allTablas[['transportmean_name','line_number','order_number','stop_
 
 # ELIMINAMOS LA FILA QUE POR ALGUN MOTIVO SE GENERA CON NANs
 finalTabla = finalTabla.loc[finalTabla.stop_id.notnull()]
+# ELIMINAMOS AQUELLAS ENTRADAS QUE NO SEAN ESTACIONES
+finalTabla = finalTabla[finalTabla['stop_id'].str.contains('^est', na=False)]
 
 # CONVERSION DE VARIABLE WHEELCHAIR A INTEGER
 finalTabla['wheelchair_boarding'] = finalTabla['wheelchair_boarding'].astype(int)
