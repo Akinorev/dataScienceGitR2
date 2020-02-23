@@ -4,509 +4,509 @@
    xmlns:ns2="http://vocab.gtfs.org/terms#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 >
-  <rdf:Description rdf:about="gtfs:Route/cr:C-4b">
-    <ns2:shortName>C-4b</ns2:shortName>
-    <ns2:longName>Línea C-4b de Cercanías</ns2:longName>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_90_25"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_90_71"/>
-  </rdf:Description>
   <rdf:Description rdf:about="gtfs:Route/metro:12">
+    <rdf:_6 rdf:resource="gtfs:Stop/mostolescentral"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/loranca"/>
+    <rdf:_27 rdf:resource="gtfs:Stop/leganescentral"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/conservatorio"/>
+    <rdf:_28 rdf:resource="gtfs:Stop/sannicasio"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/alcorconcentral"/>
+    <rdf:_21 rdf:resource="gtfs:Stop/espartales"/>
+    <rdf:_12 rdf:resource="gtfs:Stop/parqueeuropa"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/fuenlabradacentral"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/getafecentral"/>
+    <rdf:_26 rdf:resource="gtfs:Stop/hospitalseveroochoa"/>
+    <rdf:_23 rdf:resource="gtfs:Stop/carrascal"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/puertasur"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/parqueoeste"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/universidadreyjuancarlos"/>
+    <rdf:_15 rdf:resource="gtfs:Stop/arroyoculebro"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/alonsomendoza"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/parquelisboa"/>
+    <rdf:_25 rdf:resource="gtfs:Stop/casareloj"/>
+    <rdf:_24 rdf:resource="gtfs:Stop/julianbesteiro"/>
     <ns2:longName>Línea 12 de Metro</ns2:longName>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_215"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_218"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/casar"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/hospitalmostoles"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/parque"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/manuelamalasana"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
     <ns2:shortName>12</ns2:shortName>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_221"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_210"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_225"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_228"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_219"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_212"/>
-    <rdf:_26 rdf:resource="gtfs:Stop/est_4_234"/>
-    <rdf:_21 rdf:resource="gtfs:Stop/est_4_229"/>
-    <rdf:_23 rdf:resource="gtfs:Stop/est_4_231"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_224"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_211"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_223"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_216"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_4_227"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_213"/>
-    <rdf:_24 rdf:resource="gtfs:Stop/est_4_232"/>
-    <rdf:_27 rdf:resource="gtfs:Stop/est_4_235"/>
-    <rdf:_28 rdf:resource="gtfs:Stop/est_4_236"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_214"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_222"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_4_226"/>
-    <rdf:_25 rdf:resource="gtfs:Stop/est_4_233"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_230"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_205"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_220"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_217"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/pradillo"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/juancierva"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/hospitalfuenlabrada"/>
+    <rdf:_22 rdf:resource="gtfs:Stop/bercial"/>
   </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:6">
-    <rdf:_29 rdf:resource="gtfs:Stop/est_4_130"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_90_71"/>
-    <ns2:shortName>6</ns2:shortName>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_115"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_43"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_109"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_105"/>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_114"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_4_119"/>
-    <ns2:longName>Línea 6 de Metro</ns2:longName>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_113"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_6"/>
-    <rdf:_21 rdf:resource="gtfs:Stop/est_4_122"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_107"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_18"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_96"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_104"/>
-    <rdf:_27 rdf:resource="gtfs:Stop/est_4_128"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_123"/>
-    <rdf:_25 rdf:resource="gtfs:Stop/est_4_52"/>
-    <rdf:_28 rdf:resource="gtfs:Stop/est_4_129"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_259"/>
-    <rdf:_23 rdf:resource="gtfs:Stop/est_4_124"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_63"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_29"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-1">
-    <rdf:_11 rdf:resource="gtfs:Stop/est_90_33"/>
-    <ns2:longName>Línea C-1 de Cercanías</ns2:longName>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:shortName>C-1</ns2:shortName>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-3a">
     <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_90_71"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_90_25"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="https://www.crtm.es/tu-transporte-publico/CRTM">
-    <ns1:name>Consorcio Regional de Transportes de la Comunidad de Madrid</ns1:name>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Agency"/>
-    <ns1:page>http://www.crtm.es/</ns1:page>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-3">
-    <ns2:longName>Línea C-3 de Cercanías</ns2:longName>
-    <ns2:shortName>C-3</ns2:shortName>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_90_71"/>
+    <ns2:shortName>C-3a</ns2:shortName>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_90_25"/>
+    <ns2:longName>Línea C-3a de Cercanías</ns2:longName>
+    <rdf:_13 rdf:resource="gtfs:Stop/chamartin"/>
     <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:8">
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_156"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_160"/>
-    <ns2:shortName>8</ns2:shortName>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_158"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_258"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_90_33"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_71"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_90_71"/>
-    <ns2:longName>Línea 8 de Metro</ns2:longName>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_90_34"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-8">
-    <rdf:_19 rdf:resource="gtfs:Stop/est_90_25"/>
-    <ns2:longName>Línea C-8 de Cercanías</ns2:longName>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_90_71"/>
-    <ns2:shortName>C-8</ns2:shortName>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:5">
-    <rdf:_23 rdf:resource="gtfs:Stop/est_4_94"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_83"/>
-    <rdf:_25 rdf:resource="gtfs:Stop/est_4_96"/>
-    <ns2:shortName>5</ns2:shortName>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_4_36"/>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_84"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_63"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_75"/>
-    <rdf:_32 rdf:resource="gtfs:Stop/est_4_103"/>
-    <rdf:_29 rdf:resource="gtfs:Stop/est_90_1"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_4_90"/>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_93"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_77"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_253"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_57"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_252"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_91"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_11"/>
-    <rdf:_31 rdf:resource="gtfs:Stop/est_4_102"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_28"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_49"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_86"/>
-    <rdf:_30 rdf:resource="gtfs:Stop/est_4_101"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_80"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_74"/>
-    <rdf:_24 rdf:resource="gtfs:Stop/est_4_95"/>
-    <rdf:_28 rdf:resource="gtfs:Stop/est_4_99"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_78"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_79"/>
-    <rdf:_26 rdf:resource="gtfs:Stop/est_4_97"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_76"/>
-    <rdf:_27 rdf:resource="gtfs:Stop/est_4_98"/>
-    <ns2:longName>Línea 5 de Metro</ns2:longName>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:11">
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_254"/>
-    <ns2:shortName>11</ns2:shortName>
-    <ns2:longName>Línea 11 de Metro</ns2:longName>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_256"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_255"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_207"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_208"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_305"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:7">
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_296"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_78"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_138"/>
-    <rdf:_27 rdf:resource="gtfs:Stop/est_4_150"/>
-    <rdf:_28 rdf:resource="gtfs:Stop/est_4_151"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_134"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_289"/>
-    <rdf:_31 rdf:resource="gtfs:Stop/est_4_154"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <ns2:shortName>7</ns2:shortName>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_135"/>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_145"/>
-    <rdf:_25 rdf:resource="gtfs:Stop/est_4_148"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_288"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_132"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_286"/>
-    <rdf:_30 rdf:resource="gtfs:Stop/est_4_153"/>
-    <rdf:_23 rdf:resource="gtfs:Stop/est_4_122"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_143"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_287"/>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_136"/>
-    <rdf:_21 rdf:resource="gtfs:Stop/est_4_41"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_292"/>
-    <rdf:_24 rdf:resource="gtfs:Stop/est_4_147"/>
-    <rdf:_29 rdf:resource="gtfs:Stop/est_4_152"/>
-    <rdf:_26 rdf:resource="gtfs:Stop/est_4_149"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_139"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_140"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_291"/>
-    <ns2:longName>Línea 7 de Metro</ns2:longName>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_133"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_290"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_4_142"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:10">
-    <ns2:shortName>10</ns2:shortName>
-    <rdf:_21 rdf:resource="gtfs:Stop/est_4_10"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_278"/>
-    <ns2:longName>Línea 10 de Metro</ns2:longName>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_24 rdf:resource="gtfs:Stop/est_4_199"/>
-    <rdf:_25 rdf:resource="gtfs:Stop/est_4_200"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_90_25"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_283"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_90_71"/>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_188"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_276"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_280"/>
-    <rdf:_28 rdf:resource="gtfs:Stop/est_4_257"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_282"/>
-    <rdf:_30 rdf:resource="gtfs:Stop/est_4_204"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_275"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_274"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_187"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_277"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_57"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_284"/>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_50"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_31 rdf:resource="gtfs:Stop/est_4_205"/>
-    <rdf:_27 rdf:resource="gtfs:Stop/est_4_202"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_191"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_281"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_192"/>
-    <rdf:_26 rdf:resource="gtfs:Stop/est_4_103"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_279"/>
-    <rdf:_29 rdf:resource="gtfs:Stop/est_4_203"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_4_142"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/ml:2">
-    <ns2:shortName>2</ns2:shortName>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_10_22"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_10_14"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_10_21"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_10_10"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:longName>Línea 2 de Metro Ligero/Tranvía</ns2:longName>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/ML/T"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:3">
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_272"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_273"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_46"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_268"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_43"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_51"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_45"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_47"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_267"/>
-    <ns2:longName>Línea 3 de Metro</ns2:longName>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_271"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_52"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_270"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_50"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_269"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_44"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:shortName>3</ns2:shortName>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_49"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-10">
-    <rdf:_18 rdf:resource="gtfs:Stop/est_90_25"/>
-    <rdf:_21 rdf:resource="gtfs:Stop/est_90_33"/>
-    <ns2:shortName>C-10</ns2:shortName>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:longName>Línea C-10 de Cercanías</ns2:longName>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_90_71"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:4">
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_60"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_62"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_57"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_52"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_73"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_65"/>
-    <rdf:_23 rdf:resource="gtfs:Stop/est_4_263"/>
-    <ns2:longName>Línea 4 de Metro</ns2:longName>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_66"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_39"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_67"/>
-    <ns2:shortName>4</ns2:shortName>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_59"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_30"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_68"/>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_265"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_58"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_4_71"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_70"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_63"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_4_72"/>
-    <rdf:_21 rdf:resource="gtfs:Stop/est_4_264"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_9"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_69"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-4a">
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:shortName>C-4a</ns2:shortName>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_90_25"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_90_71"/>
-    <ns2:longName>Línea C-4a de Cercanías</ns2:longName>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:1">
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_33 rdf:resource="gtfs:Stop/est_4_295"/>
-    <rdf:_27 rdf:resource="gtfs:Stop/est_4_24"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_7"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_6"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_263"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_4"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_2"/>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_10"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_8"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_13"/>
-    <rdf:_21 rdf:resource="gtfs:Stop/est_4_18"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_5"/>
-    <rdf:_28 rdf:resource="gtfs:Stop/est_4_25"/>
-    <rdf:_25 rdf:resource="gtfs:Stop/est_4_22"/>
-    <ns2:longName>Línea 1 de Metro</ns2:longName>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_90_25"/>
-    <rdf:_23 rdf:resource="gtfs:Stop/est_4_20"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_262"/>
-    <rdf:_29 rdf:resource="gtfs:Stop/est_4_26"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_11"/>
-    <rdf:_26 rdf:resource="gtfs:Stop/est_4_23"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_14"/>
-    <rdf:_30 rdf:resource="gtfs:Stop/est_4_27"/>
-    <rdf:_24 rdf:resource="gtfs:Stop/est_4_21"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_32 rdf:resource="gtfs:Stop/est_4_294"/>
-    <rdf:_31 rdf:resource="gtfs:Stop/est_4_293"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_3"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_4_15"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_17"/>
-    <ns2:shortName>1</ns2:shortName>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_19"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_4_9"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:9">
-    <rdf:_21 rdf:resource="gtfs:Stop/est_4_179"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_165"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_163"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_27 rdf:resource="gtfs:Stop/est_4_184"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_345"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_31"/>
-    <ns2:longName>Línea 9 de Metro</ns2:longName>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_178"/>
-    <rdf:_22 rdf:resource="gtfs:Stop/est_4_180"/>
-    <rdf:_16 rdf:resource="gtfs:Stop/est_4_114"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_4_177"/>
-    <rdf:_26 rdf:resource="gtfs:Stop/est_4_300"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_4_176"/>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_4_83"/>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_175"/>
-    <rdf:_24 rdf:resource="gtfs:Stop/est_4_182"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_326"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_169"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_156"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_162"/>
-    <rdf:_23 rdf:resource="gtfs:Stop/est_4_181"/>
-    <ns2:shortName>9</ns2:shortName>
-    <rdf:_29 rdf:resource="gtfs:Stop/est_4_186"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_173"/>
-    <rdf:_28 rdf:resource="gtfs:Stop/est_4_185"/>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_166"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_168"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_161"/>
-    <rdf:_25 rdf:resource="gtfs:Stop/est_4_183"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-7">
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:longName>Línea C-7 de Cercanías</ns2:longName>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_90_71"/>
-    <ns2:shortName>C-7</ns2:shortName>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_90_25"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:2">
-    <rdf:_5 rdf:resource="gtfs:Stop/est_4_260"/>
-    <rdf:_20 rdf:resource="gtfs:Stop/est_4_6"/>
-    <rdf:_15 rdf:resource="gtfs:Stop/est_4_37"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_4_324"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_4_31"/>
-    <rdf:_10 rdf:resource="gtfs:Stop/est_4_32"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_4_29"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_4_40"/>
-    <ns2:shortName>2</ns2:shortName>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_4_30"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_4_322"/>
-    <rdf:_14 rdf:resource="gtfs:Stop/est_4_36"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_325"/>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_4_323"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_4_28"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <rdf:_11 rdf:resource="gtfs:Stop/est_4_33"/>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_4_41"/>
-    <ns2:longName>Línea 2 de Metro</ns2:longName>
-    <rdf:_17 rdf:resource="gtfs:Stop/est_4_39"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/ml:1">
-    <ns2:longName>Línea 1 de Metro Ligero/Tranvía</ns2:longName>
-    <rdf:_3 rdf:resource="gtfs:Stop/est_10_3"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_10_9"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/ML/T"/>
-    <rdf:_2 rdf:resource="gtfs:Stop/est_10_2"/>
-    <rdf:_6 rdf:resource="gtfs:Stop/est_10_6"/>
-    <rdf:_5 rdf:resource="gtfs:Stop/est_10_5"/>
-    <ns2:shortName>1</ns2:shortName>
-    <rdf:_8 rdf:resource="gtfs:Stop/est_10_8"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_10_7"/>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_10_1"/>
-    <rdf:_4 rdf:resource="gtfs:Stop/est_10_4"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/ml:3">
-    <ns2:shortName>3</ns2:shortName>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/ML/T"/>
-    <ns2:longName>Línea 3 de Metro Ligero/Tranvía</ns2:longName>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_10_10"/>
-    <rdf:_7 rdf:resource="gtfs:Stop/est_10_29"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-2">
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:longName>Línea C-2 de Cercanías</ns2:longName>
-    <rdf:_19 rdf:resource="gtfs:Stop/est_90_25"/>
-    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
-    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:_18 rdf:resource="gtfs:Stop/est_90_71"/>
-    <ns2:shortName>C-2</ns2:shortName>
+    <rdf:_12 rdf:resource="gtfs:Stop/nuevosministerios"/>
   </rdf:Description>
   <rdf:Description rdf:about="https://www.crtm.es/tu-transporte-publico/Cercanias">
     <ns1:name>Cercanías Madrid</ns1:name>
     <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Rail"/>
     <ns2:agency rdf:resource="https://www.crtm.es/tu-transporte-publico/CRTM"/>
   </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/metro:R">
-    <ns2:longName>Línea R de Metro</ns2:longName>
+  <rdf:Description rdf:about="gtfs:Route/metro:1">
+    <rdf:_11 rdf:resource="gtfs:Stop/iglesia"/>
+    <rdf:_28 rdf:resource="gtfs:Stop/sierraguadalupe"/>
+    <rdf:_24 rdf:resource="gtfs:Stop/portazgo"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/bambu"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/alvarado"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/cuatrocaminos"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/tribunal"/>
+    <rdf:_21 rdf:resource="gtfs:Stop/pacifico"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/tetuan"/>
+    <rdf:_30 rdf:resource="gtfs:Stop/congosto"/>
+    <rdf:_29 rdf:resource="gtfs:Stop/villavallecas"/>
+    <ns2:longName>Línea 1 de Metro</ns2:longName>
+    <rdf:_12 rdf:resource="gtfs:Stop/bilbao"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/granvia"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_33 rdf:resource="gtfs:Stop/valdecarros"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/valdeacederas"/>
+    <rdf:_31 rdf:resource="gtfs:Stop/gavia"/>
+    <rdf:_22 rdf:resource="gtfs:Stop/puentevallecas"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/chamartin"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/estrecho"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/menendezpelayo"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/antonmartin"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/riosrosas"/>
+    <rdf:_32 rdf:resource="gtfs:Stop/suertes"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/pinarchamartin"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/tirsomolina"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/estacionarte"/>
+    <rdf:_27 rdf:resource="gtfs:Stop/miguelhernandez"/>
+    <rdf:_26 rdf:resource="gtfs:Stop/altoarenal"/>
+    <ns2:shortName>1</ns2:shortName>
+    <rdf:_25 rdf:resource="gtfs:Stop/buenosaires"/>
+    <rdf:_23 rdf:resource="gtfs:Stop/nuevanumancia"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:4">
+    <rdf:_15 rdf:resource="gtfs:Stop/arturosoria"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/diegoleon"/>
+    <rdf:_22 rdf:resource="gtfs:Stop/manoteras"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/velazquez"/>
+    <ns2:shortName>4</ns2:shortName>
+    <rdf:_23 rdf:resource="gtfs:Stop/pinarchamartin"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/colon"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/lista"/>
+    <rdf:_21 rdf:resource="gtfs:Stop/hortaleza"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/esperanza"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/avenidapaz"/>
+    <rdf:_12 rdf:resource="gtfs:Stop/prosperidad"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/goya"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/serrano"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/marcristal"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/parquesantamaria"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <ns2:longName>Línea 4 de Metro</ns2:longName>
+    <rdf:_19 rdf:resource="gtfs:Stop/sanlorenzo"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/alfonsoxiii"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/arguelles"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/sanbernardo"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/canillas"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/bilbao"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/alonsomartinez"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:9">
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <ns2:longName>Línea 9 de Metro</ns2:longName>
+    <rdf:_5 rdf:resource="gtfs:Stop/ventilla"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/duquepastrana"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/sainzbaranda"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/artilleros"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/conchaespina"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/principevergara"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/nunezbalboa"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_15 rdf:resource="gtfs:Stop/ibiza"/>
+    <rdf:_22 rdf:resource="gtfs:Stop/vicalvaro"/>
+    <rdf:_21 rdf:resource="gtfs:Stop/valdebernardo"/>
+    <rdf:_25 rdf:resource="gtfs:Stop/rivasurbanizaciones"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/pacolucia"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/mirasierra"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/cruzrayo"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/colombia"/>
+    <rdf:_29 rdf:resource="gtfs:Stop/argandarey"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/vinateros"/>
+    <rdf:_28 rdf:resource="gtfs:Stop/poveda"/>
+    <ns2:shortName>9</ns2:shortName>
+    <rdf:_4 rdf:resource="gtfs:Stop/barriopilar"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/pavones"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/pioxii"/>
+    <rdf:_26 rdf:resource="gtfs:Stop/rivasfutura"/>
+    <rdf:_23 rdf:resource="gtfs:Stop/sancipriano"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/estrella"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/herreraoria"/>
+    <rdf:_24 rdf:resource="gtfs:Stop/puertaarganda"/>
+    <rdf:_27 rdf:resource="gtfs:Stop/rivasvaciamadrid"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-10">
+    <ns2:longName>Línea C-10 de Cercanías</ns2:longName>
+    <rdf:_18 rdf:resource="gtfs:Stop/chamartin"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
+    <rdf:_21 rdf:resource="gtfs:Stop/aeropuertot4"/>
+    <ns2:shortName>C-10</ns2:shortName>
+    <rdf:_17 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/ml:1">
+    <rdf:_7 rdf:resource="gtfs:Stop/mariatudor"/>
+    <ns2:longName>Línea 1 de Metro Ligero/Tranvía</ns2:longName>
+    <rdf:_4 rdf:resource="gtfs:Stop/antoniosaura"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/virgencortijo"/>
+    <ns2:shortName>1</ns2:shortName>
+    <rdf:_2 rdf:resource="gtfs:Stop/fuentemora"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/palasrey"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/tablas"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/ML/T"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/pinarchamartin"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/alvarezvillaamil"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/blascoibanez"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:3">
+    <rdf:_8 rdf:resource="gtfs:Stop/legazpi"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/callao"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/ciudadangeles"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/villaverdealto"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/villaverdebajocruce"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/sanferminorcasur"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/palosfrontera"/>
+    <ns2:longName>Línea 3 de Metro</ns2:longName>
+    <rdf:_12 rdf:resource="gtfs:Stop/lavapies"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/sancristobal"/>
+    <ns2:shortName>3</ns2:shortName>
+    <rdf:_15 rdf:resource="gtfs:Stop/plazaespana"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/arguelles"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/almendrales"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/venturarodriguez"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/hospital12octubre"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/embajadores"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/delicias"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:7">
+    <rdf:_6 rdf:resource="gtfs:Stop/cosladacentral"/>
+    <rdf:_31 rdf:resource="gtfs:Stop/pitis"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/hospitalhenares"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/musas"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_29 rdf:resource="gtfs:Stop/lacoma"/>
+    <rdf:_25 rdf:resource="gtfs:Stop/valdezarza"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/barriopuerto"/>
+    <rdf:_23 rdf:resource="gtfs:Stop/guzmanbueno"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/estadiometropolitano"/>
+    <ns2:shortName>7</ns2:shortName>
+    <rdf:_26 rdf:resource="gtfs:Stop/antoniomachado"/>
+    <ns2:longName>Línea 7 de Metro</ns2:longName>
+    <rdf:_5 rdf:resource="gtfs:Stop/rambla"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/sanfernando"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/cartagena"/>
+    <rdf:_30 rdf:resource="gtfs:Stop/arroyofresno"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/simancas"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/pueblonuevo"/>
+    <rdf:_24 rdf:resource="gtfs:Stop/francosrodriguez"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/ascao"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/sanblas"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/gregoriomaranon"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/parqueavenidas"/>
+    <rdf:_21 rdf:resource="gtfs:Stop/canal"/>
+    <rdf:_27 rdf:resource="gtfs:Stop/penagrande"/>
+    <rdf:_12 rdf:resource="gtfs:Stop/garcianoblejas"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/jarama"/>
+    <rdf:_22 rdf:resource="gtfs:Stop/islasfilipinas"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_15 rdf:resource="gtfs:Stop/barrioconcepcion"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/henares"/>
+    <rdf:_28 rdf:resource="gtfs:Stop/avenidailustracion"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/alonsocano"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-2">
+    <ns2:shortName>C-2</ns2:shortName>
+    <ns2:longName>Línea C-2 de Cercanías</ns2:longName>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/chamartin"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-7">
+    <rdf:_14 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
+    <rdf:_15 rdf:resource="gtfs:Stop/chamartin"/>
+    <ns2:shortName>C-7</ns2:shortName>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <ns2:longName>Línea C-7 de Cercanías</ns2:longName>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:8">
+    <rdf:_5 rdf:resource="gtfs:Stop/feriamadrid"/>
+    <ns2:longName>Línea 8 de Metro</ns2:longName>
+    <rdf:_2 rdf:resource="gtfs:Stop/colombia"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/marcristal"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/barajas"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/aeropuertot1t2t3"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/aeropuertot4"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/pinarrey"/>
+    <ns2:shortName>8</ns2:shortName>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-1">
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <ns2:shortName>C-1</ns2:shortName>
+    <ns2:longName>Línea C-1 de Cercanías</ns2:longName>
+    <rdf:_11 rdf:resource="gtfs:Stop/aeropuertot4"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/chamartin"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:2">
+    <rdf:_7 rdf:resource="gtfs:Stop/manuelbecerra"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/principevergara"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/goya"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/canal"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/rosas"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/quevedo"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/almudena"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/bancoespana"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/alsacia"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/elipa"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/cuatrocaminos"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/ventas"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/avenidaguadalajara"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/retiro"/>
+    <ns2:shortName>2</ns2:shortName>
+    <rdf:_15 rdf:resource="gtfs:Stop/santodomingo"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/sanbernardo"/>
+    <ns2:longName>Línea 2 de Metro</ns2:longName>
+    <rdf:_14 rdf:resource="gtfs:Stop/opera"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:10">
+    <ns2:shortName>10</ns2:shortName>
+    <rdf:_21 rdf:resource="gtfs:Stop/tribunal"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/baunatal"/>
+    <rdf:_28 rdf:resource="gtfs:Stop/aviacionespanola"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/santiagobernabeu"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/moraleja"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/begona"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/reyescatolicos"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/tresolivos"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/granja"/>
+    <rdf:_31 rdf:resource="gtfs:Stop/puertasur"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/hospitalinfantasofia"/>
+    <rdf:_26 rdf:resource="gtfs:Stop/casacampo"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <rdf:_12 rdf:resource="gtfs:Stop/fuencarral"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/rondacomunicacion"/>
+    <rdf:_24 rdf:resource="gtfs:Stop/lago"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/marquesvaldavia"/>
+    <rdf:_22 rdf:resource="gtfs:Stop/plazaespana"/>
+    <rdf:_27 rdf:resource="gtfs:Stop/coloniajardin"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/alonsomartinez"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/manuelfalla"/>
+    <rdf:_25 rdf:resource="gtfs:Stop/batan"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_30 rdf:resource="gtfs:Stop/joaquinvilumbrales"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/gregoriomaranon"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/chamartin"/>
+    <rdf:_29 rdf:resource="gtfs:Stop/cuatrovientos"/>
+    <ns2:longName>Línea 10 de Metro</ns2:longName>
+    <rdf:_16 rdf:resource="gtfs:Stop/cuzco"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/tablas"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/montecarmelo"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:6">
+    <rdf:_3 rdf:resource="gtfs:Stop/oporto"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_2 rdf:resource="gtfs:Stop/carpetana"/>
+    <rdf:_12 rdf:resource="gtfs:Stop/condecasal"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/arganzuelaplanetario"/>
+    <rdf:_15 rdf:resource="gtfs:Stop/manuelbecerra"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <rdf:_29 rdf:resource="gtfs:Stop/lucero"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/republicaargentina"/>
+    <rdf:_22 rdf:resource="gtfs:Stop/vicentealeixandre"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/odonnell"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/legazpi"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/diegoleon"/>
+    <rdf:_25 rdf:resource="gtfs:Stop/arguelles"/>
+    <rdf:_21 rdf:resource="gtfs:Stop/guzmanbueno"/>
+    <rdf:_28 rdf:resource="gtfs:Stop/altoextremadura"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/sainzbaranda"/>
+    <ns2:shortName>6</ns2:shortName>
+    <ns2:longName>Línea 6 de Metro</ns2:longName>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/cuatrocaminos"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/usera"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/pacifico"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/opanel"/>
+    <rdf:_27 rdf:resource="gtfs:Stop/puertaangel"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/laguna"/>
+    <rdf:_23 rdf:resource="gtfs:Stop/ciudaduniversitaria"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:5">
+    <rdf:_7 rdf:resource="gtfs:Stop/pueblonuevo"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/suanzes"/>
+    <rdf:_29 rdf:resource="gtfs:Stop/aluche"/>
+    <rdf:_20 rdf:resource="gtfs:Stop/puertatoledo"/>
+    <rdf:_28 rdf:resource="gtfs:Stop/eugeniamontijo"/>
+    <rdf:_27 rdf:resource="gtfs:Stop/carabanchel"/>
+    <rdf:_14 rdf:resource="gtfs:Stop/alonsomartinez"/>
+    <rdf:_12 rdf:resource="gtfs:Stop/nunezbalboa"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/latina"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/ciudadlineal"/>
+    <ns2:shortName>5</ns2:shortName>
+    <rdf:_22 rdf:resource="gtfs:Stop/piramides"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/alamedaosuna"/>
+    <rdf:_8 rdf:resource="gtfs:Stop/quintana"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <ns2:longName>Línea 5 de Metro</ns2:longName>
+    <rdf:_2 rdf:resource="gtfs:Stop/capricho"/>
+    <rdf:_26 rdf:resource="gtfs:Stop/vistaalegre"/>
+    <rdf:_16 rdf:resource="gtfs:Stop/granvia"/>
+    <rdf:_23 rdf:resource="gtfs:Stop/marquesvadillo"/>
+    <rdf:_17 rdf:resource="gtfs:Stop/callao"/>
+    <rdf:_25 rdf:resource="gtfs:Stop/oporto"/>
+    <rdf:_24 rdf:resource="gtfs:Stop/urgel"/>
+    <rdf:_18 rdf:resource="gtfs:Stop/opera"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/canillejas"/>
+    <rdf:_31 rdf:resource="gtfs:Stop/campamento"/>
+    <rdf:_10 rdf:resource="gtfs:Stop/ventas"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_15 rdf:resource="gtfs:Stop/chueca"/>
+    <rdf:_30 rdf:resource="gtfs:Stop/empalme"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/diegoleon"/>
+    <rdf:_32 rdf:resource="gtfs:Stop/casacampo"/>
+    <rdf:_13 rdf:resource="gtfs:Stop/rubendario"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/carmen"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/torrearias"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:11">
+    <ns2:longName>Línea 11 de Metro</ns2:longName>
+    <ns2:shortName>11</ns2:shortName>
+    <rdf:_2 rdf:resource="gtfs:Stop/abrantes"/>
     <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
     <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:shortName>R</ns2:shortName>
-    <rdf:_1 rdf:resource="gtfs:Stop/est_4_36"/>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_3 rdf:resource="gtfs:Stop/panbendito"/>
+    <rdf:_5 rdf:resource="gtfs:Stop/carabanchelalto"/>
+    <rdf:_7 rdf:resource="gtfs:Stop/fortuna"/>
+    <rdf:_6 rdf:resource="gtfs:Stop/peseta"/>
+    <rdf:_4 rdf:resource="gtfs:Stop/sanfrancisco"/>
   </rdf:Description>
-  <rdf:Description rdf:about="https://www.crtm.es/tu-transporte-publico/Metro">
-    <ns1:name>Metro de Madrid</ns1:name>
-    <ns2:agency rdf:resource="https://www.crtm.es/tu-transporte-publico/CRTM"/>
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Subway"/>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-3">
+    <rdf:_13 rdf:resource="gtfs:Stop/chamartin"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <ns2:longName>Línea C-3 de Cercanías</ns2:longName>
+    <rdf:_12 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <ns2:shortName>C-3</ns2:shortName>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
   </rdf:Description>
-  <rdf:Description rdf:about="gtfs:Route/cr:C-3a">
-    <ns2:shortName>C-3a</ns2:shortName>
-    <ns2:longName>Línea C-3a de Cercanías</ns2:longName>
-    <rdf:_13 rdf:resource="gtfs:Stop/est_90_25"/>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-4a">
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <ns2:shortName>C-4a</ns2:shortName>
+    <rdf:_10 rdf:resource="gtfs:Stop/chamartin"/>
     <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <ns2:longName>Línea C-4a de Cercanías</ns2:longName>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/ml:2">
+    <rdf:_5 rdf:resource="gtfs:Stop/somosaguassur"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/ML/T"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/coloniajardin"/>
+    <ns2:longName>Línea 2 de Metro Ligero/Tranvía</ns2:longName>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:_11 rdf:resource="gtfs:Stop/avenidaeuropa"/>
+    <ns2:shortName>2</ns2:shortName>
+    <rdf:_12 rdf:resource="gtfs:Stop/berna"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/ml:3">
+    <rdf:_7 rdf:resource="gtfs:Stop/monteprincipe"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/ML/T"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/coloniajardin"/>
+    <ns2:shortName>3</ns2:shortName>
+    <ns2:longName>Línea 3 de Metro Ligero/Tranvía</ns2:longName>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/metro:R">
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <ns2:longName>Línea R de Metro</ns2:longName>
+    <ns2:shortName>R</ns2:shortName>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Metro"/>
+    <rdf:_1 rdf:resource="gtfs:Stop/opera"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-8">
     <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
-    <rdf:_12 rdf:resource="gtfs:Stop/est_90_71"/>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <ns2:shortName>C-8</ns2:shortName>
+    <rdf:_18 rdf:resource="gtfs:Stop/nuevosministerios"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <rdf:_19 rdf:resource="gtfs:Stop/chamartin"/>
+    <ns2:longName>Línea C-8 de Cercanías</ns2:longName>
   </rdf:Description>
   <rdf:Description rdf:about="gtfs:Route/cr:C-5">
-    <ns2:shortName>C-5</ns2:shortName>
-    <rdf:_9 rdf:resource="gtfs:Stop/est_90_1"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/aluche"/>
     <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
-    <ns2:longName>Línea C-5 de Cercanías</ns2:longName>
     <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
     <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
+    <ns2:longName>Línea C-5 de Cercanías</ns2:longName>
+    <ns2:shortName>C-5</ns2:shortName>
+  </rdf:Description>
+  <rdf:Description rdf:about="gtfs:Route/cr:C-4b">
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Route"/>
+    <rdf:type rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
+    <ns2:shortName>C-4b</ns2:shortName>
+    <rdf:_10 rdf:resource="gtfs:Stop/chamartin"/>
+    <ns2:longName>Línea C-4b de Cercanías</ns2:longName>
+    <ns2:routeType rdf:resource="https://www.crtm.es/tu-transporte-publico/Cercanias"/>
+    <rdf:_9 rdf:resource="gtfs:Stop/nuevosministerios"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.crtm.es/tu-transporte-publico/Metro">
+    <ns2:agency rdf:resource="https://www.crtm.es/tu-transporte-publico/CRTM"/>
+    <ns1:name>Metro de Madrid</ns1:name>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Subway"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="https://www.crtm.es/tu-transporte-publico/CRTM">
+    <ns1:name>Consorcio Regional de Transportes de la Comunidad de Madrid</ns1:name>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#Agency"/>
+    <ns1:page>http://www.crtm.es/</ns1:page>
   </rdf:Description>
   <rdf:Description rdf:about="https://www.crtm.es/tu-transporte-publico/ML/T">
-    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#LightRail"/>
     <ns1:name>Metro Ligero/Tranvía de Madrid</ns1:name>
+    <rdf:type rdf:resource="http://vocab.gtfs.org/terms#LightRail"/>
   </rdf:Description>
 </rdf:RDF>

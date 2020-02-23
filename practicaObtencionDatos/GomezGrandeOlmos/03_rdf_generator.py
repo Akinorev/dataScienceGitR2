@@ -79,7 +79,7 @@ transportmean_resource = {'METRO': madrid_metro,
 
 lln = None
 for index, row in stops_df.iterrows():
-    stop_id = (row["stop_id"])
+    stop_id = (row["stop_name"])
     if  lln == None or lln != row["line_number"] :
         lln = row["line_number"]
         try:
