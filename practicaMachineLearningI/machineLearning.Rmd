@@ -138,8 +138,12 @@ p2 <- pbox(var_price, name)
 grid.arrange(p1, p2, nrow=1)
 ```
 
+Se puede observar que la variable "price" no sigue una distribucion normal y como se muestra en el diagrama de caja cuenta con bastantes valores de tipo outliar.
 
-
+Las posibles alternativas para transformar la variable serian:  
+- Transformacion logaritmico 10  
+- Raiz cuadrada  
+- Inversa 1/x
 
 
 
@@ -268,5 +272,8 @@ ftable(pam_fit$clustering)
 pam_results$the_summary
 ```
 
-# NEED TO CONTINUE ADDING CLUSTER ANALYSIS, JUMPING TO FAD
+# Analisis FAD de los clusters
+```{r Carga cluster}
+df_clusters <- read.csv(file="./cluster.csv")
+```
 
