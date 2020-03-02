@@ -34,6 +34,7 @@ library(faraway)
 library(gclus)
 library(GGally)
 library(ggplot2)
+library(ggpubr)
 library(gridExtra)
 library(Hmisc)
 library(htmltools)
@@ -277,3 +278,54 @@ pam_results$the_summary
 df_clusters <- read.csv(file="./cluster.csv")
 ```
 
+## Analisis Cluster 1
+
+```{r Filtrado cluster 1}
+
+cluster_1 = filter(df_clusters, cluster == "1")
+
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(cluster_1)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(cluster_1)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+
+### A. Análisis univariante cuantitativo
+
+```{r cuantitativas, include=TRUE, warning=FALSE}
+#Obtención de variables cuantitativas
+df_cuantitativas_clusters = df_clusters%>% select(3, 6, 7, 13:16, 18:dim(df_clusters)[2])
+
+data.frame(variable = names(df_cuantitativas_clusters),
+           classe = sapply(df_cuantitativas_clusters, typeof),
+           first_values = sapply(df_cuantitativas_clusters, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL) %>% kable() %>% kable_styling()
+```
+<br/>
+
+**Estudio de la variable "price" (precio de venta).**
+```{r var_price_clusters, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = price))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+bxp
+#var_price_clusters = df_cuantitativas_clusters$price
+#name = "price"
+
+# Descripción de la variable
+#describe(var_price_clusters)
+
+# Visualización de la variable
+#p1_clusters <- phist(df_cuantitativas_clusters, ., name)
+#lines(p1_cluster_1,p1,col="green")
+#p2_clusters <- pbox(var_price_clusters, name)
+#grid.arrange(p1_clusters, p2_clusters, nrow=1)
+```
