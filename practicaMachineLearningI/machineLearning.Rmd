@@ -278,7 +278,7 @@ pam_results$the_summary
 df_clusters <- read.csv(file="./cluster.csv")
 ```
 
-## Analisis Cluster 1
+## Resumen Cluster 1
 
 ```{r Filtrado cluster 1}
 
@@ -295,6 +295,41 @@ kable(summary(cluster_1)) %>%
   scroll_box(width = "100%", height = TRUE)
 ```
 
+## Resumen Cluster 2
+
+```{r Filtrado cluster 2}
+
+cluster_2 = filter(df_clusters, cluster == "2")
+
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(cluster_2)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(cluster_2)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+
+## Resumen Cluster 3
+
+```{r Filtrado cluster 3}
+
+cluster_3 = filter(df_clusters, cluster == "3")
+
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(cluster_3)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(cluster_3)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+
+
 ### A. Análisis univariante cuantitativo
 
 ```{r cuantitativas, include=TRUE, warning=FALSE}
@@ -309,23 +344,192 @@ data.frame(variable = names(df_cuantitativas_clusters),
 <br/>
 
 **Estudio de la variable "price" (precio de venta).**
-```{r var_price_clusters, include=TRUE, warning=FALSE}
+```{r estudio price, include=TRUE, warning=FALSE}
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_clusters$cluster <- as.factor(df_clusters$cluster)
 
 pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = price))
 bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
   scale_color_manual(values = my3cols)
-bxp
-#var_price_clusters = df_cuantitativas_clusters$price
-#name = "price"
 
-# Descripción de la variable
-#describe(var_price_clusters)
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$price))
 
-# Visualización de la variable
-#p1_clusters <- phist(df_cuantitativas_clusters, ., name)
-#lines(p1_cluster_1,p1,col="green")
-#p2_clusters <- pbox(var_price_clusters, name)
-#grid.arrange(p1_clusters, p2_clusters, nrow=1)
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
 ```
+
+**Estudio de las variables "sqft_living"  y "sqft_living15" (Superficie de la vivienda).**
+variable "sqft_living": superficie de la vivienda en pies cuadrados (superficie escriturada).
+
+```{r estudio sqft_living, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_living))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_living))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+variable "sqft_living15": superficie de la vivienda en pies cuadrados (superficie escriturada).
+
+```{r estudio sqft_living15, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_living15))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_living15))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de las variables "sqft_lot" y "sqft_lot15 (superficie de la parcela de la vivienda).**
+Variables "sqft_lot": superficie de la parcela de la vivienda en pies cuadrados (superficie parcelaria).
+```{r estudio sqft_lot, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_lot))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_lot))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+
+Variable "sqft_lot15":  superficie de la parcela en el año 2015 (admite modificaciones)
+```{r estudio sqft_living15, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_lot15))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_lot15))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "sqft_above" (superficie de la huella de la vivienda).**
+
+```{r estudio sqft_above, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_above))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_above))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "sqft_basement" (superficie bajo rasante).**
+
+```{r estudio sqft_basement, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_basement))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_basement))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "yr_built" (año de construcción de la vivienda).**
+
+```{r estudio yr_built, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = yr_built))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$yr_built))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "yr_renovated" (año de renovación de la vivienda).**
+
+```{r estudio yr_renovated, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = yr_renovated))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$yr_renovated))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+### B. Analisis univariante cualitativo
