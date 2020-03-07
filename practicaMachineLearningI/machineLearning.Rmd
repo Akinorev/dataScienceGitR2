@@ -112,6 +112,21 @@ p = qplot('1', col, geom="boxplot") +
   ggtitle("Diagrama Boxplot") + ylab("Valores") + xlab(varname)
 return(p)
 }
+
+p_barras <-function(df = df_cualitativas, dx, xlab){
+p = ggplot(df, aes(unlist(dx), fill=unlist(dx))) +
+  geom_bar(position="dodge", fill='#8bbabb', color="#464159") + 
+  labs(x= xlab, y = 'Frecuencia', fill=NULL)
+return(p)
+}
+
+p_barras2 <-function(df = df_cualitativas, dx, dy, xlab){
+p = ggplot(df, aes(unlist(dx), fill=unlist(dy))) +
+  geom_bar(position="dodge") + 
+  labs(x= xlab, y = 'Frecuencia', fill=NULL) +
+  scale_fill_manual(values=c("#8bbabb", "#6c7b95"))
+return(p)
+}
 ```
 
 # Estudio de la variable price
@@ -414,44 +429,280 @@ figure
 **Estudio de la variable "date" (fecha de venta de la vivienda):**
 Dado que el objetivo de la práctica es poder predecir el precio de la vivienda, sería interesante para nuestro modelo separar esta variable en mes y año ya que el precio de venta se puede ver influido por la estación y por el año en el que se realizó la venta en funcion de los clusters.
 
-Limites de las fechas para cluster 1 y diagrama de barras
-```{r var_date_cluster1, include=TRUE, warning=FALSE, message=FALSE}
+Limites de las fechas para los clusters y diagramas de barras
+```{r var_date_cluster, include=TRUE, warning=FALSE, message=FALSE}
 dates_1 = data.frame(date_1 = as.Date(cluster_1$date,"%m/%d/%Y"))
 cluster_1$dates_m = format(dates_1,"%m")
 cluster_1$dates_y = format(dates_1,"%Y")
 
+dates_2 = data.frame(date_2 = as.Date(cluster_2$date,"%m/%d/%Y"))
+cluster_2$dates_m = format(dates_2,"%m")
+cluster_2$dates_y = format(dates_2,"%Y")
+
+dates_3 = data.frame(date_3 = as.Date(cluster_3$date,"%m/%d/%Y"))
+cluster_3$dates_m = format(dates_3,"%m")
+cluster_3$dates_y = format(dates_3,"%Y")
+
+
 # Límites del campo date
 dates_1 %>% summarise(min = min(date_1), max = max(date_1))
+dates_2 %>% summarise(min = min(date_2), max = max(date_2))
+dates_3 %>% summarise(min = min(date_3), max = max(date_3))
+
+
 
 # Tablas de frecuencias en función al mes y al año
-table(cluster_1$dates_y) %>% kable(., col.names = c('Años', 'Frecuencia'))
-table(cluster_1$dates_m) %>% kable(., col.names = c('Meses', 'Frecuencia'))
+#table(cluster_1$dates_y) %>% kable(., col.names = c('Años', 'Frecuencia'))
+#table(cluster_1$dates_m) %>% kable(., col.names = c('Meses', 'Frecuencia'))
 
 # Diagrama de barras con los meses del año y el número de viviendas vendidas
-ggplot(cluster_1, aes(x = unlist(dates_y), y = unlist(dates_m))) + 
-  geom_bar(aes(fill = cluster), stat = "identity", position = "dodge")
+td_1 <- p_barras2(cluster_1, cluster_1$dates_m, cluster_1$dates_y, xlab = 'Mes')
+td_2 <- p_barras2(cluster_2, cluster_2$dates_m, cluster_2$dates_y, xlab = 'Mes')
+td_3 <- p_barras2(cluster_3, cluster_3$dates_m, cluster_3$dates_y, xlab = 'Mes')
+
+figure <- ggarrange(td_1, td_2, td_3, 
+                    labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    #scale_color_manual(values = my3cols),
+                    ncol = 2, nrow = 2)
+figure
 ```
 
 
 **Estudio de la variable "bedrooms" (Número de habitaciones por vivienda):**
 
-Cluster 1
 ```{r var_rooms, include=TRUE, warning=FALSE, message=FALSE}
-var_rooms_1 = cluster_1$bedrooms
-name = "bedrooms"
+var_bedrooms_1 = cluster_1$bedrooms
+var_bedrooms_2 = cluster_2$bedrooms
+var_bedrooms_3 = cluster_3$bedrooms
+name_1 = "cluster_1 bedrooms"
+name_2 = "cluster_2 bedrooms"
+name_3 = "cluster_3 bedrooms"
 
-# Resumen de las habitaciones
-summary(var_rooms_1)
-#table(var_rooms_1) %>% kable(., col.names = c(name, 'Frecuencia'))
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_bedrooms_1)
+summary(var_bedrooms_2)
+summary(var_bedrooms_3)
 
 # Diagrama de barras con los meses del año y el número de viviendas vendidas
-ggplot(cluster_1, aes(x = unlist(var_rooms_1), y = unlist(name))) + 
-  geom_bar(aes(fill = cluster), stat = "identity", position = "dodge")
+pb1 <- p_barras(cluster_1, var_bedrooms_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_bedrooms_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_bedrooms_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+
+```
+**Estudio de la variable "bathrooms" (Número de baños/aseos por vivienda):**
+
+Cluster 1
+```{r var_bathrooms, include=TRUE, warning=FALSE}
+var_bathrooms_1 = cluster_1$bathrooms
+var_bathrooms_2 = cluster_2$bathrooms
+var_bathrooms_3 = cluster_3$bathrooms
+name_1 = "cluster_1 bathrooms"
+name_2 = "cluster_2 bathrooms"
+name_3 = "cluster_3 bathrooms"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_bathrooms_1)
+summary(var_bathrooms_2)
+summary(var_bathrooms_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_bathrooms_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_bathrooms_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_bathrooms_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+
+```
 
 
-#p_barras(df_cualitativas, var_bathrooms, xlab = name)
-#p = ggplot(df, aes(unlist(dx), fill=unlist(dx))) +
-#  geom_bar(position="dodge", fill='#8bbabb', color="#464159") + 
-#  labs(x= xlab, y = 'Frecuencia', fill=NULL) +
-#  ggtitle("Diagrama de barras")
+**Estudio de la variable "floors" (Número de plantas por vivienda):**
+
+```{r var_floors, include=TRUE, warning=FALSE}
+var_floors_1 = cluster_1$floors
+var_floors_2 = cluster_2$floors
+var_floors_3 = cluster_3$floors
+name_1 = "cluster_1 floors"
+name_2 = "cluster_2 floors"
+name_3 = "cluster_3 floors"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_floors_1)
+summary(var_floors_2)
+summary(var_floors_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_floors_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_floors_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_floors_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+
+```
+
+**Estudio de la variable "waterfront" (viviendas frente a grandes masas de agua):**
+
+Cluster 1:
+```{r var_waterfront, include=TRUE, warning=FALSE}
+var_waterfront_1 = cluster_1$waterfront
+var_waterfront_2 = cluster_2$waterfront
+var_waterfront_3 = cluster_3$waterfront
+name_1 = "cluster_1 waterfront"
+name_2 = "cluster_2 waterfront"
+name_3 = "cluster_3 waterfront"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_waterfront_1)
+summary(var_waterfront_2)
+summary(var_waterfront_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_waterfront_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_waterfront_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_waterfront_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+**Estudio de la variable "view" (número de visitas que ha recibido la vivienda):**
+
+```{r var_view, include=TRUE, warning=FALSE}
+var_view_1 = cluster_1$view
+var_view_2 = cluster_2$view
+var_view_3 = cluster_3$view
+name_1 = "cluster_1 view"
+name_2 = "cluster_2 view"
+name_3 = "cluster_3 view"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_view_1)
+summary(var_view_2)
+summary(var_view_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_view_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_view_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_view_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+
+**Estudio de la variable "condition" (estado de la vivienda del 1 al 5):**
+
+Cluster 1:
+```{r var_condition, include=TRUE, warning=FALSE}
+var_condition_1 = cluster_1$condition
+var_condition_2 = cluster_2$condition
+var_condition_3 = cluster_3$condition
+name_1 = "cluster_1 condition"
+name_2 = "cluster_2 condition"
+name_3 = "cluster_3 condition"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_condition_1)
+summary(var_condition_2)
+summary(var_condition_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_condition_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_condition_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_condition_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+**Estudio de la variable "grade" (nota general de la vivienda del 1 al 13):**
+
+```{r var_grade, include=TRUE, warning=FALSE}
+var_grade_1 = cluster_1$grade
+var_grade_2 = cluster_2$grade
+var_grade_3 = cluster_3$grade
+name_1 = "cluster_1 grade"
+name_2 = "cluster_2 grade"
+name_3 = "cluster_3 grade"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_grade_1)
+summary(var_grade_2)
+summary(var_grade_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_grade_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_grade_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_grade_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+**Estudio de la variable "zipcode" (código postal):**
+
+```{r var_zipcode, include=TRUE, warning=FALSE}
+var_zipcode_1 = cluster_1$zipcode
+var_zipcode_2 = cluster_2$zipcode
+var_zipcode_3 = cluster_3$zipcode
+name_1 = "cluster_1 zipcode"
+name_2 = "cluster_2 zipcode"
+name_3 = "cluster_3 zipcode"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_zipcode_1)
+summary(var_zipcode_2)
+summary(var_zipcode_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_zipcode_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_zipcode_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_zipcode_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
 ```
