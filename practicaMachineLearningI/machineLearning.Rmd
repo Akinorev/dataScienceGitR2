@@ -147,133 +147,10 @@ Las posibles alternativas para transformar la variable serian:
 - Inversa 1/x
 
 
-
-# Analisis del cluster
-
-## Técnicas No Supervisadas. Analisis Cluster
-
-Necesitamos analizar los datos de tipo mixto, número, órdinal y nominal.
-Nos vamos a enfocar en clasificación no supervisada usando R
-CLUSTERING ALGORITHM: PARTITIONING AROUND MEDOIDS (PAM)
-
-## Distancia de Gower
-La distancia es una medida numérica de cuán separados están los individuos, es decir una métrica utilizada para medir la proximidad o similitud entre individuos;
-
-La distancia de Gower se calcula como el promedio de las diferencias parciales entre individuos.
-Para cada tipo de variable, se usa una métrica de distancia particular que funciona bien para ese tipo y se escala para caer entre 0 y 1
-
-Para las variables cuantitativa La Distancia de Manhattan
-Para las Variables Ordinales la Distancia un ajuste especial de la Manhattan despúes de haber sido ordenadas
-Para las Nominales primero se convierte en k columnas Binarias ( para cada categoria de cada variable norminal) y posteriormente se usa el coeficiente de Dice
-
-El coeficiente de Dice [0,1] para medir la similitud entre 2 muestras
-
-Se escala de la siguiente Manera
-Se define la distancia de Gower como d2ij = 1 − sij , 
-donde sij = p1h=1 (1 − |xih − xjh|/Gh) + a + α p1 + (p2 − d) + p3 es el coeficiente de similaridad de Gower,
-
-p1 es el numero de variables cuantitativas continuas,
-p2 es el numero de variables binarias,
-p3 es el numero de variables cualitativas(no binarias),
-a es el numero de coincidencias (1, 1) en las variables binarias,
-d es el numero de coincidencias (0, 0) en las variables binarias,
-α es el numero de coincidencias en las variables cualitativas (no binarias) y
-Gh es el rango (o recorrido) de la h-esima variable cuantitativa.
-
-
-
-
-```{r distancia de Gower}
-
-gower_dist <- daisy(df_root, metric = "gower")
-gower_mat  <- as.matrix(gower_dist)
-
-```
-
-## Ejemplo de Casas Más similares, basado en la distancia de Gower
-
-```{r mas similares}
-df_root[which(gower_mat == min(gower_mat[gower_mat != min(gower_mat)]), 
-              arr.ind = TRUE)[1, ], ]
-
-```
-
-## Ejemplo de Casas Más Disimilares, basado en la distancia de Gower
-
-```{r mas disimilares}
-df_root[which(gower_mat == max(gower_mat[gower_mat != max(gower_mat)]), 
-              arr.ind = TRUE)[1, ], ]
-
-```
-
-## Selección del algoritmo PAM
-
-Una vez calculada la matriz de distancia emplearemos el algoritmo PAM, basado en una partición de medoids (El término medoids se refiere a un objeto dentro de un grupo para el cual la diferencia promedio entre este y todos los demás miembros del grupo es mínima, es decir el punto más centralmente ubicado del conjunto de datos), en cambio en el método K-means cada Cluster está representado por su centroide.
-Es un método muy similar a k-means, pero es mucho más robusto a la presencia de Outliers como es en nuestro caso.
-Es un procedimiento de agrupación iterativa que implica los siguientes pasos:
-
-### Step 1
-   Elegir k entidades aleatorias para convertirse en los Medoids
-### Step 2
-   Asignamos a cada entidad, en nuestro caso a cada "casa" el medoide más cercano basado en la distancia de Gower anteriormente calculada.
-### Step 3
-   Para cada Cluster identificar la observación que produciría la distancia promedio más baja si fuera reasiganada como el Medoid, si fuera así hay que hacer de esta observación el nuevo Medoid. Si al menos un Medoid ha cambiado volvemos Step2, en caso contrario Step4
-### Step 4
-  FIN
-
-K Means intenta mininizar el ECM total K Medoids minimiza la suma de las diferencias entre los puntos etiquetados para estar en un grupo y un punto designado como el centro de ese grupo Mediod.
-
-
-## Selección del Número óptimo de Clústers
-
-Silhouette, Validación y consistencia dentro de los datos. 
-
-Es una medida de cuan similar es objeto dentro del grupo de pertenencia y cuan disimilar con los otros grupos.
-
-Varía entre -1 y 1. Un valor alto indica que un objeto está bien emparejado dentro de su grupo y mal con el resto.
-Un valor muy bajo o negativo implica una revisión del número de cluster al alza o a la baja
-
-
-
-```{r Clúster number selection }
-
-sil_width <- c(NA)
-for(i in 2:10){  
-  pam_fit <- pam(gower_dist, diss = TRUE, k = i)  
-  sil_width[i] <- pam_fit$silinfo$avg.width  
-}
-plot(1:10, sil_width,
-     xlab = "Numero de clusters",
-     ylab = "Silhouette")
-lines(1:10, sil_width)
-
-```
-
-Después de calcular el Silhouette para el algoritmo PAM vemos que 2 grupos producen el valor más alto. 
-Aún asi nosotros seleccionamos 3 Cluster para dividir la dispersión del Trabajo y facilitar el entendimiento de los siguientes análisis.
-
-## Seleccionamos 3 Clusters 
-
-```{r Clúster interpretacion }
-
-set.seed=737
-k <- 3
-pam_fit <- pam(gower_dist, diss = TRUE, k)
-pam_results <- df_root %>%
-  mutate(cluster = pam_fit$clustering) %>%
-  group_by(cluster) %>%
-  do(the_summary = summary(.))
-
-
-
-#frecuencia del número de casas en cada Clúster
-ftable(pam_fit$clustering)
-
-#descriptivo en cada Clúster
-pam_results$the_summary
-```
-
 # Analisis FAD de los clusters
+
+Para esta parte de la memoria se trabajara sobre un data set ya dividido en clusters. Los clusters sobre los que se trabajara son los obtenidos de la memoria anterior.
+
 ```{r Carga cluster}
 df_clusters <- read.csv(file="./cluster.csv")
 ```
@@ -533,3 +410,48 @@ figure
 ```
 
 ### B. Analisis univariante cualitativo
+
+**Estudio de la variable "date" (fecha de venta de la vivienda):**
+Dado que el objetivo de la práctica es poder predecir el precio de la vivienda, sería interesante para nuestro modelo separar esta variable en mes y año ya que el precio de venta se puede ver influido por la estación y por el año en el que se realizó la venta en funcion de los clusters.
+
+Limites de las fechas para cluster 1 y diagrama de barras
+```{r var_date_cluster1, include=TRUE, warning=FALSE, message=FALSE}
+dates_1 = data.frame(date_1 = as.Date(cluster_1$date,"%m/%d/%Y"))
+cluster_1$dates_m = format(dates_1,"%m")
+cluster_1$dates_y = format(dates_1,"%Y")
+
+# Límites del campo date
+dates_1 %>% summarise(min = min(date_1), max = max(date_1))
+
+# Tablas de frecuencias en función al mes y al año
+table(cluster_1$dates_y) %>% kable(., col.names = c('Años', 'Frecuencia'))
+table(cluster_1$dates_m) %>% kable(., col.names = c('Meses', 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+ggplot(cluster_1, aes(x = unlist(dates_y), y = unlist(dates_m))) + 
+  geom_bar(aes(fill = cluster), stat = "identity", position = "dodge")
+```
+
+
+**Estudio de la variable "bedrooms" (Número de habitaciones por vivienda):**
+
+Cluster 1
+```{r var_rooms, include=TRUE, warning=FALSE, message=FALSE}
+var_rooms_1 = cluster_1$bedrooms
+name = "bedrooms"
+
+# Resumen de las habitaciones
+summary(var_rooms_1)
+#table(var_rooms_1) %>% kable(., col.names = c(name, 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+ggplot(cluster_1, aes(x = unlist(var_rooms_1), y = unlist(name))) + 
+  geom_bar(aes(fill = cluster), stat = "identity", position = "dodge")
+
+
+#p_barras(df_cualitativas, var_bathrooms, xlab = name)
+#p = ggplot(df, aes(unlist(dx), fill=unlist(dx))) +
+#  geom_bar(position="dodge", fill='#8bbabb', color="#464159") + 
+#  labs(x= xlab, y = 'Frecuencia', fill=NULL) +
+#  ggtitle("Diagrama de barras")
+```
