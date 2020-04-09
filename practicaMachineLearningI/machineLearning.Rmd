@@ -28,6 +28,7 @@ library(caret)
 library(cluster)
 library(dplyr)
 library(egg)
+library(e1071)
 library(expss)
 library(factoextra)
 library(faraway)
@@ -46,6 +47,7 @@ library(magrittr)
 library(mice)
 library(mlbench)
 library(RColorBrewer)
+library(randomForest)
 library(readr)
 library(Rtsne)
 library(sos)
@@ -127,6 +129,25 @@ p = ggplot(df, aes(unlist(dx), fill=unlist(dy))) +
   scale_fill_manual(values=c("#8bbabb", "#6c7b95"))
 return(p)
 }
+
+p_densidad <- function(df = price_tplusc, title, varname){
+p = df %>% select(c("price", varname)) %>%
+  na.omit() %>%
+  ggplot(., aes(x=.[,1], colour=.[,2])) +
+  labs(title = title, x = "price", colour = varname) + 
+  geom_density()
+  return(p)
+}
+
+p_densidad2 <- function(df = price_tplusc, varname1, varname2){
+p = df %>% select(c(varname2, varname1)) %>%
+  na.omit() %>%
+  ggplot(., aes(x=.[,1], colour=.[,2])) +
+  labs(title = "Diagrama de densidad", x = varname2, colour = varname1) + 
+  geom_density()
+  return(p)
+}
+
 ```
 
 # Estudio de la variable price
@@ -321,7 +342,7 @@ figure
 
 
 Variable "sqft_lot15":  superficie de la parcela en el año 2015 (admite modificaciones)
-```{r estudio sqft_living15, include=TRUE, warning=FALSE}
+```{r estudio sqft_lot15, include=TRUE, warning=FALSE}
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_clusters$cluster <- as.factor(df_clusters$cluster)
 
@@ -704,5 +725,242 @@ figure <- ggarrange(pb1, pb2, pb3,
                     #labels = c("Boxplot", "Histogram","pepe"),
                     scale_color_manual(values = my3cols),
                     ncol = 3, nrow = 1)
+figure
+```
+
+
+### c. Análisis multivariante cualitativo
+
+**Estudio de la variable "bedrooms" (número de habitaciones por vivienda):**
+```{r multi_bedrooms, include=TRUE}
+old = "bedrooms"
+new = "cat_bedrooms"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+
+```
+
+**Estudio de la variable "bathrooms" (número de baños por vivienda):**
+```{r multi_bathrooms, include=TRUE}
+old = "bathrooms"
+new = "cat_bathrooms"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+
+```
+
+
+**Estudio de la variable "floors" (número de plantas por vivienda):**
+```{r multi_floors, include=TRUE}
+old = "floors"
+new = "cat_floors"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+
+```
+
+**Estudio de la variable "waterfront":**
+```{r multi_waterfont, include=TRUE}
+name = "waterfront"
+
+#mostramos su tabla de frecuencias
+#table(cluster_1[[name]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+pd_c1 = p_densidad(cluster_1, "cluster 1", name)
+pd_c2 = p_densidad(cluster_2, "cluster 2", name)
+pd_c3 = p_densidad(cluster_3, "cluster 3", name)
+
+#visualización de los datos categorizados con respecto a la variable "long"
+p1_c1 = p_densidad2(cluster_1, name, 'long')
+p1_c2 = p_densidad2(cluster_2, name, 'long')
+p1_c3 = p_densidad2(cluster_3, name, 'long')
+#visualización de los datos categorizados con respecto a la variable "lat"
+p2_c1 = p_densidad2(cluster_1, name, 'lat')
+p2_c2 = p_densidad2(cluster_2, name, 'lat')
+p2_c3 = p_densidad2(cluster_3, name, 'lat')
+
+figure_c1 <- ggarrange(pd_c1, p1_c1, p2_c1, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure_c1
+
+figure_c2 <- ggarrange(pd_c2, p1_c2, p2_c2, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure_c2
+
+figure_c3 <- ggarrange(pd_c3, p1_c3, p2_c3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure_c3
+
+```
+
+**Estudio de la variable "view":**
+```{r multi_view, include=TRUE}
+old = "view"
+new = "cat_view"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=3)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=3)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=3)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+```
+
+Comentar los resultados
+
+**Estudio de la variable "condition":**
+```{r multi_condition, include=TRUE}
+old = "condition"
+new = "cat_condition"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=3)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=3)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=3)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+```
+
+Comentar los resultados
+
+**Estudio de la variable "grade":**
+```{r multi_grade, include=TRUE}
+old = "grade"
+new = "cat_grade"
+
+#corrección reemplazando el string s por un "NA"
+cluster_1[[old]][cluster_1[[old]] == "s"] <- NA
+cluster_1[[old]] = as.numeric(cluster_1[[old]])
+cluster_2[[old]][cluster_2[[old]] == "s"] <- NA
+cluster_2[[old]] = as.numeric(cluster_2[[old]])
+cluster_3[[old]][cluster_3[[old]] == "s"] <- NA
+cluster_3[[old]] = as.numeric(cluster_3[[old]])
+
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+```
+
+Comentar los resultados
+
+**Estudio de la variable "zipcode" (código postal):**
+```{r multi_zipcode, include=TRUE}
+old = "zipcode"
+new = "cat_zipcode"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=3)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=3)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=3)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
 figure
 ```
