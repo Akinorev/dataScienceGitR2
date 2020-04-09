@@ -1,0 +1,65 @@
+---
+title: "Untitled"
+author: "Carlos"
+date: "4/9/2020"
+output: html_document
+---
+
+```{r LoadLibraries}
+# basics
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+#library(kableExtra)
+# decision tree
+library(rpart)
+library(rpart.plot)
+library(rattle)
+```
+
+
+## Loading data
+```{r}
+file <- 'cluster.csv'
+df_houses <-  read.csv(file)
+head(houses)
+```
+
+## Selecting cluster
+```{r}
+cluster_1 = df_houses %>% filter(cluster == 1) %>% select(8:25, 28)
+cluster_2 = df_houses %>% filter(cluster == 2) %>% select(8:25, 28)
+cluster_3 = df_houses %>% filter(cluster == 3) %>% select(8:25, 28)
+head(cluster_1)
+```
+
+## Dividiendo training + test + validation
+```{r}
+set.seed(123)
+spec = c(train = .6, test = .2, validate = .2)
+
+g = sample(cut(
+  seq(nrow(cluster_1)), 
+  nrow(cluster_1)*cumsum(c(0,spec)),
+  labels = names(spec)
+))
+
+res <- split(cluster_1, g)
+
+x_train <- res$train %>% select(-Cluster_final)
+y_train <- res$train[, 19] %>% matrix()
+
+x_test <- res$test %>% select(-Cluster_final)
+y_test <- res$test %>% select(Cluster_final) %>% matrix()
+
+x_val <- res$validate
+```
+
+
+# Decision Tree
+## Constructing labels
+```{r}
+r_part <- rpart(y_train~., data=x_train, cp=0.0001, parms=list(split="information"))
+labels = labels(r_part, pretty=T)
+labels[1:10]
+```
