@@ -185,7 +185,7 @@ Las posibles alternativas para transformar la variable serian:
 - Inversa 1/x
 
 
-# Analisis FAD de los clusters
+# Analisis EDA de los clusters
 
 Para esta parte de la memoria se trabajara sobre un data set ya dividido en clusters. Los clusters sobre los que se trabajara son los obtenidos de la memoria anterior.
 
