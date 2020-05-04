@@ -198,37 +198,8 @@ ggplot(data=df_cluster, aes(x=price, group=target ,fill=target)) +
 
 
 ```
-## EDA por cluster
-Vamos a realizar un análisis descriptivo de las variables en función del cluster
 
-
-#### Descripcion de las variables
-
-- id: valor único (Primary key).
-- date: fecha de venta de la vivienda.
-- price: precio de venta. Variable seleccionada para la aplicación del modelo y su posterior predicción.
-- bedrooms: número de habitaciones por vivienda.
-- bathrooms: número de baños por vivienda.
-- sqft_living: superficie de la vivienda en pies cuadrados (superficie escriturada).
-- sqft_lot: superficie de la parcela de la vivienda en pies cuadrados (superficie parcelaria).
-- floors: número de plantas por vivienda.
-- waterfront: si la vivienda tiene vistas al mar.
-- view: el número de veces que se ha visitado la vivienda desde su puesta en venta.
-- condition*: el estado de la vivienda establecido mediante una variable numérica del 1 al 5.
-- grade*: nota general de la vivienda propuesta por el sistema de puntuación de la zona del 1 al 13.
-- sqft_above: superficie de la huella perimetral de la vivienda sobre rasante en pies cuadrados.
-- sqft_basement: superficie de la vivienda bajo rasante en piés cuadrados
-- yr_built: año de construcción de la vivienda
-- yr_renovated: año de la renovación de la vivienda. En caso de no haber sido renovada este parámetro se ha igualado a 0.
-- zipcode: codigo postal de la vivienda.
-- lat: latitud de la coordenada de la vivienda medida en pies.
-- long: longitud de la coordenada de la vivienda medida en pies.
-- sqft_living15: superficie de la vivienda en el año 2015 (admite renovaciones).
-- sqft_lot15: superficie de la parcela en el año 2015 (admite modificaciones)
-
-
-
-```{r funciones auxiliares, include=FALSE, warning=FALSE}
+```{r funciones auxiliares, include=FALSE, warning=FALSE }
 
 phist <- function(df, bns = 50, varname) {
   p = ggplot(df, aes(x = df[[varname]])) + 
@@ -263,12 +234,7 @@ return(p)
 
 ```
 
-
-# Análisis Exploratorio de las Variables
-
-
-
-```{r Filtrado cluster 1}
+```{r Filtrado cluster 1, include=FALSE}
 df_target_1 = filter(df_cluster, target == "1")
 #Muestra de las primeras 5 filas de la base de datos
 kable(head(df_target_1)) %>%
@@ -283,7 +249,7 @@ kable(summary(df_target_1)) %>%
 
 
 
-```{r Filtrado cluster 0}
+```{r Filtrado cluster 0, include=FALSE}
 df_target_0 = filter(df_cluster, target == "0")
 #Muestra de las primeras 5 filas de la base de datos
 kable(head(df_target_0)) %>%
@@ -297,9 +263,7 @@ kable(summary(df_target_0)) %>%
 ```
 
 
-
-**Estudio de la variable "price" (precio de venta).**
-```{r estudio price, include=TRUE, warning=FALSE}
+```{r estudio price, include=FALSE, warning=FALSE}
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_cluster$target <- as.factor(df_cluster$target)
 pBoxPlot <- ggplot(df_cluster, aes(x = target, y = price))
@@ -316,10 +280,8 @@ figure
 
 ```
 
-**Estudio de las variables "sqft_living"  y "sqft_living15" (Superficie de la vivienda).**
-variable "sqft_living": superficie de la vivienda en pies cuadrados (superficie escriturada).
 
-```{r estudio sqft_living, include=TRUE, warning=FALSE}
+```{r estudio sqft_living, include=FALSE, warning=FALSE}
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_cluster$target <- as.factor(df_cluster$target)
 pBoxPlot <- ggplot(df_cluster, aes(x = target, y = sqft_living))
@@ -334,10 +296,7 @@ figure <- ggarrange(bxp, gh,
 figure
 ```
 
-
-
-Variable "sqft_lot15":  superficie de la parcela en el año 2015 
-```{r estudio sqft_living15 V2, include=TRUE, warning=FALSE}
+```{r estudio sqft_living15 V2, include=FALSE, warning=FALSE}
 
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_cluster$target <- as.factor(df_cluster$target)
@@ -352,9 +311,8 @@ figure <- ggarrange(bxp, gh,
                     ncol = 2, nrow = 1)
 figure
 ```
-**Estudio de la variable "sqft_above" (superficie de la huella de la vivienda).**
 
-```{r estudio sqft_above, include=TRUE, warning=FALSE}
+```{r estudio sqft_above, include=FALSE, warning=FALSE}
 
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_cluster$target <- as.factor(df_cluster$target)
@@ -369,10 +327,8 @@ figure <- ggarrange(bxp, gh,
                     ncol = 2, nrow = 1)
 figure
 ```
-**Estudio de la variable "sqft_basement" (superficie bajo rasante).**
 
-
-```{r estudio sqft_basement, include=TRUE, warning=FALSE}
+```{r estudio sqft_basement, include=FALSE, warning=FALSE}
 
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_cluster$target <- as.factor(df_cluster$target)
@@ -387,9 +343,8 @@ figure <- ggarrange(bxp, gh,
                     ncol = 2, nrow = 1)
 figure
 ```
-**Estudio de la variable "yr_built" (año de construcción de la vivienda).**
 
-```{r estudio yr_built, include=TRUE, warning=FALSE}
+```{r estudio yr_built, include=FALSE, warning=FALSE}
 
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_cluster$target <- as.factor(df_cluster$target)
@@ -405,10 +360,7 @@ figure <- ggarrange(bxp, gh,
 figure
 ```
 
-**Estudio de la variable "yr_renovated" (año de renovación de la vivienda).**
-
-
-```{r estudio yr_renovated, include=TRUE, warning=FALSE}
+```{r estudio yr_renovated, include=FALSE, warning=FALSE}
 
 my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
 df_cluster$target <- as.factor(df_cluster$target)
@@ -424,10 +376,7 @@ figure <- ggarrange(bxp, gh,
 figure
 ```
 
-**Estudio de la variable "bathrooms" (Número de baños/aseos por vivienda):**
-
-
-```{r var_bathrooms, include=TRUE, warning=FALSE}
+```{r var_bathrooms, include=FALSE, warning=FALSE}
 var_bathrooms_1 = df_target_1$bathrooms
 var_bathrooms_0 = df_target_0$bathrooms
 
@@ -460,12 +409,7 @@ barplot(out$right, col="red", horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 
 ```
 
-
-
-
-**Estudio de la variable "bedrooms" (Número de habitaciones por vivienda):**
-
-```{r bedrooms, include=TRUE, warning=FALSE, message=FALSE}
+```{r bedrooms, include=FALSE, warning=FALSE, message=FALSE}
 
 var_bedrooms_1 = df_target_1$bedrooms
 var_bedrooms_0 = df_target_0$bedrooms
@@ -498,12 +442,7 @@ barplot(out$right, col="red", horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 
 ```
 
-
-
-
-**Estudio de la variable "floors" (Número de plantas por vivienda):**
-
-```{r var_floors, include=TRUE, warning=FALSE}
+```{r var_floors, include=FALSE, warning=FALSE}
 var_floors_1 = df_target_1$floors
 var_floors_0 = df_target_0$floors
 
@@ -536,10 +475,7 @@ barplot(out$right, col="red", horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 
 ```
 
-
-**Estudio de la variable "condition" (estado de la vivienda del 1 al 5):**
-
-```{r var_condition, include=TRUE, warning=FALSE}
+```{r var_condition, include=FALSE, warning=FALSE}
 var_condition_1 = df_target_1$condition
 var_condition_0 = df_target_0$condition
 
@@ -574,11 +510,7 @@ barplot(out$right, col="red", horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 
 ```
 
-
-**Estudio de la variable "waterfront" (viviendas frente a grandes masas de agua):**
-
-
-```{r var_waterfront, include=TRUE, warning=FALSE}
+```{r var_waterfront, include=FALSE, warning=FALSE}
 var_waterfront_1 = df_target_1$waterfront
 var_waterfront_0 = df_target_0$waterfront
 
@@ -604,10 +536,7 @@ figure
 
 ```
 
-
-**Estudio de la variable "grade" (nota general de la vivienda del 1 al 13):**
-
-```{r var_grade, include=TRUE, warning=FALSE}
+```{r var_grade, include=FALSE, warning=FALSE}
 var_grade_1 = df_target_1$grade
 var_grade_0 = df_target_0$grade
 
@@ -640,10 +569,7 @@ barplot(-out$left, col="blue" , horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 barplot(out$right, col="red", horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 ```
 
-
-**Estudio de la variable "view" (número de visitas que ha recibido la vivienda):**
-
-```{r var_view, include=TRUE, warning=FALSE}
+```{r var_view, include=FALSE, warning=FALSE}
 var_view_1 = df_target_1$view
 var_view_0 = df_target_0$view
 
@@ -677,16 +603,6 @@ barplot(-out$left, col="blue" , horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 barplot(out$right, col="red", horiz=TRUE, space=0, add=TRUE, axes=FALSE)
 ```
 
-```{r}
-summary (df_cluster)
-```
-
-
-
-
-
-
-
 # Correlaciones 
 En el siguiente gráfico descriptivo vemos que apraecen altas y medias correlaciones entre algunas variables por lo que vamos a tener que realizar un trabajo con las mismas con Ridge y Lasso.
 
@@ -704,7 +620,7 @@ pm
 # Creación Base Train y Control
 
 
-Definimos una semilla aleatoria y realizamos una partición en Train 70% y Test 30%.
+Definimos una semilla aleatoria y realizamos una partición en Train 70% , Validation 20% y Test 10%.
 
 ```{r TRAIN CONTROL para el glm }
 
@@ -866,10 +782,24 @@ abline(h = 120000)
 par(mfrow = c(1,1))
 ```   
 
+# GLM Link Logit y Probit
 
 
 
-# Regresión Logistica 
+```{r differences Betwwen Logit and Probit}
+
+# Diferencia entre el logit y el probit
+X=seq(from=-4,to=4,by=0.1)
+sigmoide=1/(1+exp(-X))
+cumulative<-pnorm(X, 0, 1)
+plot(sigmoide,type="l",col="red")
+lines(cumulative,col="blue")
+
+
+```
+
+
+## Regresión Logistica (Logit) 
 
 A partir de las variables del Lasso
 
@@ -896,7 +826,7 @@ Esta salida nos dice que el ajuste es estadísticamente significativo pero a niv
 
 
 ## Intervalo de confianza de los parámetros
-
+  
 ```{r Intervalo de confianza de los parámetros}
 head(predict(train_glm1, type = "response")) # Probabilidades en escala de la salida
 summary(train_glm1$fitted.values)
@@ -936,8 +866,6 @@ plot(ROCit_obj)
 
 Tal y como se puede observar, sobre la curva ROC tenemos que tiende mas hacia los 90º que hacia los 45º. Esto lo que nos indica es que pese a tener falsos positivos el test ha salido bastante preciso.
 
-Habria que mirar el AUC???
-
 ### Gain chart
 ```{r lift Chart Train and Test Population}
 
@@ -973,70 +901,6 @@ plot(perf, main="lift curve")
 ```
 
 
-
-
-# GLM Link Logit y Probit
-
-
-
-```{r differences Betwwen Logit and Probit}
-
-# Diferencia entre el logit y el probit
-X=seq(from=-4,to=4,by=0.1)
-sigmoide=1/(1+exp(-X))
-cumulative<-pnorm(X, 0, 1)
-plot(sigmoide,type="l",col="red")
-lines(cumulative,col="blue")
-
-
-```
-
-## Train Model Binomail Link Logit
-
-```{r Train Model Binomail Link Logit }
-
-
-model_logit1 = glm(target ~ floors + grade + condition + view + sqft_above + yr_built + sqft_living15 + Cluster_final , 
-               family = binomial (link="logit") ,
-               data = train )
-summary(model_logit1)
-
-
-
-```
-
-
-### Evaluacion del modelo Logit
-
-
-```{r  Evaluacion del Modelo Logit}
-
-
-train$prediccion=predict(model_logit1,type="response")
-Pred_auxiliar= prediction(train$prediccion, train$target, label.ordering = NULL)
-
-CURVA_ROC_model_logit1_train <- performance(Pred_auxiliar,"tpr","fpr")
-plot(CURVA_ROC_model_logit1_train)
-abline(a=0,b=1)
-
-
-
-## Capacidad del Modelo
-#mean(as.numeric(train$target)-1)
-#aggregate(train$prediccion~train$target,FUN=mean)
-
-
-table(pred = train$prediccion > 0.25, obs = train$target)
-data = as.numeric(train$prediccion>0.25)
-data=as.factor(data)
-y_test=as.factor(train$target)
-
-# use caret and compute a confusion matrix
-confusionMatrix(data, y_test)
-
-
-```
-
 ### Obteniendo un threshold mas preciso para Logit
 ```{r obtaining threshold for Logit}
 cutoffs <- seq(0.1,0.9,0.1)
@@ -1062,15 +926,15 @@ get_Error_Rate = function(trues, predicted_prb, cutoff){
   tab=table(preds, trues)
   round((tab[1,2]+tab[2,1])/sum(tab), 4)
 }
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.1)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.2)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.3)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.4)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.5)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.6)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.7)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.8)
-get_Error_Rate(train$target,model_logit1$fitted.values, 0.9)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.1)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.2)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.3)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.4)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.5)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.6)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.7)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.8)
+get_Error_Rate(train$target,train_glm1$fitted.values, 0.9)
 
 #plot(get_Error_Rate(train$target,model_logit1$fitted.values, 0.1:1.0))
 
@@ -1080,7 +944,7 @@ get_Error_Rate(train$target,model_logit1$fitted.values, 0.9)
 ```{r validation on test for Logit}
 
 
-predictionsLogit <- predict(model_logit1, validation,type='response')
+predictionsLogit <- predict(train_glm1, validation,type='response')
 plot.roc(validation$target, predictionsLogit)
 table(pred = predictionsLogit > 0.5, obs = validation$target)
 data = as.numeric(predictionsLogit>0.5)
@@ -1091,10 +955,6 @@ confusionMatrix(data, y_test)
 
 
 ```
-
-
-
-
 
 
 ## Train Model Binomail Link Probit
