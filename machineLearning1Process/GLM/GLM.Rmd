@@ -1049,16 +1049,16 @@ plot(cutoffs, accuracy, pch =19,type='b',col= "steelblue",
 
 ```
 
-### Validacion del modelo Logit con el dataset de Validacion
+### Validacion del modelo Logit con el dataset de Validation
 ```{r validation on test for Logit}
 
 
-predictionsLogit <- predict(model_logit1, control,type='response')
-plot.roc(control$target, predictionsLogit)
-table(pred = predictionsLogit > 0.5, obs = control$target)
+predictionsLogit <- predict(model_logit1, validation,type='response')
+plot.roc(validation$target, predictionsLogit)
+table(pred = predictionsLogit > 0.5, obs = validation$target)
 data = as.numeric(predictionsLogit>0.5)
 data=as.factor(data)
-y_test=as.factor(control$target)
+y_test=as.factor(validation$target)
     # use caret and compute a confusion matrix
 confusionMatrix(data, y_test)
 
@@ -1115,16 +1115,16 @@ confusionMatrix(data, y_test)
 
 ```
 
-### Validacion del modelo Probit con el dataset de Validacion
+### Validacion del modelo Probit con el dataset de Control
 ```{r validation on test Probit}
 
 
-predictionsProbit <- predict(model_probit1, control,type='response')
-plot.roc(control$target, predictionsProbit)
-table(pred = predictionsProbit > 0.5, obs = control$target)
+predictionsProbit <- predict(model_probit1, validation,type='response')
+plot.roc(validation$target, predictionsProbit)
+table(pred = predictionsProbit > 0.5, obs = validation$target)
 data = as.numeric(predictionsProbit>0.5)
 data=as.factor(data)
-y_test=as.factor(control$target)
+y_test=as.factor(validation$target)
     # use caret and compute a confusion matrix
 confusionMatrix(data, y_test)
 
@@ -1135,20 +1135,7 @@ confusionMatrix(data, y_test)
 
 
 
-## Función del Cálculo del Error
-Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 12,4% de tasa de error
 
-```{r funcion para calcular el Error Rate}
-
-## a function for error rate
-get_Error_Rate=function(trues, predicted_prb, cutoff){
-  preds=ifelse(predicted_prb<cutoff,0,1)
-  tab=table(preds, trues)
-  round((tab[1,2]+tab[2,1])/sum(tab), 4)
-}
-get_Error_Rate(train$target,train_glm1$fitted.values, 0.5)
-
-```
 
 
 
