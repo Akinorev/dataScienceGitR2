@@ -1041,7 +1041,7 @@ cutoffs <- seq(0.1,0.9,0.1)
 accuracy <- NULL
 for (i in seq(along = cutoffs)){
     prediction <- ifelse(model_logit1$fitted.values >= cutoffs[i], 1, 0) #Predicting for cut-off
-accuracy <- c(accuracy,length(which(data$y ==prediction))/length(prediction)*100)
+accuracy <- c(accuracy,length(which(train$y ==prediction))/length(prediction)*100)
 }
 
 plot(cutoffs, accuracy, pch =19,type='b',col= "steelblue",
@@ -1115,7 +1115,7 @@ confusionMatrix(data, y_test)
 
 ```
 
-### Validacion del modelo Probit con el dataset de Control
+### Validacion del modelo Probit con el dataset de Validation
 ```{r validation on test Probit}
 
 
