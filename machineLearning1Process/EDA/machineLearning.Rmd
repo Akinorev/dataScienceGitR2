@@ -68,7 +68,7 @@ library(plotly)
 
 relPath <- getwd()
 setwd(relPath)
-df_root <- read.csv(file="./kc_house_data.csv")
+df_root <- read.csv(file="../kc_house_data.csv")
 ```
 
 # Descripcion de las variables
@@ -190,14 +190,25 @@ Las posibles alternativas para transformar la variable serian:
 Para esta parte de la memoria se trabajara sobre un data set ya dividido en clusters. Los clusters sobre los que se trabajara son los obtenidos de la memoria anterior.
 
 ```{r Carga cluster}
-df_clusters <- read.csv(file="./cluster.csv")
+
+
+df_clusters <- read.csv ("../cluster.csv")
+df_root <- read.csv ("../kc_house_data.csv")
+
+
+df_clusters$hclust=as.numeric(df_clusters$hclust)
+df_clusters$cluster_final[df_clusters$hclust==2 | df_clusters$hclust==8] <- "top"
+df_clusters$cluster_final[df_clusters$hclust==1 | df_clusters$hclust==5 | df_clusters$hclust==9] <- "low"
+df_clusters$cluster_final[df_clusters$hclust==3 | df_clusters$hclust==4 | df_clusters$hclust==6 | df_clusters$hclust==7  ] <- "med"
+
+
 ```
 
-## Resumen Cluster 1
+## Resumen Cluster 1 (Top)
 
 ```{r Filtrado cluster 1}
 
-cluster_1 = filter(df_clusters, cluster == "1")
+cluster_1 = filter(df_clusters, cluster_final == "top")
 
 #Muestra de las primeras 5 filas de la base de datos
 kable(head(cluster_1)) %>%
@@ -210,11 +221,11 @@ kable(summary(cluster_1)) %>%
   scroll_box(width = "100%", height = TRUE)
 ```
 
-## Resumen Cluster 2
+## Resumen Cluster 2 (Med)
 
 ```{r Filtrado cluster 2}
 
-cluster_2 = filter(df_clusters, cluster == "2")
+cluster_2 = filter(df_clusters, cluster_final == "med")
 
 #Muestra de las primeras 5 filas de la base de datos
 kable(head(cluster_2)) %>%
@@ -227,11 +238,11 @@ kable(summary(cluster_2)) %>%
   scroll_box(width = "100%", height = TRUE)
 ```
 
-## Resumen Cluster 3
+## Resumen Cluster 3 (Low)
 
 ```{r Filtrado cluster 3}
 
-cluster_3 = filter(df_clusters, cluster == "3")
+cluster_3 = filter(df_clusters, cluster_final == "low")
 
 #Muestra de las primeras 5 filas de la base de datos
 kable(head(cluster_3)) %>%
