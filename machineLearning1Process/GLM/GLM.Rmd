@@ -57,6 +57,7 @@ library(readr)
 library(Rtsne)
 library(tidyr)
 library(tidyverse)
+library(tictoc)
 library(VIM)
 library(scales)
 library(plyr)
@@ -78,6 +79,7 @@ library(pROC)
 library(rpart)
 library(modelplotr)
 library(plotly)
+library(boot)
 
 ```
 
@@ -1049,6 +1051,23 @@ plot(cutoffs, accuracy, pch =19,type='b',col= "steelblue",
 
 ```
 
+## Función del Calculo del Error para optimizar el resultado de logit
+Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 12,4% de tasa de error
+
+```{r funcion para calcular el Error Rate}
+
+## a function for error rate
+get_Error_Rate = function(trues, predicted_prb, cutoff){
+  preds=ifelse(predicted_prb<cutoff,0,1)
+  tab=table(preds, trues)
+  round((tab[1,2]+tab[2,1])/sum(tab), 4)
+}
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.5)
+
+#plot(get_Error_Rate(train$target,model_logit1$fitted.values, 0.1:1.0))
+
+```
+
 ### Validacion del modelo Logit con el dataset de Validation
 ```{r validation on test for Logit}
 
@@ -1112,6 +1131,23 @@ y_test=as.factor(train$target)
 # use caret and compute a confusion matrix
 confusionMatrix(data, y_test)
 
+
+```
+
+## Función del Calculo del Error para optimizar el resultado de probit
+Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 12,4% de tasa de error
+
+```{r funcion para calcular el Error Rate}
+
+## a function for error rate
+get_Error_Rate = function(trues, predicted_prb, cutoff){
+  preds=ifelse(predicted_prb<cutoff,0,1)
+  tab=table(preds, trues)
+  round((tab[1,2]+tab[2,1])/sum(tab), 4)
+}
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.5)
+
+#plot(get_Error_Rate(train$target,model_logit1$fitted.values, 0.1:1.0))
 
 ```
 
