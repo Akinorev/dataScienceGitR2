@@ -1,6 +1,6 @@
 ---
-title: "MachineLearning GLM"
-  author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
+title: "Machine Learning - GLM"
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
 date: "13/02/2020"
 output:
   html_document:
@@ -975,9 +975,9 @@ plot(perf, main="lift curve")
 
 
 
-## Diferencias entre la función Link Logit y Probit
+# GLM Link Logit y Probit
 
-¿Cual es azul y cual roja?
+
 
 ```{r differences Betwwen Logit and Probit}
 
@@ -1051,10 +1051,10 @@ plot(cutoffs, accuracy, pch =19,type='b',col= "steelblue",
 
 ```
 
-## Función del Calculo del Error para optimizar el resultado de logit
-Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 12,4% de tasa de error
+### Función del Calculo del Error para optimizar el resultado de logit
+Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 11,86% de tasa de error
 
-```{r funcion para calcular el Error Rate}
+```{r funcion para calcular el Error Rate Logit}
 
 ## a function for error rate
 get_Error_Rate = function(trues, predicted_prb, cutoff){
@@ -1062,7 +1062,15 @@ get_Error_Rate = function(trues, predicted_prb, cutoff){
   tab=table(preds, trues)
   round((tab[1,2]+tab[2,1])/sum(tab), 4)
 }
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.1)
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.2)
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.3)
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.4)
 get_Error_Rate(train$target,model_logit1$fitted.values, 0.5)
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.6)
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.7)
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.8)
+get_Error_Rate(train$target,model_logit1$fitted.values, 0.9)
 
 #plot(get_Error_Rate(train$target,model_logit1$fitted.values, 0.1:1.0))
 
@@ -1134,10 +1142,10 @@ confusionMatrix(data, y_test)
 
 ```
 
-## Función del Calculo del Error para optimizar el resultado de probit
-Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 12,4% de tasa de error
+### Función del Calculo del Error para optimizar el resultado de probit
+Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 11,83% de tasa de error
 
-```{r funcion para calcular el Error Rate}
+```{r funcion para calcular el Error Rate Probit}
 
 ## a function for error rate
 get_Error_Rate = function(trues, predicted_prb, cutoff){
@@ -1145,7 +1153,15 @@ get_Error_Rate = function(trues, predicted_prb, cutoff){
   tab=table(preds, trues)
   round((tab[1,2]+tab[2,1])/sum(tab), 4)
 }
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.1)
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.2)
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.3)
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.4)
 get_Error_Rate(train$target,model_probit1$fitted.values, 0.5)
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.6)
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.7)
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.8)
+get_Error_Rate(train$target,model_probit1$fitted.values, 0.9)
 
 #plot(get_Error_Rate(train$target,model_logit1$fitted.values, 0.1:1.0))
 
