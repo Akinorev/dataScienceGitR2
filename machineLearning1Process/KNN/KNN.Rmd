@@ -1,0 +1,222 @@
+---
+title: "Memoria Machine Learning I."
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
+date: "30/04/2020"
+output:
+  html_document:
+    theme: united
+    code_folding: "hide"
+    toc: yes
+    toc_float: yes
+---
+
+# Libraries and fucntions
+## Libraries
+```{r}
+# basics
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(tictoc)
+#library(kableExtra)
+# decision tree
+library(gmodels)
+```
+
+## Functions
+```{r}
+split_data <- function(data, trn = .7, val = .2, tst = .1) {
+  set.seed(737)
+  spec = c(train = trn, validate = val, test = tst)
+  # cutter
+  g = sample(cut(seq(nrow(data)), nrow(data)*cumsum(c(0,spec)), labels = names(spec)))
+  # spliter
+  data <- split(data, g)
+  return(data)
+}
+```
+
+
+
+# 1 Loading Data
+## 1.1 Reading the Data from the CSV
+```{r}
+file <- 'cluster.csv'
+df_houses <-  read.csv(file)
+head(df_houses)
+```
+## 1.2 Adding a binary target
+```{r}
+quantile <- df_houses$price %>% quantile(0.75)
+df_houses$target <- ifelse(df_houses$price>quantile, 'a', 'b')
+df_houses <- df_houses %>% select(6, 8:25, 29)
+table(df_houses$target)
+head(df_houses)
+```
+
+
+# 2 Exploring preparing the data
+## 2.1 Transforming data
+Dado que KNN necesita de variables numéricas para medir distancias, las variables categóricas serán transformadas a numéricas siempre y cuando tengan una ralación ordinal. En c
+```{r}
+# Date as year
+df_houses$date <- df_houses$date %>% as.Date("%m/%d/%Y") %>% format("%Y") %>% as.integer()
+head(df_houses)
+```
+
+## 2.2 Normalizing data
+Debido a que KNN se basa en distancias y nuestros datos son muy dispares se propone una normalización de min-max.
+```{r}
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+df_houses_n <- as.data.frame(lapply(df_houses[-20], normalize))
+df_houses_n$target <- df_houses$target
+head(df_houses_n)
+```
+
+
+## 2.3 Spliting the data
+```{r}
+data <- split_data(df_houses_n)
+train <- data$train
+validation <- data$validate
+test <- data$test
+
+x_train <- train[, 1:(ncol(train)-1)]
+y_train <- train[, (ncol(train))] %>% as.factor()
+x_val <- validation[, 1:(ncol(train)-1)]
+y_val <- validation[, (ncol(train))] %>% as.factor()
+x_test <- test[, 1:(ncol(train)-1)]
+y_test <- test[, (ncol(train))] %>% as.factor()
+
+table(train$target)
+table(validation$target)
+table(test$target)
+head(x_train)
+```
+
+# 2 Training KNN model
+## 2.1 Training the model
+Para definir un k inicial se propone un k inicial de la raíz cuadrada del número de elementos que hay en nuestra tabla. Para evitar empates en la votación se forzará a que K se un número siempre impar.
+```{r}
+library(class)
+k = round(sqrt(nrow(x_train)), 0) %>% ifelse(.%%2 == 0, .-1, .)
+k
+knn_pred <- knn(x_train, x_val, y_train, k)
+```
+
+# 2.2 Evaluating the model
+```{r}
+table_validation <- CrossTable(x = y_val, y = knn_pred, prop.chisq = FALSE)
+# table_validation
+accuracy <- sum(diag(table_validation$t))/sum(table_validation$t)
+output = sprintf("The validation accuracy of the KNN model is: %s", accuracy)
+print(output)
+```
+
+
+## 3 Improving model performance
+## 3.1 K-score normalization
+Debido a que el método de normalización de max-min implica tener los límites de rango, y éstos podrían no coincidir con los de una muestra nueva, vamos a aplicar el método de normalización k-score y ver si mejora nuestra predicción. Para ello usaremos la función *scale()* que por defecto tiene la normalización k-score.
+```{r}
+
+df_houses_nk <- as.data.frame(scale(df_houses[-20]))
+df_houses_nk$target <- df_houses$target
+head(df_houses_nk)
+```
+```{r}
+data <- split_data(df_houses_nk)
+train <- data$train
+validation <- data$validate
+test <- data$test
+
+x_train <- train[, 1:(ncol(train)-1)]
+y_train <- train[, (ncol(train))] %>% as.factor()
+x_val <- validation[, 1:(ncol(train)-1)]
+y_val <- validation[, (ncol(train))] %>% as.factor()
+x_test <- test[, 1:(ncol(train)-1)]
+y_test <- test[, (ncol(train))] %>% as.factor()
+```
+
+## 3.2 Training the model with k-score
+Podemos ver como se ha producido una leve mejora por lo que mantendremos un k-score para la normalización
+```{r}
+k = round(sqrt(nrow(x_train)), 0) %>% ifelse(.%%2 == 0, .-1, .)
+knn_pred <- knn(x_train, x_val, y_train, k)
+table_validation <- CrossTable(x = y_val, y = knn_pred, prop.chisq = FALSE)
+accuracy <- sum(diag(table_validation$t))/sum(table_validation$t)
+output = sprintf("The validation accuracy of the KNN model is: %s", accuracy)
+print(output)
+```
+
+# Looking for the best k neighbors
+## 4.1 k-fold cross validation
+Usando cross validation el mejor K es igual a 13.
+```{r}
+tic()
+# K values
+k_values = seq(5, k, 2)
+library(e1071)
+#Full Data set can be used for cross validation
+knn_cross <- tune.knn(x = x_train, y = y_train, k = k_values, tunecontrol=tune.control(sampling = "cross"), cross=10)
+#Summarize the resampling results set
+summary(knn_cross)
+toc()
+```
+```{r}
+#Plot the error rate 
+plot(knn_cross)
+```
+
+
+## 4.2 Resampling using bootstraping
+Usando bootstraping el mejor K es igual a 25.
+```{r}
+tic()
+knn_boot <- tune.knn(x = x_train, y = y_train, k = k_values, tunecontrol=tune.control(sampling = "boot") )
+#Summarize the resampling results set
+summary(knn_boot)
+toc()
+```
+```{r}
+#Plot the error rate 
+plot(knn_boot)
+```
+
+## 4.3 Resampling fixed set
+Usando Resampling fixed el mejor k es 15
+```{r}
+tic()
+knn_fix <- tune.knn(x = x_train, y = y_train, k = k_values,tunecontrol=tune.control(sampling = "fix") , fix=10)
+#Summarize the resampling results set
+summary(knn_fix)
+toc()
+```
+
+```{r}
+#Plot the error rate 
+plot(knn_fix)
+```
+
+
+# 4 Tunning the model
+## 4.1 Tuning model
+```{r}
+tic()
+set.seed(737)
+m_knn <- train(target ~ ., data = train, method = 'knn', metric = 'ROC', tuneGrid = grid_rf)
+toc()
+```
+
+```{r}
+m_knn
+```
+
+
+```{r}
+library(pROC)
+
+roc_rf <- roc(m_knn$obs, m_knn$a)
+plot(roc_rf, colr = 'red', legacy.axes = TRUE)
+```
