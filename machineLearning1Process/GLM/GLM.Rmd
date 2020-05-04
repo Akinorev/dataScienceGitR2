@@ -825,7 +825,7 @@ anova(train_glm1, train_glm2, test = "Chisq")
 Esta salida nos dice que el ajuste es estadísticamente significativo pero a nivel negocio son importantes y en el primer modelo eran significativas por lo que las vamos a mantener.
 
 
-## Intervalo de confianza de los parámetros
+### Intervalo de confianza de los parámetros
   
 ```{r Intervalo de confianza de los parámetros}
 head(predict(train_glm1, type = "response")) # Probabilidades en escala de la salida
@@ -835,9 +835,9 @@ summary(train_glm1$fitted.values)
 
 
 
-## Matriz de Confusión
+### Matriz de Confusión
 
-### ROC Plot
+#### ROC Plot
 Vemos en la Matriz de Confusión que el modelo tenemos problemas con Falsos Positivos, el modelo predice de forma notable una casa como de Precio bajo cuando son de precio Alto. Esto para nuestro negocio tiene implicaciones ya que lo que queremos evitar es no pronosticar bien las casas de Precio Alto.
  
 ```{r Matrix Confusion and Roc Plot}
@@ -866,7 +866,7 @@ plot(ROCit_obj)
 
 Tal y como se puede observar, sobre la curva ROC tenemos que tiende mas hacia los 90º que hacia los 45º. Esto lo que nos indica es que pese a tener falsos positivos el test ha salido bastante preciso.
 
-### Gain chart
+#### Gain chart
 ```{r lift Chart Train and Test Population}
 
 
@@ -887,7 +887,7 @@ abline(a=0,b=1)
 Por la grafica obtenida se observa que al 70% aprox ya se tiene una respuesta del 98%. Esto permitira ahorrar unos costes de aproximadamente un 30% donde solo perderiamos el 2% de las respuestas.
 
 
-### Lift chart
+#### Lift chart
 
 
 ```{r Lift chart}
@@ -906,7 +906,7 @@ plot(perf, main="lift curve")
 cutoffs <- seq(0.1,0.9,0.1)
 accuracy <- NULL
 for (i in seq(along = cutoffs)){
-    prediction <- ifelse(model_logit1$fitted.values >= cutoffs[i], 1, 0) #Predicting for cut-off
+    prediction <- ifelse(train_glm1$fitted.values >= cutoffs[i], 1, 0) #Predicting for cut-off
 accuracy <- c(accuracy,length(which(train$y ==prediction))/length(prediction)*100)
 }
 
@@ -970,29 +970,26 @@ summary(model_probit1)
 ```
 
 
+### Intervalo de confianza de los parametros para Probit
 
-### Evaluacion del modelo Probit
+```{r Intervalo de confianza de los parametros probit}
+head(predict(model_probit1, type = "response")) # Probabilidades en escala de la salida
+summary(model_probit1$fitted.values)
 
+```
 
-```{r  Evaluacion del Modelo Probit}
+### Matriz de Confusion Probit
 
+Igual que para logit vamos a comprobar cuantos falsos positivos obtenemos y como se podrian evitar
 
-train$prediccion=predict(model_probit1,type="response")
-Pred_auxiliar= prediction(train$prediccion, train$target, label.ordering = NULL)
-
-CURVA_ROC_model_probit1_train <- performance(Pred_auxiliar,"tpr","fpr")
-plot(CURVA_ROC_model_probit1_train)
-abline(a=0,b=1)
-
-
-
-## Capacidad del Modelo
-#mean(as.numeric(train$target)-1)
-#aggregate(train$prediccion~train$target,FUN=mean)
+ 
+```{r Matrix Confusion and Roc Plot Probit}
 
 
-table(pred = train$prediccion > 0.25, obs = train$target)
-data = as.numeric(train$prediccion>0.25)
+predictions <- predict(model_probit1, train,type='response')
+plot.roc(train$target, predictions)
+table(pred = predictions > 0.5, obs = train$target)
+data = as.numeric(predictions>0.5)
 data=as.factor(data)
 y_test=as.factor(train$target)
 
@@ -1000,9 +997,58 @@ y_test=as.factor(train$target)
 confusionMatrix(data, y_test)
 
 
+#VEro testing ROCit library
+library(ROCit)
+ROCit_obj <- rocit(score = predictions, class = train$target)
+plot(ROCit_obj)
+#END Vero testing
+        
+
 ```
 
-### Función del Calculo del Error para optimizar el resultado de probit
+#### Gain chart
+```{r lift Chart Train and Test Population Probit}
+
+
+require(ROCR)
+
+predictions <- predict(model_probit1, train,type='response')
+pred<- prediction(predictions,  train$target)
+gain <- performance(pred, "tpr", "rpp")
+plot(gain, main = "Gain Chart Train Population")
+abline(a=0,b=1)
+
+
+
+
+
+```
+
+#### Lift chart
+
+
+```{r Lift chart Probit}
+# lift chart
+perf <- performance(pred,"lift","rpp")
+plot(perf, main="lift curve")
+
+```
+
+### Obteniendo un threshold mas preciso para Progit
+```{r obtaining threshold for Probit}
+cutoffs <- seq(0.1,0.9,0.1)
+accuracy <- NULL
+for (i in seq(along = cutoffs)){
+    prediction <- ifelse(model_probit1$fitted.values >= cutoffs[i], 1, 0) #Predicting for cut-off
+accuracy <- c(accuracy,length(which(train$y ==prediction))/length(prediction)*100)
+}
+
+plot(cutoffs, accuracy, pch =19,type='b',col= "steelblue",
+     main ="Logistic Regression", xlab="Cutoff Level", ylab = "Accuracy %")
+
+```
+
+### Función del Calculo del Error para optimizar el resultado de Probit
 Vamos a calcular la precisión general o tasa de error para un Cutoff  de 0.5 obtenemos un 11,83% de tasa de error
 
 ```{r funcion para calcular el Error Rate Probit}
