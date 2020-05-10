@@ -1,0 +1,1 @@
+INSERT INTO practica.PRODUCTS_CHAR_FORMAT (name, format, process, provenance, species, toast, varietal) VALUES ('Duende y luna', 'roasted bean', 'decaf', 'Camerun', 'Arabica', 'natural', 'Charrieriana');

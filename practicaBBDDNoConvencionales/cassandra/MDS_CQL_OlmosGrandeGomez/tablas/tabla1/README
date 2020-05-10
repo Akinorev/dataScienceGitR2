@@ -1,0 +1,8 @@
+#NOTA
+
+Hay que tener en cuenta que antes de poblar la tabla1 en Cassandra hay que realizar una breve modificiacion en el fichero generado a partir de la vista en SQL.
+
+Cambiar el nombre de FORMATT por FORMAT y eliminar las dos primeras lineas.
+
+Tambien sera necesario cambiar el nombre asociado a la vista SQL, normalmente empieza con ## por el de la tabla. En nuestro caso es: practica.PRODUCTS_FORMAT_REFS
+

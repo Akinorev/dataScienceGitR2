@@ -14,7 +14,7 @@ cqlsh> SELECT format FROM practica.PRODUCTS_CHAR_FORMAT WHERE NAME='Como y trona
 
 II. Cambio de nombre de producto 'Son antes' por 'Antes'
 
-COSA FEA:
+
 
 UPDATE practica.PRODUCTS_FORMAT_REFS SET product ='Antes' WHERE product = 'Son antes';
 
@@ -108,7 +108,13 @@ cqlsh> SELECT * FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Milagros' AND 
 V. Ultimo pedido realizado por el usuario con nickname='cisni'
 
 
+cqlsh> SELECT max(orderdate) FROM practica.USERS_PURCHASES WHERE USR='cisni' allow filtering;
 
+ system.max(orderdate)
+-----------------------
+            0029-12-07
+
+(1 rows)
 
 
 
