@@ -1,0 +1,151 @@
+
+RESULTADOS
+
+I. Formatos en los que se comercializa el producto 'Como y tronar'
+
+cqlsh> SELECT format FROM practica.PRODUCTS_CHAR_FORMAT WHERE NAME='Como y tronar';
+
+ format
+--------------
+     capsules
+     prepared
+     raw bean
+ roasted bean
+
+II. Cambio de nombre de producto 'Son antes' por 'Antes'
+
+
+
+UPDATE practica.PRODUCTS_FORMAT_REFS SET product ='Antes' WHERE product = 'Son antes';
+
+
+cqlsh> SELECT * FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Son antes' allow filtering;
+
+ product   | format       | barcode         | maxstock | minstock | pack        | price | stock
+-----------+--------------+-----------------+----------+----------+-------------+-------+-------
+ Son antes |       ground | IOI36746I421868 |     4340 |      270 |  pkg 200 g. | 24,15 |  2533
+ Son antes |       ground | QQI47782I728991 |     1500 |       30 |   pkg 1 Kg. | 96,18 |   300
+ Son antes |     capsules | OQI73010I681542 |     4210 |       80 |  pkg 25 un. |   2,9 |  2387
+ Son antes |     capsules | QII79718I227817 |     4080 |      220 |  pkg 10 un. |  1,86 |  2393
+ Son antes | roasted bean | OQI67128I901745 |     2420 |      410 |  pkg 200 g. |   9,5 |   900
+ Son antes | roasted bean | OQQ50976Q123543 |     4050 |      320 |   pkg 1 Kg. | 36,03 |  2124
+ Son antes |     prepared | OQO17188Q460551 |     4630 |      260 | can 330 ml. |  3,99 |  4088
+ Son antes |     prepared | QIO44629Q878316 |     4300 |      210 | cup 200 ml. |   2,7 |  2701
+
+(8 rows)
+cqlsh> SELECT * FROM practica.PRODUCTS_CHAR_FORMAT WHERE NAME='Son antes';
+
+ name      | format       | process | provenance | species | toast   | varietal
+-----------+--------------+---------+------------+---------+---------+------------
+ Son antes |     capsules |  normal |     Brasil | Arabica | natural | Maragogype
+ Son antes |       ground |  normal |     Brasil | Arabica | natural | Maragogype
+ Son antes |     prepared |  normal |     Brasil | Arabica | natural | Maragogype
+ Son antes | roasted bean |  normal |     Brasil | Arabica | natural | Maragogype
+
+INSERT INTO practica.PRODUCTS_CHAR_FORMAT (name, format, process, provenance, species, toast, varietal) VALUES ('Antes', 'capsules', 'normal', 'Brasil', 'Arabica', 'natural', 'Maragogype');
+INSERT INTO practica.PRODUCTS_CHAR_FORMAT (name, format, process, provenance, species, toast, varietal) VALUES ('Antes', 'ground', 'normal', 'Brasil', 'Arabica', 'natural', 'Maragogype');
+INSERT INTO practica.PRODUCTS_CHAR_FORMAT (name, format, process, provenance, species, toast, varietal) VALUES ('Antes', 'prepared', 'normal', 'Brasil', 'Arabica', 'natural', 'Maragogype');
+INSERT INTO practica.PRODUCTS_CHAR_FORMAT (name, format, process, provenance, species, toast, varietal) VALUES ('Antes', 'roasted bean', 'normal', 'Brasil', 'Arabica', 'natural', 'Maragogype');
+
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'ground', 'IOI36746I421868', '4340', '270', 'pkg 200 g.', '24,15','2533');
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'ground', 'QQI47782I728991', '1500', '30', 'pkg 1 Kg.', '96,18','300');
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'capsules', 'OQI73010I681542', '4210', '80', 'pkg 25 un.', '2,9','2387');
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'capsules', 'QII79718I227817', '4080', '220', 'pkg 10 un.', '1,86','2393');
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'roasted bean', 'OQI67128I901745', '2420', '410', 'pkg 200 g.', '9,5','900');
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'roasted bean', 'OQQ50976Q123543', '4050', '320', 'pkg 1 Kg.', '36,03','2124');
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'prepared', 'OQO17188Q460551', '4630', '260', 'can 330 ml.', '3,99','4088');
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode, maxstock, minstock, pack, price, stock) VALUES ('Antes', 'prepared', 'QIO44629Q878316', '4300', '210', 'cup 200 ml.', '2,7','2701');
+
+DELETE FROM practica.PRODUCTS_CHAR_FORMAT WHERE NAME='Son antes';
+DELETE FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Son antes' and FORMAT='ground';
+DELETE FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Son antes' and FORMAT='capsules';
+DELETE FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Son antes' and FORMAT='prepared';
+DELETE FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Son antes' and FORMAT='roasted bean';
+
+
+cqlsh> SELECT * FROM practica.PRODUCTS_CHAR_FORMAT WHERE NAME='Son antes';
+
+ name | format | process | provenance | species | toast | varietal
+------+--------+---------+------------+---------+-------+----------
+
+(0 rows)
+cqlsh> SELECT * FROM practica.PRODUCTS_CHAR_FORMAT WHERE NAME='Antes';
+
+ name  | format       | process | provenance | species | toast   | varietal
+-------+--------------+---------+------------+---------+---------+------------
+ Antes |     capsules |  normal |     Brasil | Arabica | natural | Maragogype
+ Antes |       ground |  normal |     Brasil | Arabica | natural | Maragogype
+ Antes |     prepared |  normal |     Brasil | Arabica | natural | Maragogype
+ Antes | roasted bean |  normal |     Brasil | Arabica | natural | Maragogype
+
+
+
+III. El producto 'Duende y luna' empieza a comercializarse en el formato 'roasted bean'
+
+INSERT INTO practica.PRODUCTS_CHAR_FORMAT (name, format, process, provenance, species, toast, varietal) VALUES ('Duende y luna', 'roasted bean', 'decaf', 'Camerun', 'Arabica', 'natural', 'Charrieriana');
+
+cqlsh> SELECT * FROM practica.PRODUCTS_CHAR_FORMAT WHERE NAME='Duende y luna' ;
+
+ name          | format       | process | provenance | species | toast   | varietal
+---------------+--------------+---------+------------+---------+---------+--------------
+ Duende y luna |     capsules |   decaf |    Camerun | Arabica | natural | Charrieriana
+ Duende y luna | roasted bean |   decaf |    Camerun | Arabica | natural | Charrieriana
+
+
+
+IV. Referencias asociadas al producto 'Milagros' con format='capsules'
+
+cqlsh> SELECT * FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Milagros' AND FORMAT='capsules' ;
+
+ product  | format   | barcode         | maxstock | minstock | pack       | price | stock
+----------+----------+-----------------+----------+----------+------------+-------+-------
+ Milagros | capsules | OQI11851I601451 |     2210 |      130 | pkg 25 un. | 12,15 |  2046
+ Milagros | capsules | QOO07711I980323 |     4530 |      110 | pkg 10 un. |   6,1 |  2709
+
+
+
+
+V. Ultimo pedido realizado por el usuario con nickname='cisni'
+
+
+cqlsh> SELECT max(orderdate) FROM practica.USERS_PURCHASES WHERE USR='cisni' allow filtering;
+
+ system.max(orderdate)
+-----------------------
+            0029-12-07
+
+(1 rows)
+
+
+
+VI. Cantidad total gastada por el usuario cuyo nombre es 'naki'
+
+ALTER TABLE practica.USERS_PURCHASES ALTER price TYPE float;
+
+SELECT CAST(movie_date AS text)
+FROM movies
+WHERE movie_id = 7c3cffb8-0dc4-1d27-af24-c007b5fc5643; 
+
+
+SELECT sum( CAST(price AS float)) FROM practica.USERS_PURCHASES WHERE USR='naki' allow filtering;
+
+SELECT price FROM practica.USERS_PURCHASES WHERE USR='naki' allow filtering;
+
+
+
+VII. Insercion de una nueva referencia (barcode=QIO99947O911189 para el producto 'Como y tronar' con formato capsules
+
+INSERT INTO practica.PRODUCTS_FORMAT_REFS (product, format, barcode) VALUES ('Como y tronar', 'capsules', 'QIO99947O911189');
+
+cqlsh> SELECT * FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Como y tronar' AND FORMAT='capsules' ;
+
+ product       | format   | barcode         | maxstock | minstock | pack       | price | stock
+---------------+----------+-----------------+----------+----------+------------+-------+-------
+ Como y tronar | capsules | III50039Q920868 |     2920 |       50 | pkg 10 un. |   4,1 |   691
+ Como y tronar | capsules | OIQ87311Q947313 |     3910 |       70 | pkg 500 g. |  8,65 |  1263
+ Como y tronar | capsules | QIO99947O911189 |     null |     null |       null |  null |  null
+
+
+
+
+
