@@ -1,0 +1,62 @@
+---
+title: "Machine Learning - Intro"
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
+date: "13/02/2020"
+output:
+  html_document:
+    code_folding: hide
+    theme: united
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE)
+
+
+df_cluster <- read.csv ("../cluster.csv")
+```
+
+## Introduccion
+
+Para esta practica sobre Machine Learning hemos continuado con nuestros datos de pisos. Debido a las caracteristicas especiales se nos hacia muy goloso comprobar que sistema funcionaria mejor a la hora de clasificar pisos caros.
+
+Nos hemos puesto en la piel de supuestos clientes, para este caso en particular inmobiliarias de lujo, que desean hacer una correcta estimacion de si un piso que desean adquirir o vender entra en la clasificacion de piso de lujo.
+
+
+```{r housing}
+summary(df_cluster)
+```
+
+## Mapa de los pisos
+
+Uno de los detalles importantes consiste en ver como se distribuyen los pisos en la zona y su precio:
+
+```{r price, echo=FALSE}
+# Load the sp package
+library(tidyverse)
+library(sp)
+#library(sf)
+library(leaflet)
+#library(rnaturalearth)
+
+# Spatial classes
+getClass("Spatial")
+
+coords <- select(df_cluster, long, lat, price)
+
+housingMap <- leaflet(coords) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addMarkers(lng = ~long,
+             lat = ~lat,
+             popup = ~price)
+housingMap
+
+#plot(df_cluster$price)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
