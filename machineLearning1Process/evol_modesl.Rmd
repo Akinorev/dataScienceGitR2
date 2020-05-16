@@ -75,7 +75,6 @@ Como pudimos comprobar en el trimestre anterior los tradicionales modelos lineal
 
 
 ```{r GAM Price}
-
 set.seed(737)
 inTraining <- createDataPartition(df_cluster$id, p = .7, list = FALSE)
 gamtrain    <- df_cluster[inTraining,]
@@ -84,8 +83,6 @@ gamcontrol  <- df_cluster[-inTraining,]
 model_gam3 <- gam (sqrt(price)~ s(lat,long,k=20) +s(sqft_living,k=8)  +s(sqft_living15) + s(bathrooms,k=8)  + s(grade,k=3)   +(waterfront) +   s(view,k=3) + s(yr_built) , data=gamtrain, method="REML")
 
 summary(model_gam3)
-
-
 ```
 
 ## Modelo GAM. Variable Dependiente Binary
