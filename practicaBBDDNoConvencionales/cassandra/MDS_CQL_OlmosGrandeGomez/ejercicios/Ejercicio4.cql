@@ -1,1 +1,0 @@
-SELECT * FROM practica.PRODUCTS_FORMAT_REFS WHERE PRODUCT='Milagros' AND FORMAT='capsules' ;
