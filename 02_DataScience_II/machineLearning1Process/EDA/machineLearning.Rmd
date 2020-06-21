@@ -1,0 +1,979 @@
+---
+title: "MachineLearning"
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez"
+date: "13/02/2020"
+output:
+  html_document:
+    code_folding: hide
+    theme: united
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+# Requisitos previos
+
+Las librerias usadas para esta práctica son las siguientes:
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(Amelia)
+library(brew)
+library(bsplus)
+library(DMwR2)
+library(car)
+library(carData)
+library(caret)
+library(cluster)
+library(dplyr)
+library(egg)
+library(e1071)
+library(expss)
+library(factoextra)
+library(faraway)
+library(gclus)
+library(GGally)
+library(ggplot2)
+library(ggpubr)
+library(gridExtra)
+library(Hmisc)
+library(htmltools)
+library(ISLR)
+library(kableExtra)
+library(knitr)
+library(lattice)
+library(magrittr)
+library(mice)
+library(mlbench)
+library(RColorBrewer)
+library(randomForest)
+library(readr)
+library(Rtsne)
+library(sos)
+library(tidyr)
+library(tidyverse)
+library(VIM)
+library(nortest)
+library(scales)
+library(plyr)
+library(PerformanceAnalytics)
+library(corrplot)
+library(leaps)
+library(glmnet)
+library(plotly)
+
+
+relPath <- getwd()
+setwd(relPath)
+df_root <- read.csv(file="../kc_house_data.csv")
+```
+
+# Descripcion de las variables
+
+- id: valor único (Primary key).
+- date: fecha de venta de la vivienda.
+- price: precio de venta. Variable seleccionada para la aplicación del modelo y su posterior predicción.
+- bedrooms: número de habitaciones por vivienda.
+- bathrooms: número de baños por vivienda.
+- sqft_living: superficie de la vivienda en pies cuadrados (superficie escriturada).
+- sqft_lot: superficie de la parcela de la vivienda en pies cuadrados (superficie parcelaria).
+- floors: número de plantas por vivienda.
+- waterfront: si la vivienda tiene vistas al mar.
+- view: el número de veces que se ha visitado la vivienda desde su puesta en venta.
+- condition*: el estado de la vivienda establecido mediante una variable numérica del 1 al 5.
+- grade*: nota general de la vivienda propuesta por el sistema de puntuación de la zona del 1 al 13.
+- sqft_above: superficie de la huella perimetral de la vivienda sobre rasante en pies cuadrados.
+- sqft_basement: superficie de la vivienda bajo rasante en piés cuadrados
+- yr_built: año de construcción de la vivienda
+- yr_renovated: año de la renovación de la vivienda. En caso de no haber sido renovada este parámetro se ha igualado a 0.
+- zipcode: codigo postal de la vivienda.
+- lat: latitud de la coordenada de la vivienda medida en pies.
+- long: longitud de la coordenada de la vivienda medida en pies.
+- sqft_living15: superficie de la vivienda en el año 2015 (admite renovaciones).
+- sqft_lot15: superficie de la parcela en el año 2015 (admite modificaciones)
+
+
+```{r funciones auxiliares, include=FALSE, warning=FALSE}
+
+phist <- function(df, bns = 50, varname) {
+  p = ggplot(df, aes(x = df[[varname]])) + 
+    geom_histogram(aes(y =..density..), 
+                   colour = "#464159", 
+                   fill = "#8bbabb", na.rm = TRUE) + 
+    ggtitle("Diagrama Boxplot") + 
+    ylab("Densidad") + xlab(varname) + 
+    scale_x_continuous(labels = scales::comma) +
+  stat_function(fun = dnorm, args = list(mean = mean(df[[varname]]), sd = sd(df[[varname]])))
+return(p)
+}
+
+pbox <- function(col, varname){
+p = qplot('1', col, geom="boxplot") +
+  geom_boxplot(fill='#8bbabb', color="#464159") +
+  ggtitle("Diagrama Boxplot") + ylab("Valores") + xlab(varname)
+return(p)
+}
+
+p_barras <-function(df = df_cualitativas, dx, xlab){
+p = ggplot(df, aes(unlist(dx), fill=unlist(dx))) +
+  geom_bar(position="dodge", fill='#8bbabb', color="#464159") + 
+  labs(x= xlab, y = 'Frecuencia', fill=NULL)
+return(p)
+}
+
+p_barras2 <-function(df = df_cualitativas, dx, dy, xlab){
+p = ggplot(df, aes(unlist(dx), fill=unlist(dy))) +
+  geom_bar(position="dodge") + 
+  labs(x= xlab, y = 'Frecuencia', fill=NULL) +
+  scale_fill_manual(values=c("#8bbabb", "#6c7b95"))
+return(p)
+}
+
+p_densidad <- function(df = price_tplusc, title, varname){
+p = df %>% select(c("price", varname)) %>%
+  na.omit() %>%
+  ggplot(., aes(x=.[,1], colour=.[,2])) +
+  labs(title = title, x = "price", colour = varname) + 
+  geom_density()
+  return(p)
+}
+
+p_densidad2 <- function(df = price_tplusc, varname1, varname2){
+p = df %>% select(c(varname2, varname1)) %>%
+  na.omit() %>%
+  ggplot(., aes(x=.[,1], colour=.[,2])) +
+  labs(title = "Diagrama de densidad", x = varname2, colour = varname1) + 
+  geom_density()
+  return(p)
+}
+
+```
+
+# Estudio de la variable price
+
+Consideramos interesante analizar la variable price antes de crear los clusters. Ya que en principio buscamos crear clusters en funcion del precio de las viviendas y sus caracteristicas.
+
+```{r var_price, include=TRUE, warning=FALSE}
+#Obtención de variables cuantitativas
+df_cuantitativas = df_root %>% select(3, 6, 7, 13:16, 18:dim(df_root)[2])
+
+data.frame(variable = names(df_cuantitativas),
+           classe = sapply(df_cuantitativas, typeof),
+           first_values = sapply(df_cuantitativas, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL) %>% kable() %>% kable_styling()
+
+var_price = df_cuantitativas$price
+name = "price"
+
+# Descripción de la variable
+describe(var_price)
+
+# Visualización de la variable
+p1 <- phist(df_cuantitativas, ., name)
+p2 <- pbox(var_price, name)
+grid.arrange(p1, p2, nrow=1)
+```
+
+Se puede observar que la variable "price" no sigue una distribucion normal y como se muestra en el diagrama de caja cuenta con bastantes valores de tipo outliar.
+
+Las posibles alternativas para transformar la variable serian:  
+- Transformacion logaritmico 10  
+- Raiz cuadrada  
+- Inversa 1/x
+
+
+# Analisis EDA de los clusters
+
+Para esta parte de la memoria se trabajara sobre un data set ya dividido en clusters. Los clusters sobre los que se trabajara son los obtenidos de la memoria anterior.
+
+```{r Carga cluster}
+
+
+df_clusters <- read.csv ("../cluster.csv")
+df_root <- read.csv ("../kc_house_data.csv")
+
+
+df_clusters$hclust=as.numeric(df_clusters$hclust)
+df_clusters$cluster_final[df_clusters$hclust==2 | df_clusters$hclust==8] <- "top"
+df_clusters$cluster_final[df_clusters$hclust==1 | df_clusters$hclust==5 | df_clusters$hclust==9] <- "low"
+df_clusters$cluster_final[df_clusters$hclust==3 | df_clusters$hclust==4 | df_clusters$hclust==6 | df_clusters$hclust==7  ] <- "med"
+
+
+```
+
+## Resumen Cluster 1 (Top)
+
+```{r Filtrado cluster 1}
+
+cluster_1 = filter(df_clusters, cluster_final == "top")
+
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(cluster_1)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(cluster_1)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+
+## Resumen Cluster 2 (Med)
+
+```{r Filtrado cluster 2}
+
+cluster_2 = filter(df_clusters, cluster_final == "med")
+
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(cluster_2)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(cluster_2)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+
+## Resumen Cluster 3 (Low)
+
+```{r Filtrado cluster 3}
+
+cluster_3 = filter(df_clusters, cluster_final == "low")
+
+#Muestra de las primeras 5 filas de la base de datos
+kable(head(cluster_3)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+  
+#Tabla resumen con los principales estadísticos
+kable(summary(cluster_3)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = TRUE)
+```
+
+
+### A. Análisis univariante cuantitativo
+
+```{r cuantitativas, include=TRUE, warning=FALSE}
+#Obtención de variables cuantitativas
+df_cuantitativas_clusters = df_clusters%>% select(3, 6, 7, 13:16, 18:dim(df_clusters)[2])
+
+data.frame(variable = names(df_cuantitativas_clusters),
+           classe = sapply(df_cuantitativas_clusters, typeof),
+           first_values = sapply(df_cuantitativas_clusters, function(x) paste0(head(x),  collapse = ", ")),
+           row.names = NULL) %>% kable() %>% kable_styling()
+```
+<br/>
+
+**Estudio de la variable "price" (precio de venta).**
+```{r estudio price, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = price))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$price))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de las variables "sqft_living"  y "sqft_living15" (Superficie de la vivienda).**
+variable "sqft_living": superficie de la vivienda en pies cuadrados (superficie escriturada).
+
+```{r estudio sqft_living, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_living))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_living))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+variable "sqft_living15": superficie de la vivienda en pies cuadrados (superficie escriturada).
+
+```{r estudio sqft_living15, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_living15))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_living15))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de las variables "sqft_lot" y "sqft_lot15 (superficie de la parcela de la vivienda).**
+Variables "sqft_lot": superficie de la parcela de la vivienda en pies cuadrados (superficie parcelaria).
+```{r estudio sqft_lot, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_lot))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_lot))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+
+Variable "sqft_lot15":  superficie de la parcela en el año 2015 (admite modificaciones)
+```{r estudio sqft_lot15, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_lot15))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_lot15))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "sqft_above" (superficie de la huella de la vivienda).**
+
+```{r estudio sqft_above, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_above))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_above))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "sqft_basement" (superficie bajo rasante).**
+
+```{r estudio sqft_basement, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = sqft_basement))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$sqft_basement))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "yr_built" (año de construcción de la vivienda).**
+
+```{r estudio yr_built, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = yr_built))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$yr_built))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+**Estudio de la variable "yr_renovated" (año de renovación de la vivienda).**
+
+```{r estudio yr_renovated, include=TRUE, warning=FALSE}
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+df_clusters$cluster <- as.factor(df_clusters$cluster)
+
+pBoxPlot <- ggplot(df_clusters, aes(x = cluster, y = yr_renovated))
+bxp <- pBoxPlot + geom_boxplot(aes(color = cluster)) +
+  scale_color_manual(values = my3cols)
+
+geomHist <- ggplot(data=df_clusters, aes(df_clusters$yr_renovated))
+
+gh <- geomHist + geom_histogram(aes(color = cluster)) +
+      scale_color_manual(values = my3cols)
+
+figure <- ggarrange(bxp, gh, 
+                    labels = c("Boxplot", "Histogram"),
+                    ncol = 2, nrow = 1)
+figure
+```
+
+### B. Analisis univariante cualitativo
+
+**Estudio de la variable "date" (fecha de venta de la vivienda):**
+Dado que el objetivo de la práctica es poder predecir el precio de la vivienda, sería interesante para nuestro modelo separar esta variable en mes y año ya que el precio de venta se puede ver influido por la estación y por el año en el que se realizó la venta en funcion de los clusters.
+
+Limites de las fechas para los clusters y diagramas de barras
+```{r var_date_clusters, include=TRUE, warning=FALSE, message=FALSE}
+dates_1 = data.frame(date_1 = as.Date(cluster_1$date,"%m/%d/%Y"))
+cluster_1$dates_m = format(dates_1,"%m")
+cluster_1$dates_y = format(dates_1,"%Y")
+
+dates_2 = data.frame(date_2 = as.Date(cluster_2$date,"%m/%d/%Y"))
+cluster_2$dates_m = format(dates_2,"%m")
+cluster_2$dates_y = format(dates_2,"%Y")
+
+dates_3 = data.frame(date_3 = as.Date(cluster_3$date,"%m/%d/%Y"))
+cluster_3$dates_m = format(dates_3,"%m")
+cluster_3$dates_y = format(dates_3,"%Y")
+
+
+# Límites del campo date
+dates_1 %>% summarise(min = min(date_1), max = max(date_1))
+dates_2 %>% summarise(min = min(date_2), max = max(date_2))
+dates_3 %>% summarise(min = min(date_3), max = max(date_3))
+
+
+
+# Tablas de frecuencias en función al mes y al año
+#table(cluster_1$dates_y) %>% kable(., col.names = c('Años', 'Frecuencia'))
+#table(cluster_1$dates_m) %>% kable(., col.names = c('Meses', 'Frecuencia'))
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+td_1 <- p_barras2(cluster_1, cluster_1$dates_m, cluster_1$dates_y, xlab = 'Mes')
+td_2 <- p_barras2(cluster_2, cluster_2$dates_m, cluster_2$dates_y, xlab = 'Mes')
+td_3 <- p_barras2(cluster_3, cluster_3$dates_m, cluster_3$dates_y, xlab = 'Mes')
+
+figure <- ggarrange(td_1, td_2, td_3, 
+                    labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    #scale_color_manual(values = my3cols),
+                    ncol = 2, nrow = 2)
+figure
+```
+
+
+**Estudio de la variable "bedrooms" (Número de habitaciones por vivienda):**
+
+```{r var_bedrooms, include=TRUE, warning=FALSE, message=FALSE}
+var_bedrooms_1 = cluster_1$bedrooms
+var_bedrooms_2 = cluster_2$bedrooms
+var_bedrooms_3 = cluster_3$bedrooms
+name_1 = "cluster_1 bedrooms"
+name_2 = "cluster_2 bedrooms"
+name_3 = "cluster_3 bedrooms"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_bedrooms_1)
+summary(var_bedrooms_2)
+summary(var_bedrooms_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_bedrooms_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_bedrooms_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_bedrooms_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+
+```
+**Estudio de la variable "bathrooms" (Número de baños/aseos por vivienda):**
+
+Cluster 1
+```{r var_bathrooms, include=TRUE, warning=FALSE}
+var_bathrooms_1 = cluster_1$bathrooms
+var_bathrooms_2 = cluster_2$bathrooms
+var_bathrooms_3 = cluster_3$bathrooms
+name_1 = "cluster_1 bathrooms"
+name_2 = "cluster_2 bathrooms"
+name_3 = "cluster_3 bathrooms"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_bathrooms_1)
+summary(var_bathrooms_2)
+summary(var_bathrooms_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_bathrooms_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_bathrooms_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_bathrooms_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+
+```
+
+
+**Estudio de la variable "floors" (Número de plantas por vivienda):**
+
+```{r var_floors, include=TRUE, warning=FALSE}
+var_floors_1 = cluster_1$floors
+var_floors_2 = cluster_2$floors
+var_floors_3 = cluster_3$floors
+name_1 = "cluster_1 floors"
+name_2 = "cluster_2 floors"
+name_3 = "cluster_3 floors"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_floors_1)
+summary(var_floors_2)
+summary(var_floors_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_floors_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_floors_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_floors_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+
+```
+
+**Estudio de la variable "waterfront" (viviendas frente a grandes masas de agua):**
+
+Cluster 1:
+```{r var_waterfront, include=TRUE, warning=FALSE}
+var_waterfront_1 = cluster_1$waterfront
+var_waterfront_2 = cluster_2$waterfront
+var_waterfront_3 = cluster_3$waterfront
+name_1 = "cluster_1 waterfront"
+name_2 = "cluster_2 waterfront"
+name_3 = "cluster_3 waterfront"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_waterfront_1)
+summary(var_waterfront_2)
+summary(var_waterfront_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_waterfront_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_waterfront_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_waterfront_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+**Estudio de la variable "view" (número de visitas que ha recibido la vivienda):**
+
+```{r var_view, include=TRUE, warning=FALSE}
+var_view_1 = cluster_1$view
+var_view_2 = cluster_2$view
+var_view_3 = cluster_3$view
+name_1 = "cluster_1 view"
+name_2 = "cluster_2 view"
+name_3 = "cluster_3 view"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_view_1)
+summary(var_view_2)
+summary(var_view_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_view_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_view_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_view_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+
+**Estudio de la variable "condition" (estado de la vivienda del 1 al 5):**
+
+Cluster 1:
+```{r var_condition, include=TRUE, warning=FALSE}
+var_condition_1 = cluster_1$condition
+var_condition_2 = cluster_2$condition
+var_condition_3 = cluster_3$condition
+name_1 = "cluster_1 condition"
+name_2 = "cluster_2 condition"
+name_3 = "cluster_3 condition"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_condition_1)
+summary(var_condition_2)
+summary(var_condition_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_condition_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_condition_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_condition_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+**Estudio de la variable "grade" (nota general de la vivienda del 1 al 13):**
+
+```{r var_grade, include=TRUE, warning=FALSE}
+var_grade_1 = cluster_1$grade
+var_grade_2 = cluster_2$grade
+var_grade_3 = cluster_3$grade
+name_1 = "cluster_1 grade"
+name_2 = "cluster_2 grade"
+name_3 = "cluster_3 grade"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_grade_1)
+summary(var_grade_2)
+summary(var_grade_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_grade_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_grade_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_grade_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+**Estudio de la variable "zipcode" (código postal):**
+
+```{r var_zipcode, include=TRUE, warning=FALSE}
+var_zipcode_1 = cluster_1$zipcode
+var_zipcode_2 = cluster_2$zipcode
+var_zipcode_3 = cluster_3$zipcode
+name_1 = "cluster_1 zipcode"
+name_2 = "cluster_2 zipcode"
+name_3 = "cluster_3 zipcode"
+
+my3cols <- c("#E7B800", "#2E9FDF", "#FC4E07")
+
+# Tablas de frecuencias en función al mes y al año
+summary(var_zipcode_1)
+summary(var_zipcode_2)
+summary(var_zipcode_3)
+
+# Diagrama de barras con los meses del año y el número de viviendas vendidas
+pb1 <- p_barras(cluster_1, var_zipcode_1, xlab = name_1)
+pb2 <- p_barras(cluster_2, var_zipcode_2, xlab = name_2)
+pb3 <- p_barras(cluster_3, var_zipcode_3, xlab = name_3)
+
+figure <- ggarrange(pb1, pb2, pb3, 
+                    #labels = c("Boxplot", "Histogram","pepe"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure
+```
+
+
+### c. Análisis multivariante cualitativo
+
+**Estudio de la variable "bedrooms" (número de habitaciones por vivienda):**
+```{r multi_bedrooms, include=TRUE}
+old = "bedrooms"
+new = "cat_bedrooms"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+
+```
+
+**Estudio de la variable "bathrooms" (número de baños por vivienda):**
+```{r multi_bathrooms, include=TRUE}
+old = "bathrooms"
+new = "cat_bathrooms"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+
+```
+
+
+**Estudio de la variable "floors" (número de plantas por vivienda):**
+```{r multi_floors, include=TRUE}
+old = "floors"
+new = "cat_floors"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+
+```
+
+**Estudio de la variable "waterfront":**
+```{r multi_waterfont, include=TRUE}
+name = "waterfront"
+
+#mostramos su tabla de frecuencias
+#table(cluster_1[[name]])
+
+#visualización de los datos categorizados con respecto a la variable "price"
+pd_c1 = p_densidad(cluster_1, "cluster 1", name)
+pd_c2 = p_densidad(cluster_2, "cluster 2", name)
+pd_c3 = p_densidad(cluster_3, "cluster 3", name)
+
+#visualización de los datos categorizados con respecto a la variable "long"
+p1_c1 = p_densidad2(cluster_1, name, 'long')
+p1_c2 = p_densidad2(cluster_2, name, 'long')
+p1_c3 = p_densidad2(cluster_3, name, 'long')
+#visualización de los datos categorizados con respecto a la variable "lat"
+p2_c1 = p_densidad2(cluster_1, name, 'lat')
+p2_c2 = p_densidad2(cluster_2, name, 'lat')
+p2_c3 = p_densidad2(cluster_3, name, 'lat')
+
+figure_c1 <- ggarrange(pd_c1, p1_c1, p2_c1, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure_c1
+
+figure_c2 <- ggarrange(pd_c2, p1_c2, p2_c2, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure_c2
+
+figure_c3 <- ggarrange(pd_c3, p1_c3, p2_c3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 3, nrow = 1)
+figure_c3
+
+```
+
+**Estudio de la variable "view":**
+```{r multi_view, include=TRUE}
+old = "view"
+new = "cat_view"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=3)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=3)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=3)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+```
+
+Comentar los resultados
+
+**Estudio de la variable "condition":**
+```{r multi_condition, include=TRUE}
+old = "condition"
+new = "cat_condition"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=3)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=3)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=3)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+```
+
+Comentar los resultados
+
+**Estudio de la variable "grade":**
+```{r multi_grade, include=TRUE}
+old = "grade"
+new = "cat_grade"
+
+#corrección reemplazando el string s por un "NA"
+cluster_1[[old]][cluster_1[[old]] == "s"] <- NA
+cluster_1[[old]] = as.numeric(cluster_1[[old]])
+cluster_2[[old]][cluster_2[[old]] == "s"] <- NA
+cluster_2[[old]] = as.numeric(cluster_2[[old]])
+cluster_3[[old]][cluster_3[[old]] == "s"] <- NA
+cluster_3[[old]] = as.numeric(cluster_3[[old]])
+
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=4)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=4)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=4)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+
+```
+
+Comentar los resultados
+
+**Estudio de la variable "zipcode" (código postal):**
+```{r multi_zipcode, include=TRUE}
+old = "zipcode"
+new = "cat_zipcode"
+
+#categorizamos la variable y mostramos su tabla de frecuencias
+cluster_1[[new]] = cut2(cluster_1[[old]], g=3)
+table(cluster_1[[new]])
+cluster_2[[new]] = cut2(cluster_2[[old]], g=3)
+table(cluster_2[[new]])
+cluster_3[[new]] = cut2(cluster_3[[old]], g=3)
+table(cluster_3[[new]])
+#visualización de los datos categorizados con respecto a la variable "price"
+pd1 <- p_densidad(cluster_1, "Diagrama Cluster 1",new)
+pd2 <- p_densidad(cluster_2, "Diagrama Cluster 2",new)
+pd3 <- p_densidad(cluster_3, "Diagrama Cluster 3",new)
+
+figure <- ggarrange(pd1, pd2, pd3, 
+                    #labels = c("Cluster 1", "Cluster 2","Cluster 3"),
+                    scale_color_manual(values = my3cols),
+                    ncol = 1, nrow = 3)
+figure
+```

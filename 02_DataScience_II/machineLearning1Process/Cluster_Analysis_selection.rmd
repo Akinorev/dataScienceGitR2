@@ -1,0 +1,74 @@
+---
+title: "Nuevos_Clusters"
+author: "Pablo_Olmos"
+date: "6/3/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library (ggplot2)
+library(rsample)     # data splitting 
+library(dplyr)       # data wrangling
+library(rpart)       # performing regression trees
+library(rattle)
+library(ipred)       # bagging
+library (lattice)
+library(caret)       # bagging
+library(dplyr)
+
+```
+
+## R Reconfiguración de los Clusters
+
+
+
+```{r lectura del fichero}
+
+setwd("C:/Users/olmosp/Desktop/pie/PRACTICA_R_ML/Cluster_Practica")
+df_cluster <- read.csv ("cluster.csv")
+
+#descriptivo en cada Clúster
+set.seed(767)
+df_cluster %>%
+        group_by(hclust) %>%
+        summarise(num_casas=n(), precio_medio= mean(price), room=mean(bedrooms),baths=mean(bathrooms) ,
+                  tamanyo=mean(sqft_living), anyo=floor(mean(yr_built)) ,grade=mean(grade), condicion=mean(condition),        visitas=mean(view))
+
+
+```
+
+```{r Creación de Nuevos Clusters}
+
+df_cluster$hclust=as.numeric(df_cluster$hclust)
+df_cluster$Cluster_final[df_cluster$hclust==2 | df_cluster$hclust==8] <- "top"
+df_cluster$Cluster_final[df_cluster$hclust==1 | df_cluster$hclust==5 | df_cluster$hclust==9] <- "low"
+df_cluster$Cluster_final[df_cluster$hclust==3 | df_cluster$hclust==4 | df_cluster$hclust==6 | df_cluster$hclust==7  ] <- "med"
+
+
+
+df_cluster %>%
+        group_by(Cluster_final) %>%
+        summarise(num_casas=n(), precio_medio= mean(price), room=mean(bedrooms),baths=mean(bathrooms) ,
+                  tamanyo=mean(sqft_living), anyo=floor(mean(yr_built)) ,grade=mean(grade), condicion=mean(condition),visitas=mean(view))
+
+#write.csv(prueba,file="C:/Users/olmosp/Desktop/pie/PRACTICA_R_ML/clll.csv";
+
+```
+
+```{r plots }
+
+ggplot(df_cluster, aes(x=price, fill=Cluster_final, color=Cluster_final)) +
+  geom_histogram(aes(y=..density..), binwidth=3)+  geom_density(aes(color=Cluster_final)) 
+
+
+```
+
+```{r write dataset}
+
+write.csv(df_cluster,file="C:/Users/olmosp/Desktop/pie/PRACTICA_R_ML/cluster.csv")
+
+
+```
+
+

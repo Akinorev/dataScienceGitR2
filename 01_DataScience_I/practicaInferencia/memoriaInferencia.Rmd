@@ -1,0 +1,322 @@
+---
+title: "Tecnicas de Inferencia"
+author: "Carlos Grande Nuñez, Veronica Gomez Gomez y Pablo Olmos Martinez,"
+date: "10/20/2019"
+output:
+  html_document:
+    theme: united
+    toc: yes
+    toc_float: yes
+  pdf_document:
+    toc: yes
+---
+
+# ANALISIS DE TECNICAS DE INFERENCIA.
+
+El objetivo de esta practica es analizar las distintas tecnicas de inferencia usadas en clase. Para esta practica hemos usado el siguiente dataset:
+
+https://www.kaggle.com/mishra5001/credit-card
+
+Las librerias usadas son las siguientes:
+
+- sampling
+- normtest
+- nortest
+- data.table
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(sampling)
+library(normtest)
+library(nortest)
+library(data.table)
+
+relPath <- getwd()
+setwd(relPath)
+unzip("credit-card.zip")
+base <- read.csv (file="./credit-card/application_data.csv")
+names (base)
+summary (base)
+```
+
+## Informacion general sobre los datos que vamos a usar
+
+Hemos decidido usar unos datos basados en prestamos bancarios, las columnas y datos con los que contamos son los siguientes:
+
+  Variables de tipo discreto:
+  
+     - Género
+     - Flags
+     - tipo de casa
+     - ORGANIZATION_TYPE
+     - OCCUPATION_TYPE
+     - NAME_EDUCATION_TYPE   
+     - NAME_FAMILY_STATUS 
+     - NAME_HOUSING_TYPE
+    
+  Variables de tipo continuo:
+  
+     - AMT_INCOME_TOTAL 
+     - AMT_CREDIT 
+     - AMT_ANNUITY 
+     - AMT_GOODS_PRICE
+     - edad
+     - Antiguedad en el empleo
+
+Antes de comenzar con la practica hemos querido analizar nuestra variable Target de la base de datos, la cual nos indica aquellos creditos que han sido pagados con un '0' y los que no lo han sido con un '1'.
+
+```{r InfoGeneral}
+#contabilizamos el número de elementos de cada clase en la variable 'TARGET'
+table(base$TARGET)
+
+#Obtenemos el porcentaje de cada elemento dentro de 'TARGET'
+prop.table(table(base$TARGET))
+```
+
+Como dato interesante podemos observar que aproximadamente el 8% de los creditos concedidos no son pagados.
+
+## Ejercicio 1: Muestreo del conjunto de datos
+
+Para obtener una muestra de nuestra población, aplicamos la fórmula del tamaño muestral para la media con varianza conocida. Para resolver la fórmula partimos del tamaño poblacional (300k) , un error máximo de 5000 euros y un nivel de confianmza del 95%.
+
+```{r BusquedaTamIdealMuestra}
+baset <- data.table(base)
+
+#media poblacional (mp)
+mp <- mean(baset$AMT_INCOME_TOTAL)
+mp
+#desviación estandar (dt)
+dt <- sd(baset$AMT_INCOME_TOTAL)
+dt
+
+#busqueda del tamaño muestral optimo
+##variables a usar
+N <- dim(baset)[1] #poblacion
+N
+err <- 5000
+NS <- 0.05
+k <- qnorm(1-NS/2);round(k,3)#k=f(z)
+s2 <- (dt)^2
+D <- err^2/k^2
+
+#formula tamaño muestral para la media con varianza conocida
+n <- (N*s2*(k^2))/((err^2)*(N-1) + s2*(k^2))
+round(n)
+```
+Una vez aplicada la fórmula del tamaño muestral obtenemos que para nuestra población necesitamos una muestra de al menos 8404 elementos.
+
+A continuación realizamos el muestreo de datos.
+```{r MuestreoDatos}
+set.seed(1)
+
+#muestreo sobre la población
+mas <- baset[sample(.N, 8404)]
+#contabilizamos el número de elementos de cada clase en la variable 'TARGET'
+table(mas$TARGET)
+#Obtenemos el porcentaje de cada elemento dentro de 'TARGET'
+prop.table(table(mas$TARGET))
+```
+Mostramos a continuación el encabezado de nuestra tabla muestral con las variables que vamos a usar a lo largo de esta práctica:
+```{r tablamuestral, echo=T}
+head(mas %>% select(CODE_GENDER, NAME_EDUCATION_TYPE, OCCUPATION_TYPE, AMT_INCOME_TOTAL))
+```
+
+Definimos antes los subsets sobre los que trabajaremos a partir de ahora. Donde t1 (TARGET = 1) corresponde los creditos con impago y t0 (TARGET = 0) corresponde a los creditos pagados
+
+```{r CreacionDeSubsetsTARGET}
+#t1 impago
+t1 <- subset(mas, TARGET=="1")
+dim(t1)[1]
+
+#t0 pago
+t0 <- subset(mas, TARGET=="0")
+dim(t0)[1]
+```
+
+## Ejercicio2: Caracteristicas interesantes sujetas a estudio
+
+Hemos encontrado las siguientes caracteristicas como intersantes para el estudio:
+
+ - Cuanto es la media del importe de crédito solicitado
+ - Cuanto es el ingreso medio de los clientes 
+ - ¿Cual es la edad media del cliente que solicita?
+ - ¿Cual es la media de la antigüedad en la empresa del cliente medio?
+ - Contrastando con el pago/impago del credito
+ 
+ Para la practica nos centraremos en la característica del ingreso medio de los clientes.
+
+## Ejercicio3: Estimaciones puntuales de la caracteristica
+
+### Estimacion puntual de la media de los ingresos de los clientes
+
+Ingresos de los clientes cliente, Media Poblacion
+```{r MediaPoblacionImporte}
+#media poblacional de los ingresos medios del cliente
+media.importe <- mean(baset$AMT_INCOME_TOTAL)
+media.importe
+#desviacion estandar de la poblacion de los ingresos medios del cliente
+dt.importe <- sd(baset$AMT_INCOME_TOTAL)
+dt.importe
+```
+
+Ingresos de los clientes, Media Muestral
+```{r MediaMuestralImporte}
+#importe solcitado del cliente Media Muestral
+media.importe_mas<-mean(mas$AMT_INCOME_TOTAL)
+dt.importe_mas<-sd(mas$AMT_INCOME_TOTAL)
+media.importe_mas
+dt.importe_mas
+```
+
+## Ejercicio4: Intervalo de hipotesis para una de las muestras
+
+### Calculos sobre los ingresos de los clientes con el credito pagado
+
+```{r CalculosIngresosClientesPagado}
+#ingresos del cliente TARGET 0
+media.ingresos=mean(t0$AMT_INCOME_TOTAL)
+media.ingresos
+desviacion.ingresos=sd(t0$AMT_INCOME_TOTAL)
+desviacion.ingresos
+
+#intervalo de confianza de nuestra muestra
+t0_ci=media.ingresos-qnorm(0.95)*desviacion.ingresos/sqrt(length(t0))
+t0_cs=media.ingresos+qnorm(0.95)*desviacion.ingresos/sqrt(length(t0))
+c(t0_ci,t0_cs)
+```
+
+## Ejercicio5: Intervalo de confianza para la comparacion de dicha caracteristica
+```{r CalculosIngresosClientesImpagado}
+#media poblacional de los clientes TARGET 0
+baset0<-subset(base, TARGET=="0")
+mean(baset0$AMT_INCOME_TOTAL)
+
+#media muestral de los clientes TARGET 0
+mean(t0$AMT_INCOME_TOTAL)
+
+#Intervalo de confianza de la muestra
+t0_ci
+t0_cs
+
+```
+
+La media poblacional nos da 169077.7 que entra sin problemas en el intervalo de confianza de nuestra muestra, que va de 154232.7 hasta 186329.2
+
+## Ejercicio6: Contrastes de hipotesis de independencia de las muestras
+
+### Observamos los contrastes de hipotesis de independencia en funcion de los ingresos de la poblacion
+
+
+```{r chisqTest}
+
+#### test chi2
+#### Ho : Nivel de Estudios e Impago de Crédito son Independientes
+#### H1 : existe dependencia
+
+chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE,correct=FALSE )
+chisq.test(base$TARGET,base$NAME_EDUCATION_TYPE)$expected
+
+##Valor del estadistico X2 1019, y el p-value < 2.2e-16 . Rechazamos la Ho
+##PARA NUESTRA BASE No existe independencia entre el impago y el Nivel de estudios
+## Vamos a sacar una distribucion de datos para ver en frecuencuias cuales son los estudios que más nos impagan
+uno<-table (base$NAME_EDUCATION_TYPE,base$TARGET)
+prop.table(uno,1)
+
+
+#### test chi2
+#### Ho : Ocupacion e Impago de Crédito son Independientes
+#### H1 : existe dependencia
+
+
+chisq.test(base$TARGET,base$OCCUPATION_TYPE,correct=FALSE )
+
+##Valor del estadistico X2 1975.1, muchos grados de Libertad debido a las muchas profesiones  y el p-value < 2.2e-16 . Rechazamos la Ho
+##PARA NUESTRA BASE No existe independencia entre el impago y la profesion
+## Vamos a sacar una distribucion de datos para ver en frecuencias cuales son los estudios que más nos impagan
+dos<-table (base$OCCUPATION_TYPE,base$TARGET)
+prop.table(dos,1)
+
+
+```
+
+En el caso de la educacion, rechazamos la hipotesis nula de independencia. Se puede decir que existe relacion para nuestros datos entre el nivel de estudios y el impago/pago. Esto es debido a que la diferencia entre la distribucion esperada y la real es muy grande. Lo cual hace que el estadistico chi2 sea muy grande en nuestro caso 1019.
+
+En el caso de la ocupacion, rechazamos la hipotesis nula de independencia, existe relacion significativa entre el impago y la ocupacion. Por ejemplo se puede observar que para la categoria de Accountants tenemos una tasa de impago baja 0.06513056 mientras que para Low-skill Laborers tenemos una tasa de impago de 0.17152413.
+
+## Ejercicio7: Contraste de hipotesis para la caracteristica de estudio de una de las muestras
+
+```{r AnalisisIngresosPoblacion}
+
+t.test(t0$AMT_INCOME_TOTAL,mu=168977.2)
+
+```
+
+Tal como se ha podido ver en el ejercicio 5 la media poblacional esta dentro del intervalo de confianza de la muestra. Tras realizar el contraste de T student al obtener un p valor de 0.2878 no podemos rechazar la igualdad de medias.
+
+## Ejercicio 8: Contraste de hipotesis de normalidad para una de las muestras
+
+Este contraste lo efectuaremos sobre la media del importe solicitado.
+
+```{r ContrasteMediaImporteSolicitado}
+
+###Prueba de Lilliefors (Kolmogorov-Smirnov)###
+
+
+lillie.test(log(mas$AMT_INCOME_TOTAL))
+hist(log(mas$AMT_INCOME_TOTAL))
+qqnorm(log(mas$AMT_INCOME_TOTAL), pch = 19, col = "gray50") 
+qqline(log(mas$AMT_INCOME_TOTAL))
+
+
+lillie.test(log(t0$AMT_INCOME_TOTAL))
+hist(log(t0$AMT_INCOME_TOTAL))
+qqnorm(log(t0$AMT_INCOME_TOTAL), pch = 19, col = "gray50") 
+qqline(log(t0$AMT_INCOME_TOTAL))
+
+lillie.test(log(t1$AMT_INCOME_TOTAL))
+hist(log(t1$AMT_INCOME_TOTAL))
+qqnorm(log(t1$AMT_INCOME_TOTAL), pch = 19, col = "gray50") 
+qqline(log(t1$AMT_INCOME_TOTAL))
+
+
+ks.test(mas$DAYS_BIRTH, "pnorm", mean(mas$DAYS_BIRTH), sd(mas$AMT_CREDIT))
+```
+
+Tras realizar el test de Smirnov y la modificacion del Lilliefors hemos visto que el contraste de normalidad nos devuelve un p-valor muy bajo (2.2e-16). Debido a estos resultados hemos probado a normalizar mediante el logaritmo con el mismo resultado. Al tratarse de un contraste tan delicado hemos usado metodos graficos para visualizar la normalidad. Tras comprobar los graficos y aplicar el teorema central del limite, debido al tamaño de nuestra muestra podriamos asumir que es normal.
+
+## Ejercicio 9: Contraste de hipotesis para la comparacion de las muestras
+
+
+
+```{r}
+#muestra1 ---Target 0
+#muestra2 ---Target 1
+
+###analisis para Ingresos de la poblacion#####
+
+#Ho: Igualdad de Medias en Ingresos para las muestras T0 y T1
+#H1: No igualdad...
+
+var.test(x = t0$AMT_INCOME_TOTAL, y = t1$AMT_INCOME_TOTAL )
+
+test <- t.test(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL) # Prueba t de Student
+print(test)
+# p-value es < 0.05 no podemos Rechazamos la Hipotesis Nula . El valor del estadístico t es muy pequeño
+boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"))
+
+
+#sin outliers parece que nos están mucho más próximos intuitivamente las medias#
+##ESTUDIAR QUITAR LOS OUTLIER
+boxplot(t0$AMT_INCOME_TOTAL,t1$AMT_INCOME_TOTAL,names=c("t0","t1"),outline=FALSE)
+```
+
+Para comparar la media de dos poblaciones a partir de muestras independientes necesitamos saber si la varianza de las dos poblaciones es diferente. Para ello realizamos el F-test, contrasta la hipotesis nula de que dos poblaciones normales tienen la misma varianza. El test no se rechaza ya que no existen diferencias entre las varianzas p-value = 0.475. En caso de que hubiesemos rechazado la hipotesis nula, habriamos tenido que hacer el test de Welch.
+
+Realizamos el test de igualdad de medias.
+Rechazamos la hipotesis nula, lo que podemos decir es que a partir de nuestros datos muestrales y en nuestro caso de estudio, la media de los ingresos para la gente que paga o no paga es diferente. Intuitivamente lo podemos ver con el valor de 168977.2 
+
+Nos llama la atencion que el valor del estadistico t no es muy grande t = 3.39 y el valor del p-valor no es demasiado pequeño. A pesar de que el contraste de hipotesis se rechaza, podriamos plantearnos que no cerramos por completo la posibilidad de una investigacion futura.
+
+Tambien nos apoyamos en esta afirmacion con los datos obtenidos en la grafica del boxplot. Nos da que pensar que si hiciesemos un trabajo con los outliars nuestro contraste de hipotesis podria variar.
+
+El siguiente punto seria hacer un trabajo con los outliars y ver despues de este trabajo si el contraste de hipotesis funciona igual o no.

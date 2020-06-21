@@ -1,0 +1,10 @@
+La entrega será un fichero ZIP con el nombre formado por el primer apellido concatenado de todos los
+miembros del grupo de trabajo. Por ejemplo, si Paloma y Almudena forman un grupo el nombre del
+fichero sería “CaceresSierra.zip”. Este fichero ZIP deberá tener el siguiente contenido:
+
+
+- Código fuente en Python del scraper desarrollado y el programa que integra los datos de las
+dos fuentes.
+- Ficheros de datos stops.txt.
+- Fichero CSV.
+- Fichero RDF/XML.

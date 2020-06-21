@@ -1,0 +1,39 @@
+---
+title: "Practica02"
+author: "Carlos"
+date: "10/26/2019"
+output: html_document
+---
+
+---
+
+# MODELOS DE DISTRIBUCIÓN DE PROBABILIDAD.
+<!--Importing libraries and data-->
+```{r setup, include=F}
+library(PASWR2)
+datos = BATTERY
+```
+
+*Vista del DataFrame:*
+```{r head, include=T}
+head(datos)
+```
+
+## Actividad I
+- Realiza un histograma de todas las filas de la variable lifetime y comprueba que efectivamente nos interesa separar los datos.
+
+```{r actividad1, include=T}
+life = datos['lifetime']
+life = as.matrix(life)
+hist(life, col='black', border='white', breaks = 10)
+
+```
+
+- Crea dos conjuntos de datos diferentes para los dos tipos de baterías, por ejemplo datosA y datosB.
+
+```{r}
+datosA = subset(datos, facility == 'A')
+datosB = subset(datos,  facility == 'B')
+```
+
+- Realiza ahora un histograma de cada uno de los tipos y comenta si te parece que los datos siguen una distribución normal.

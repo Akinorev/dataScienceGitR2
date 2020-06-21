@@ -1,0 +1,163 @@
+(py2) evergom@elx7850702r:~/Documents/MasterDataScience/sistemasDistribuidosDeProcesamientoDeDatos/practicaConEntrega/dataScienceGitR2/practicaHadoop$ time python mrJobSimple.py -r emr --file AFINN-111.txt bigTwitter.json --output-dir=s3://hadoopdatasciencetest/output/
+No configs found; falling back on auto-configuration
+No configs specified for emr runner
+Auto-created temp S3 bucket mrjob-316e63eca3db4318
+Using s3://mrjob-316e63eca3db4318/tmp/ as our temp dir on S3
+Creating temp directory /tmp/mrJobSimple.evergom.20191209.171831.284355
+writing master bootstrap script to /tmp/mrJobSimple.evergom.20191209.171831.284355/b.sh
+uploading working dir files to s3://mrjob-316e63eca3db4318/tmp/mrJobSimple.evergom.20191209.171831.284355/files/wd...
+Copying other local files to s3://mrjob-316e63eca3db4318/tmp/mrJobSimple.evergom.20191209.171831.284355/files/
+Created new cluster j-36OFPAU8SW46A
+Added EMR tags to cluster j-36OFPAU8SW46A: __mrjob_label=mrJobSimple, __mrjob_owner=evergom, __mrjob_version=0.7.0
+Waiting for Step 1 of 1 (s-3D2WQ8N4QRO5N) to complete...
+  PENDING (cluster is STARTING)
+  PENDING (cluster is STARTING)
+  PENDING (cluster is BOOTSTRAPPING: Running bootstrap actions)
+  PENDING (cluster is BOOTSTRAPPING: Running bootstrap actions)
+  PENDING (cluster is BOOTSTRAPPING: Running bootstrap actions)
+  master node is ec2-54-190-154-11.us-west-2.compute.amazonaws.com
+  RUNNING for 0:00:21
+  RUNNING for 0:00:52
+  RUNNING for 0:01:24
+  RUNNING for 0:01:55
+  RUNNING for 0:02:26
+  RUNNING for 0:02:57
+  RUNNING for 0:03:28
+  RUNNING for 0:03:59
+  RUNNING for 0:04:30
+  RUNNING for 0:05:01
+  RUNNING for 0:05:33
+  RUNNING for 0:06:04
+  RUNNING for 0:07:36
+  RUNNING for 0:08:07
+  RUNNING for 0:09:39
+  RUNNING for 0:10:11
+  RUNNING for 0:10:42
+  RUNNING for 0:11:13
+  RUNNING for 0:11:44
+  RUNNING for 0:12:16
+  RUNNING for 0:12:47
+  RUNNING for 0:13:18
+  RUNNING for 0:13:50
+  RUNNING for 0:14:21
+  RUNNING for 0:14:52
+  RUNNING for 0:15:23
+  RUNNING for 0:15:54
+  RUNNING for 0:16:26
+  RUNNING for 0:16:57
+  RUNNING for 0:17:28
+  RUNNING for 0:17:59
+  RUNNING for 0:18:30
+  RUNNING for 0:19:01
+  RUNNING for 0:19:32
+  RUNNING for 0:20:04
+  RUNNING for 0:20:35
+  RUNNING for 0:21:06
+  RUNNING for 0:21:37
+  RUNNING for 0:22:08
+  RUNNING for 0:22:39
+  RUNNING for 0:23:11
+  RUNNING for 0:23:42
+  RUNNING for 0:24:13
+  RUNNING for 0:24:44
+  RUNNING for 0:25:15
+  RUNNING for 0:25:46
+  RUNNING for 0:26:17
+  RUNNING for 0:26:48
+  RUNNING for 0:27:19
+  RUNNING for 0:27:50
+  RUNNING for 0:28:21
+  RUNNING for 0:28:52
+  RUNNING for 0:29:24
+  RUNNING for 0:29:55
+  RUNNING for 0:30:26
+  RUNNING for 0:30:57
+  RUNNING for 0:31:28
+  RUNNING for 0:31:59
+  RUNNING for 0:32:30
+  RUNNING for 0:33:01
+  RUNNING for 0:33:32
+  RUNNING for 0:34:03
+  RUNNING for 0:34:34
+  RUNNING for 0:35:05
+  COMPLETED
+Attempting to fetch counters from logs...
+Waiting for cluster (j-36OFPAU8SW46A) to terminate...
+  TERMINATING
+  TERMINATING
+  TERMINATED
+Looking for step log in s3://mrjob-316e63eca3db4318/tmp/logs/j-36OFPAU8SW46A/steps/s-3D2WQ8N4QRO5N...
+  Parsing step log: s3://mrjob-316e63eca3db4318/tmp/logs/j-36OFPAU8SW46A/steps/s-3D2WQ8N4QRO5N/syslog.2019-12-09-17.gz
+  Parsing step log: s3://mrjob-316e63eca3db4318/tmp/logs/j-36OFPAU8SW46A/steps/s-3D2WQ8N4QRO5N/syslog.gz
+Counters: 55
+	File Input Format Counters 
+		Bytes Read=6958986713
+	File Output Format Counters 
+		Bytes Written=198081
+	File System Counters
+		FILE: Number of bytes read=151919
+		FILE: Number of bytes written=18772537
+		FILE: Number of large read operations=0
+		FILE: Number of read operations=0
+		FILE: Number of write operations=0
+		HDFS: Number of bytes read=15392
+		HDFS: Number of bytes written=0
+		HDFS: Number of large read operations=0
+		HDFS: Number of read operations=104
+		HDFS: Number of write operations=0
+		S3: Number of bytes read=6958986713
+		S3: Number of bytes written=198081
+		S3: Number of large read operations=0
+		S3: Number of read operations=0
+		S3: Number of write operations=0
+	Job Counters 
+		Data-local map tasks=104
+		Killed map tasks=1
+		Launched map tasks=104
+		Launched reduce tasks=1
+		Total megabyte-milliseconds taken by all map tasks=12460978176
+		Total megabyte-milliseconds taken by all reduce tasks=34775040
+		Total time spent by all map tasks (ms)=4056308
+		Total time spent by all maps in occupied slots (ms)=389405568
+		Total time spent by all reduce tasks (ms)=5660
+		Total time spent by all reduces in occupied slots (ms)=1086720
+		Total vcore-milliseconds taken by all map tasks=4056308
+		Total vcore-milliseconds taken by all reduce tasks=5660
+	Map-Reduce Framework
+		CPU time spent (ms)=3700390
+		Combine input records=55168
+		Combine output records=36998
+		Failed Shuffles=0
+		GC time elapsed (ms)=19597
+		Input split bytes=15392
+		Map input records=1600519
+		Map output bytes=551371
+		Map output materialized bytes=321497
+		Map output records=55168
+		Merged Map outputs=104
+		Physical memory (bytes) snapshot=73811386368
+		Reduce input groups=14238
+		Reduce input records=36998
+		Reduce output records=14238
+		Reduce shuffle bytes=321497
+		Shuffled Maps =104
+		Spilled Records=73996
+		Total committed heap usage (bytes)=69532647424
+		Virtual memory (bytes) snapshot=491668406272
+	Shuffle Errors
+		BAD_ID=0
+		CONNECTION=0
+		IO_ERROR=0
+		WRONG_LENGTH=0
+		WRONG_MAP=0
+		WRONG_REDUCE=0
+job output is in s3://hadoopdatasciencetest/output/
+Removing s3 temp directory s3://mrjob-316e63eca3db4318/tmp/mrJobSimple.evergom.20191209.171831.284355/...
+Removing temp directory /tmp/mrJobSimple.evergom.20191209.171831.284355...
+Removing log files in s3://mrjob-316e63eca3db4318/tmp/logs/j-36OFPAU8SW46A/...
+Terminating cluster: j-36OFPAU8SW46A
+
+real	61m35,664s
+user	1m50,558s
+sys	0m44,342s
+

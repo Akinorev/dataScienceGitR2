@@ -1,0 +1,11 @@
+#NOTA
+
+Hay que tener en cuenta que antes de poblar la tabla3 en Cassandra hay que realizar una breve modificiacion en el fichero generado a partir de la vista en SQL.
+
+Es necesario eliminar las dos primeras lineas.
+
+Cambiar el parametro fecha de sql to_date a toDate y dejar solo la fecha, eliminar la parte del formato de la fecha, sustituir las '/' por '-' para la fecha.
+
+Tambien sera necesario cambiar el nombre asociado a la vista SQL, normalmente empieza con ## por el de la tabla. En nuestro caso es: practica.USERS_PURCHASES
+
+
