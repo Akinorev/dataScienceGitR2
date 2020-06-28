@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3"
 services:
 
   zookeeper:
@@ -120,13 +120,11 @@ services:
 
 networks:
   kafkanet:
-    name: kafkanet
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.25.0.0/16
-          gateway: 172.25.0.1
 
 volumes:
   kafka_zookeeper:
