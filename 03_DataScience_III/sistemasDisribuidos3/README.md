@@ -37,3 +37,7 @@ el enlace para acceder a dicho notebook una vez esta todo levantado es el siguie
 
 http://172.25.0.19:8080/#/notebook/2FE5M35JR
 
+el notebook sobre el que estoy realizando la practica es:
+
+http://172.25.0.19:8080/#/notebook/2FBAZHD76
+
