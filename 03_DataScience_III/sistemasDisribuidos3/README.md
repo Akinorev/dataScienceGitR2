@@ -31,3 +31,9 @@ Como son volumenes compartidos, todo lo que vaya a esta carpeta sera accesible (
 
 El notebook se guardara seguramente en kafka-spark-streaming-zeppelin-docker -> zeppelin -> pyspark-notebooks
 
+He tenido que hacer unas modificaciones sobre los notebooks hasta que he conseguido uno que funciona (he arreglado el notebook que viene en el ejemplo)
+
+el enlace para acceder a dicho notebook una vez esta todo levantado es el siguiente:
+
+http://172.25.0.19:8080/#/notebook/2FE5M35JR
+
