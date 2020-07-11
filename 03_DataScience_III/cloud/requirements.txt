@@ -1,0 +1,6 @@
+pdftotext
+spacy
+nltk
+networkx
+matplotlib
+gensim
