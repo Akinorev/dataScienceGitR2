@@ -184,4 +184,10 @@ elif (compressionFactor == 100):
     for i in range(0, bookLen):
         print(cleanText[i])
 else:
-    print(resumen)
+    #print(resumen)
+    output = open("./output/output.html", "w")
+    for line in resumen:
+        # write line to output file
+        output.write(str(line))
+        output.write("\n")
+    output.close()

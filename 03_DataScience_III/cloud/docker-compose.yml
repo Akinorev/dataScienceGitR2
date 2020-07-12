@@ -1,0 +1,27 @@
+version: "3"
+services:
+
+  pythonScript:
+    image: testing:latest
+    volumes:
+      - shared_volume:/usr/src/app/output
+  apacheServer:
+    image: httpd:latest
+    expose:
+      - 8080
+    volumes:
+      - shared_volume:/usr/local/apache2/htdocs/
+    networks:
+      apachenet:
+        ipv4_address: 172.25.0.7
+
+networks:
+  apachenet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/16
+
+volumes:
+  shared_volume:
