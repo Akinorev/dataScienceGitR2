@@ -7,21 +7,30 @@ services:
       - shared_volume:/usr/src/app/output
   apacheServer:
     image: httpd:latest
-    expose:
-      - 8080
+#    expose:
+#      - 8080
     volumes:
       - shared_volume:/usr/local/apache2/htdocs/
-    networks:
-      apachenet:
-        ipv4_address: 172.25.0.7
+#    networks:
+#      apachenet:
+#        ipv4_address: 172.25.0.7
 
-networks:
-  apachenet:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.25.0.0/16
+  lb:
+    image: dockercloud/haproxy
+    links:
+     - apacheServer
+    ports:
+     - '80:80'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+#networks:
+#  apachenet:
+#    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 172.25.0.0/16
 
 volumes:
   shared_volume:
