@@ -1,0 +1,17 @@
+
+Readme MLII
+Tenemos 3 Notebook Jupyter 
+Base de datos con la que vamos a trabajar es la de casas de Seatle con la información añadida en el anterior trimestre de Clustering y de predicción binaria. Se llama Cluster.txt.
+
+1.-ML_II_Houses.ipynb
+1.1.- Red Binaria
+1.2.- Red Clasificador Múltiple
+
+2.-ML_II_Smote.ipynb
+2.1.- Smote para datos desbalanceados Binarios
+2.2.- Red para datos desbalanceados Múltiples
+
+Base de datos con la que vamos a trabajar procede de la descarga de imágenes del navegador Bing en 5 categorías de flores. Rosas, Claveles, Margaritas, Lirios y Jacintos. 
+3.-ML_II_CNN.ipynb
+3.1.- CNN Preentrenada con Alexnet
+3.2.- CNN parámetros propios
