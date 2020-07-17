@@ -1,0 +1,588 @@
+---
+title: "Practica ML 2"
+subtitle: 'Forecasting'
+output: 
+  html_notebook:
+    theme: 'simplex'
+    toc: TRUE
+    toc_float:
+      collapsed: TRUE
+      smooth-scroll: TRUE
+    number_sections: FALSE
+    df_print: paged
+    code_folding: hide
+    includes:
+       in_header: MyHeader.html
+---
+
+
+<style type="text/css">
+#TOC {
+ color: #195389;
+}
+
+#tocify-header0{
+  padding-top: 80px !important;
+}
+
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+    z-index: 2;
+    color: #fff;
+    background-color: #384754;
+    border-color: #384754;
+}
+
+.main-container {
+  max-width: 1400px !important;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: justify;
+  font-size: 14px;
+}
+
+h1, h2, h3, h4 {
+color: #384754
+}
+
+p {
+color: #3E4D5B
+}
+
+.back-home {
+font-size: 25px;
+}
+
+a {
+color: #2B6390;
+}
+
+.share-buttons{
+  text-align: center;
+  display: inline-block;
+  border-radius: 20px;
+  border: 2px solid #384754;
+  width: 150px;
+  height: 40px;
+}
+
+#nav_logo {
+  position: fixed;
+  width: 100%;
+  margin-top: 20px;
+}
+
+</style>
+
+
+# Introducción
+- **Descripción:** en este notebook se van a aplicar los modelos de series temporales estudiados durante el máster sobre un conjunto de datos longitudinales a elección del grupo de trabajo.
+
+- **Datos:** los datos usados para este ejercicio contienen información de los accidentes de tráfico producidos en la ciudad de Madrid entre los años 2010 y 2020. Los ficheros de 2010 a 2018 solo registran los accidentes con heridos o con daños al patrimonio municipal.
+
+- **Enlace a los datos:** <a href="https://datos.madrid.es/portal/site/egob/menuitem.c05c1f754a33a9fbe4b2e4b284f1a5a0/?vgnextoid=7c2843010d9c3610VgnVCM2000001f4a900aRCRD&vgnextchannel=374512b9ace9f310VgnVCM100000171f5a0aRCRD&vgnextfmt=defaulthttps://www.w3schools.com/">Accidentes de tráfico en la Ciudad de Madrid</a>
+
+- **Grupo:** Verónica Gómez, Carlos Grande y Pablo Olmos.
+
+
+# Librerías usadas
+- plyr
+- dplyr
+- tidyr
+- readxl
+- forecast
+- ggplot2
+- stats
+- zoo
+- seasonal
+```{r, warning=FALSE, message=FALSE, comment=False}
+library(plyr)
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(forecast)
+library(ggplot2)
+library(stats)
+library(zoo)
+library(seasonal)
+```
+
+# 1. Datos
+Los datos consisten en 8 archivos excel por cada año conteniendo la accidentalidad de la Ciudad de Madrid.
+
+## 1.1 Importación de datos hasta 2018
+Para la importación de los datos vamos a usar una dos funciones que nos permitan la lectura y concatenación de cada uno de los archivos excel descargados del portal de datos abiertos.
+```{r}
+readr <- function(sufix){
+  pth <- paste('../data/', sufix, '_Accidentalidad.xlsx', sep = '')
+  df <- read_excel(pth)
+  return(df)
+}
+
+concatr <- function(dfs){
+  merged <- do.call(rbind, dfs)
+  return(merged)
+  }
+
+```
+
+A continuación podemos ver la tabla final con un total de 252.998 implicados, uno por cada fila del dataframe.
+
+```{r}
+dfs <- list()
+years <- c(seq(2010, 2018))
+for (year in years) {
+  print(sprintf("The year %s has been processed", year))
+  df <- readr(year)
+  names(df)[20] <- "Nº VICTIMAS *"
+  dfs[[as.character(year)]] <- df
+}
+
+df_merged <- concatr(dfs)
+head(df_merged)
+```
+
+En este paso simplemente guardamos la tabla como fichero RDA y volvemos a cargarla para asegurarnos de su correcto guardado. Así evitamos volver a realizar la operación de concatenación de excels para la correcta ejecución del notebook.
+
+```{r}
+# save(df_merged, file = '../data/df_merged.rda')
+load('../data/df_merged.rda')
+head(df_merged)
+```
+
+
+## 1.2 Estudio de variables de 2010/18
+Los datos consisten en un total de 26 variables para cada uno de los implicados en un accidente.
+```{r}
+df_merged %>% str()
+```
+
+
+# 2. Limpieza de los datos
+## 2.1 Renombrado de variables
+```{r}
+df_merged <- df_merged %>% rename('fecha' = 'FECHA', 
+                     'rango_horario' = 'RANGO HORARIO', 
+                     'dia_semana' = 'DIA SEMANA', 
+                     'distrito' = 'DISTRITO', 
+                     'lugar_accidente' = 'LUGAR ACCIDENTE', 
+                     'n_calle' = 'Nº', 
+                     'parte_accidente' = 'Nº PARTE', 
+                     'granizo' = 'CPFA Granizo', 
+                     'hielo' = 'CPFA Hielo', 
+                     'lluvia' = 'CPFA Lluvia', 
+                     'niebla' = 'CPFA Niebla', 
+                     'seco' = 'CPFA Seco', 
+                     'nieve' = 'CPFA Nieve', 
+                     'via_mojada' = 'CPSV Mojada', 
+                     'via_aceite' = 'CPSV Aceite', 
+                     'via_barro' = 'CPSV Barro', 
+                     'via_grava' = 'CPSV Grava Suelta', 
+                     'via_hielo' = 'CPSV Hielo', 
+                     'via_seca' = 'CPSV Seca Y Limpia', 
+                     'n_victimas' = 'Nº VICTIMAS *', 
+                     'accidente' = 'TIPO ACCIDENTE', 
+                     'vehiculo' = 'Tipo Vehiculo', 
+                     'persona' = 'TIPO PERSONA',
+                     'sexo' = 'SEXO',
+                     'lesividad' = 'LESIVIDAD',
+                     'tramo_edad' = 'Tramo Edad'
+                     )
+head(df_merged)
+```
+
+## 2.2 Transformación de variables
+### Variable fecha
+```{r}
+ df_merged[['fecha']] <- df_merged[['fecha']] %>% as.Date(., '%Y-%m-%d')
+head(df_merged)
+```
+
+### Variables dummy
+```{r}
+df_merged$granizo <- df_merged$granizo %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$hielo <- df_merged$hielo %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$lluvia <- df_merged$lluvia %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$niebla <- df_merged$niebla %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$seco <- df_merged$seco %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$nieve <- df_merged$nieve %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$via_mojada <- df_merged$via_mojada %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$via_aceite <- df_merged$via_aceite %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$via_barro <- df_merged$via_barro %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$via_grava <- df_merged$via_grava %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$via_hielo <- df_merged$via_hielo %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+df_merged$via_seca <- df_merged$via_seca %>% revalue(c('NO' = 0, 'SI' = 1)) %>% as.factor()
+
+
+selected <- c("granizo", "hielo", "lluvia", "niebla", "seco", "nieve", "via_mojada", "via_aceite", "via_barro", "via_grava", "via_hielo", "via_seca")
+df_merged %>% select(selected) %>% str()
+```
+
+### Variable lesividad
+En los datos anteriores a 2019 la lesividad tiene 5 niveles que renombraremos de esta manera:
+
+- *ileso*: sin daños.
+- *leve*: ingreso inferior a 24 horas.
+- *grave*: ingreso superior a 24 horas.
+- *fallecido*: fallecido 24 horas
+- *nd*: no definido
+
+```{r}
+df_merged$lesividad <- df_merged$lesividad %>% revalue(c('IL' = 'ileso',
+                                'HL' = 'leve',
+                                'HG' = 'grave',
+                                'MT' = 'fallecido',
+                                'NO ASIGNADA' = 'nd')) %>% as.factor()
+
+df_merged %>% select('lesividad') %>% str()
+```
+
+
+### Variables a factores
+En el siguiente paso vamos a realizar la conversión de todas las variables categóricas a factores.
+```{r}
+df_merged$dia_semana <-  df_merged$dia_semana %>% as.factor()
+df_merged$distrito <- df_merged$distrito %>% as.factor()
+df_merged$accidente <- df_merged$accidente %>% as.factor()
+df_merged$vehiculo <- df_merged$vehiculo %>% as.factor()
+df_merged$persona <- df_merged$persona %>% as.factor()
+df_merged$sexo <- df_merged$sexo %>% as.factor()
+df_merged$lesividad <- df_merged$lesividad %>% as.factor()
+df_merged$tramo_edad <- df_merged$tramo_edad %>% as.factor()
+```
+
+
+## 2.3 Selección de variables
+Dado que en esta tabla aparece una fila por cada implicado en un accidente y a nosotros lo que nos interesa es una tabla con un accidente por cada fila con sus parámetros asociados, vamos a realizar una selección de las variables que más nos interesan. Fijándonos en la tabla podemos ver que las únicas variables que varían para cada parte de accidente son:
+- vehículo: dado que en un accidente puede haber varios vehículos implicados.
+- Persona: ya que puede ser viajero, conductor, peatón...
+- Sexo: de cada implicado.
+- lesividad: mantendremos la lesividad del accidente como lesividad general cogiendo siempre la más grave del conjunto.
+- tramo_edad: depende de cada implicado no del conjunto.
+
+De esta manera eliminaremos cada una de estas variables salvo la variable de lesividad que la mantendremos como única.
+
+\* La variable *n_victimas* se repite por cada parte de accidente, siendo una suma total de todos los afectados en ese accidente por lo que dejaremos la variable intacta.
+
+Por el momento tampoco seleccionaremos las variables del entorno o la vía. Por lo que finalmente nos quedaremos con las siguientes variables.
+
+```{r}
+df_accidentes <- df_merged %>% select(1:4, 7, 20:21) %>% group_by(parte_accidente) %>% unique()
+df_fallecidos <- df_merged %>%
+  select(c(parte_accidente, lesividad)) %>% filter(lesividad == 'fallecido') %>% 
+  group_by(parte_accidente) %>%
+  summarise(n_fallecidos = n())
+df_accidentes <- join(df_accidentes, df_fallecidos, by='parte_accidente', type='left')
+df_accidentes$n_fallecidos <- df_accidentes$n_fallecidos %>% replace_na(0)
+
+head(df_accidentes)
+```
+
+### Estructura de los datos
+```{r}
+df_accidentes %>% summary()
+```
+
+# 3. Análisis exploratorio
+
+En este primer apartado vamos a explorar los diferentes factores que afectan a la temporalidad y estudiar las correlaciónes que se producen.
+
+## 3.1 Selección de variables temporales
+```{r}
+df_ts <- df_accidentes %>% mutate(meses = format(fecha, '%Y-%m')) %>%
+  group_by(meses) %>%
+  summarise(fecha = first(fecha), n_accidentes = n(), n_victimas = sum(n_victimas), n_fallecidos = sum(n_fallecidos)) %>%
+  arrange((fecha))
+
+head(df_ts, 10)
+```
+
+## 3.2 Estudio de la temporalidad
+En este primer apartado se puede ver como existe un fuerte patrón que se repite con una frecuencia aparente de 12 meses.
+```{r}
+# plot the data using ggplot2 and pipes
+ts_accidentes <- ts(df_ts$n_accidentes,
+           start = c(2010, 1),
+           end = c(2018, 12),
+           frequency = 12)
+
+autoplot(ts_accidentes) +
+  ggtitle('Número de víctimas de 2010 a 2018 en Madrid') +
+  xlab('Años') + ylab('Víctimas')
+```
+
+Una forma de comprobar si existe realmente un patrón anual es generar un plot con la distribución superpuesta de cada uno de los años registrados. En esta gráfica se puede afirmar que efectivamente existe un patrón anual muy fuerte.
+
+```{r}
+ggseasonplot(ts_accidentes, year.labels = T, year.labels.left = T) + xlab('Meses') + ylab('Víctimas') + ggtitle('Nº de víctimas anual')
+```
+
+
+## 3.3 Estacionalidad y tendencia
+En este apartado para asegurarnos de que el patrón se repite con una frecuencia de 12 meses vamos a realizar un gráfico con la función de autocorrelación. Comprobamos que la correlación más alta se da cada 12 meses 
+```{r}
+ggAcf(ts_accidentes, lag.max = 48)
+```
+
+Con este plot podemos observar que existe una estacionalidad ya que se repiten patrones cada cierto tiempo pero también puede verse una tendencia al reducirse las correlaciones al aumentar el lag de tiempo.
+
+Para poder ver mejor la tendencia y estacionalidad en cada caso podemos mostrar un diagrama de descomposición de factores, usando STL como método de descomosición. Este método es versatil y robusto, permitiendo estimar relaciones no lineales.
+```{r}
+stl <- ts_accidentes %>% stl(s.window="periodic", robust=TRUE) 
+stl %>% autoplot()
+```
+Podemos ver como hay una tendencia general en el aumento de accidentes desde 2010 y una fuerte estacionalidad anual.
+
+Por otro lado vamos a representar esta tendencia de aumento sobre la serie completa junto con la variación de la estacionalidad a lo largo de la serie.
+
+```{r}
+autoplot(ts_accidentes, series="Accidentes") +
+  autolayer(trendcycle(stl), series="Tendencia") +
+  autolayer(seasadj(stl), series="Estacionalidad") +
+  xlab("Años") + ylab("Accidentes") +
+  ggtitle("Estacionalidad y tendencia de Accidentes de 2010 a 2018") +
+  scale_color_manual(values = c('gray', '#0f4c75', '#1b262c'))
+```
+
+Por otro lado podemos estudiar los meses que mayor variación han tenido a lo largo de los 8 años, mediante gráficas de sub-series estacionales. Donde se puede observar que los meses de octubre, noviembre y junio son los que más varian a lo largo del tiempo.
+
+```{r}
+ts_accidentes %>% seas() %>% seasonal() %>% ggsubseriesplot() + xlab("Meses") + ylab("Estacionalidad") + ggtitle("Variaciones estacionales mensuales")
+```
+
+
+# 4 Naive forecasting
+Una primera aproximación a la predicción puede realizarse de manera sencilla con los siguientes métodos:
+
+- Media: esta predicción asume que la media de todos los valores futuros debe ser igual a la de los históricos.
+- Naive: esta predicción asume que los valores futuros son iguales al último valor conocido.
+- Naive estacionario: este predicción asume que los valores futuros son iguales a los históricos que coincidan en el mismo periodo temporal pasado.
+
+```{r, message=FALSE}
+train <- window(ts_accidentes, start=2010, end=c(2017, 12))
+train_avg <- meanf(train, h=12)
+train_naive <- rwf(train, h=12)
+train_snaive <- snaive(train, h=12)
+train_drift <- rwf(train, h=12)
+
+autoplot(window(ts_accidentes, start=2015)) +
+  autolayer(train_avg, series = "Mean", PI = F) +
+  autolayer(train_naive, series = "Naive", PI = F) +
+  autolayer(train_snaive, series = "Seasonal Naive", PI = F) +
+  autolayer(train_drift, series = "drift", PI = F) +
+  xlab("Año") + ylab("Accidentes") +
+  ggtitle("Predicción de accidentes a dos años") +
+  guides(colour=guide_legend(title = "Predicción"));
+```
+
+Podemos comprobar los errores de los tres modelos en Train, si nos fijamos en el error MAPE el más bajo de los tres es obviamente el Seasonal Naive.
+```{r}
+test <- window(ts_accidentes, start = 2017)
+rbind(accuracy(train_avg), accuracy(train_naive), accuracy(train_snaive), accuracy(train_drift)) 
+```
+
+Podemos ver el error del modelo Naive estacional contra test con los siguientes estadísticos:
+```{r}
+train_snaive %>% forecast(h = 12) %>% accuracy(ts_accidentes)
+```
+
+Durante está práctica nos vamos a fijar principalemente en el error MAPE, ya que es una medida en series temporales que indica la precisión del modelo como un porcentaje y funciona bien si no hay valores extremos o iguales a 0.
+
+En este caso podemos ver como el modelo **Seasonal Naive** tiene un error MAPE en test de un **10.3%**. Esta cifra nos ayudará para compararla con el error de los modelos posteriores.
+
+# 5 Seasonal ARIMA model
+Para datos con estacionalidad podemos aplicar el modelo ARIMA incluyendo términos estacionales añadiendo una componente que depende del numero de observaciones por año.
+
+## 5.1 ARIMA manual
+
+En primer lugar vamos a representar los gráficos de Autocorrelación y Autocorrelación parcial como ya hemos hecho anteriormente para confirmar la correlación de datos en el lag 12.
+```{r}
+ts_accidentes %>% ggtsdisplay(lag.max = 48)
+```
+
+Si nos fijamos en el correlograma PACF sin la diferencia estacional podemos ver los mayores picos en los 2 primeros lags reduciéndose poco a poco por lo que podría trataerse de un modelo AR(2)
+
+Para comenzar una primera aproximación de los parametros p, d, q estacionarios podemos restar el lag de la serie así misma varias veces hasta que los datos empiecen a parecer estacionarios. De esta manera podemos observar los correlogramas y estimar un modelo candidato, este proceso lo usaremos solo como análisis sin aplicar las transformaciones en la variable principal.
+
+```{r}
+ts_accidentes %>% diff(lag=12) %>% ggtsdisplay()
+#ARIMA(0,0,0)(0,1,1)
+```
+
+En los correlogramas con la diferencia estacional podemos sugerir un AR(1) ya que solo hay una correlación importante en el primer lag. De esta manera nuestro modelo quedaría así (2, 0, 0) no estacional y (0, 0, 1) estacional iremos probando diferentes combinaciones a partir de esta para encontrar la que tenga el menor error.
+
+```{r}
+non_sns <- c(2,0,0)
+sns <- c(0,1,1)
+
+ts_train <- window(ts_accidentes, end = c(2018))
+arima_train <- Arima(ts_train, order = non_sns, seasonal = sns)
+arima_train
+
+arima_train %>% forecast(h = 12) %>% accuracy(ts_accidentes)
+```
+
+Podemos ver que el ARIMA que menor MAPE manteniendo los parámetros MA(2) estacionario y AR(1) estacional tiene es el ARIMA(2, 0, 0) (0, 1, 1) para asegurarnos de que este ajuste del modelo es correcto podemos ver en los residuos que los residuos empiezan a comportarse como ruido blanco. de hecho el P-value obtenido mediante el test Ljung-Box es de 0.69 por lo que no podemos rechazar la hipótesis de ruido blanco.
+
+```{r}
+checkresiduals(arima_train)
+```
+
+Realizamos la predicción a 12 meses comprobando su gráfica.
+```{r}
+arima_train %>% forecast(h = 12) %>% autoplot()
+```
+
+Por otro lado podemos ver que el error MAPE es de un **7.6%** casi un 3% menor que en el Seasonal Naive, esto indica que vamos por buen camino.
+```{r}
+arima_train %>% forecast(h = 12) %>% accuracy(ts_accidentes)
+```
+
+
+## 5.2 ARIMA autoajustado
+
+Aunque no se aprecia una varianza inestable vamos a aplicar una transformación de Box-Cox y comprobar si nos beneficia de alguna manera esta transformación.
+```{r}
+lambda <- BoxCox.lambda(ts_train,lower=0)
+lambda
+```
+
+Como el valor lambda es muy próximo a cero, se puede transformar mediante un logaritmo natural. Puesto que no afecta al resultado, además es una transformación más simple, como se observa a continuación.
+
+```{r}
+ts_boxcox <- log(ts_train)
+ts_boxcox %>% autoplot()
+```
+
+En este caso vamos a probar a ajustar los parámetros del Arima de manera automática desactivando algunos atajos de cálculo y aproximación para asegurarnos de que encuentra el mejor resultado.
+```{r}
+arima_train_auto <- auto.arima(ts_train, stepwise=F, approximation=F)
+arima_train_auto
+
+arima_train_boxcox <- auto.arima(ts_boxcox, stepwise=F, approximation=F)
+arima_train_boxcox
+```
+
+Tras realizar el ARIMA automático el modelo ha seleccionado los parámetros de (0, 0, 0) y (0, 1, 1) bastante similares a los que habíamos elegido de manera manual. A continuación comprobaremos los residuos y el Ljung-Box test que es igual a 0.7 por lo que no podemos rechazar la hipótesis de que los residuos son ruido.
+
+```{r}
+checkresiduals(arima_train_auto)
+checkresiduals(arima_train_boxcox)
+```
+
+Posteriormente vamos a realizar la predicción y comprobar el error obtenido contra test.
+
+```{r}
+arima_train_auto %>% forecast(h = 12) %>% autoplot()
+arima_train_boxcox %>% forecast(h = 12) %>% autoplot()
+```
+
+En este caso conseguimos reducir el error en test a un **7.13%**, muy similar al error obtenido en el ARIMA ajustado manualmente.
+
+```{r}
+arima_train_auto %>% forecast(h = 12) %>% accuracy(ts_accidentes)
+arima_train_boxcox %>% forecast(h = 12) %>% accuracy(log(ts_accidentes))
+```
+
+Podemos observar como los resultados con y sin la transformación de BoxCox no generan grandes cambios en el error MAPE. Por lo que no se hace necesaria esta transformación.
+
+# 6 Exponential Smoothing
+En este apartado vamos a usar el modelo de *Exponential Smoothing* otro modelo muy generalizado ya que estos modelos solo se pueden aplicar en datos no estacionarios. Usando los mismo datos de Train y Test vamos a comenzar el entrenamiento.
+
+```{r}
+ets_train <- ts_train %>% ets()
+ets_train
+```
+
+Al comprobar los residuos podemos ver como se asemejan al ruido blanco obteniendo en el ACF muy baja correlación. Aunque por otro lado el p valor da por debajo de 0.05 por lo que deberíamos rechazar la hipótesis de ruido blanco.
+
+```{r}
+checkresiduals(ets_train)
+```
+
+Vamos a predecir la parte faltante de test, obteniendo los siguientes resultados.
+
+```{r}
+ts_train %>% ets() %>% forecast(h=12) %>% autoplot()
+```
+
+Finalmente podemor ver que el error MAPE es de **7.74%**, un error muy similar al obtenido con el ARIMA.
+
+```{r}
+ets_train %>% forecast(h = 12) %>% accuracy(ts_accidentes)
+```
+
+
+## 7 Dynamic regression model
+Otro modelo a probar sería de regresión dinámica, ayudándonos de otras variables con las que realizaremos una regresión lineal y que apoyarán el entrenamiento del modelo.
+
+### Número de accidentes en función del número de dias no laborables al mes
+En primer lugar vamos a utitlizar los datos del calentario laboral de la Comunidad de Madrid contando los días no laborables incluyendo festivos y fines de semana cada mes.
+
+Se puede encontrar en este enlace: https://calendarios.ideal.es/laboral/comunidad-de-madrid/2018
+```{r}
+df_vacaciones <- read_excel('../data/2018_2018_LibresLaborables.xls')
+df_vacaciones <- df_vacaciones %>% mutate(total = festivos+fines_semana)
+head(df_vacaciones)
+```
+
+En segundo lugar para asegurarnos de que existe una relación entre el número de accidenetes en Madrid y los días no laborables vamos a visualizar una gráfica de puntos con estas dos variables contrapuestas.
+
+```{r}
+df_drm <- df_ts %>% select(c(meses, n_accidentes))
+df_drm['vacaciones'] <- df_vacaciones$total
+
+ggplot(df_drm, aes(vacaciones, n_accidentes)) + geom_point()
+```
+
+Se puede ver claramente como a mayor número de días laborables hay más accidentes, en cambio cuantos más festivos menos accidentes se suceden, lo que tiene mucho sentido, recordemos que hablamos de Madrid Ciudad.
+
+Mostrada esta correlación el siguiente paso es estudiar la variación de estas dos variables a lo largo del tiempo para ver sus estacionalidad y tendencia.
+
+```{r}
+# plot the data using ggplot2 and pipes
+ts_vacaciones <- ts(df_vacaciones$total,
+           start = c(2010, 1),
+           end = c(2018, 12),
+           frequency = 12)
+
+
+autoplot(cbind(ts_accidentes, ts_vacaciones), facets=TRUE) +
+  xlab("Year") + ylab("") +
+  ggtitle("Variaciones anuales del número de accidentes frente al número de fallecidos")
+```
+
+A continuación vamos a entrenar el modelo de regresión dinámica ayudándonos de los datos de festivos y no laborables para ello vamos a usar un auto ARIMA con regresión.
+
+```{r}
+ts_train_fallecidos <- window(ts_vacaciones, end=c(2018))
+drm_train <- auto.arima(ts_train, xreg = ts_train_fallecidos)
+drm_train
+```
+
+Podemos comprobar los residuos de ambos modelos, comprobando que el modelo ARIMA tiene apariencia de ruido.
+```{r}
+cbind("Regression Errors" = residuals(drm_train, type = "regression"), "ARIMA Errors" = residuals(drm_train, type = "innovation")) %>% autoplot(facets=T)
+```
+
+Centrándonos en el ACF y en el resultado del test de Ljung-Box no podemos rechazar la hipótesis de ruido blanco en los residuos.
+```{r}
+checkresiduals(drm_train)
+```
+
+Finalemente vamos a realizar la predicción a un año y comparar el accuracy del modelo.
+```{r}
+fcast <- forecast(drm_train, xreg=rep(mean(ts_train_fallecidos), 12))
+autoplot(fcast)
+```
+
+Podemos ver como el error final MAPE en test es de **7.55** obteniendo el valor más bajo de todos los modelos, aunque sin grandes diferencias.
+
+```{r}
+fcast %>% accuracy(ts_accidentes)
+```
+
+
+# Referencias y enlaces
+
+Se pueden revisar el repositorio y los datos en este enlace: https://github.com/charlstown/ForecastingAccidentsMadrid
+
