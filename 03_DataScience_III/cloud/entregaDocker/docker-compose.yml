@@ -7,13 +7,12 @@ services:
       - shared_volume:/usr/src/app/output
   apacheServer:
     image: httpd:latest
-#    expose:
-#      - 8080
     volumes:
       - shared_volume:/usr/local/apache2/htdocs/
-#    networks:
-#      apachenet:
-#        ipv4_address: 172.25.0.7
+
+  whale:
+    image: docker/whalesay
+    command: ["cowsay", "release Compose!"]
 
   lb:
     image: dockercloud/haproxy
@@ -23,14 +22,6 @@ services:
      - '80:80'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
-#networks:
-#  apachenet:
-#    driver: bridge
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: 172.25.0.0/16
 
 volumes:
   shared_volume:
