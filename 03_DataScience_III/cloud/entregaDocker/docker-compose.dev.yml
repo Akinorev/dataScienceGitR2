@@ -4,7 +4,6 @@ services:
   pythonScript:
     volumes:
       - shared_volume:/usr/src/app/output
-    command: cat /usr/src/app/output
 
   apacheServer:
     volumes:
