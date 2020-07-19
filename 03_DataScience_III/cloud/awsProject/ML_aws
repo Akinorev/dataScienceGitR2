@@ -1,0 +1,74 @@
+
+
+Machine learning 
+
+Para el sistema de recomendacion de ventas, vamos a utilizar lo siguiente: Personalize ya que no requiere ni pagos mínimos ni compromios iniciales. Los cargos se aplicarán en función de los siguientes factores:
+1.-Incorporación: Datos Procesados y Almacenados.
+2.-Capacitación: Horas de cómputo empleadas para procesar los modelos y las recomendaciones.
+3.-Inferencia: El servicio admite recomendaciones en tiempo real, lo que se mide en transacciones por segundo (TPS). 
+Necesitamos especificar los límites mínimos del procesamiento y que Amazon Personalize garantice la respuesta de baja latencia para las solicitudes hasta el nivel de procesamiento aprovisionado.
+
+
+1.-Incorporación de datos Procesados y Almacenados 
+0,05 USD por GB
+
+2.-Capacitación
+0,24 USD por hora de entrenamiento
+
+3.-Inferencia
+Tiempo real Primeras 20 000 TPS-hora por mes
+0,20 USD por TPS-hora para recomendaciones en tiempo real Próximas 180 000 TPS-hora por mes
+0,10 USD por TPS-hora para recomendaciones en tiempo real Próximas 200 000 TPS-hora por mes
+0,05 USD por TPS-hora para recomendaciones en tiempo real Recomendaciones en lote
+
+ 
+Primeras 20 millones de recomendaciones por mes  0,067 USD/1000 recomendaciones 
+Próximas 180 millones de recomendaciones por mes 0,058 USD/1000 recomendaciones 
+Más de 200 millones de recomendaciones por mes   0,050 USD/1000 recomendaciones
+
+
+
+Estimación 1: Cada mes se le enviará a los clientes que no hayan entrado en la web una oferta en función del algoritmo de recomendación de ML.
+Estimación 2: Cada vez que un cliente entre en la web se le ofrecerá un producto en función de su perfil.
+
+
+Escenario 1 
+Número de Visitas 1000 visitas al día
+Número de Clientes que no han realizado visitas este día, estimanos 200 clientes.
+Mensualmente cargamos 252 Gb
+Emplearemos una capacidad de inferencia de 10 TPS por 720 horas al mes para generar recomendaciones en tiempo real.
+
+La factura del mes por el uso de Amazon Personalize incluirá lo siguiente:
+
+Cargo por procesamiento y almacenamiento de datos = 252 GB x 0,05 USD por GB = 12,6 USD
+
+Cargo por entrenamiento = 300 horas de entrenamiento x 0,24 USD por hora de entrenamiento = 72 USD
+
+Cargo por inferencia (en tiempo real) = 10 x 720 x 0,20 USD/TPS-hora = 1440 USD
+Estamos dentro de los 20 millones de recomendaciones al mes
+
+Costo total = 12,6 USD + 72 USD + 1440 USD = 1524,6 USD
+
+
+
+Escenario 2 
+Número de Visitas 5000 visitas al día
+Número de Clientes que no han realizado visitas este día, estimanos 500 clientes.
+Mensualmente cargamos 1,2 TB
+
+La factura del mes por el uso de Amazon Personalize incluirá lo siguiente:
+
+Cargo por procesamiento y almacenamiento de datos = 1155 GB x 0,05 USD por GB = 57,75 USD
+
+Cargo por entrenamiento = 300 horas de entrenamiento x 0,24 USD por hora de entrenamiento = 72 USD
+
+Cargo por inferencia (en tiempo real) = 10 x 720 x 0,20 USD/TPS-hora = 1440 USD
+Estamos dentro de los 20 millones de recomendaciones al mes
+
+Costo total =57.75 USD + 72 USD + 1440 USD = 1569,75 USD
+
+
+
+
+
+
