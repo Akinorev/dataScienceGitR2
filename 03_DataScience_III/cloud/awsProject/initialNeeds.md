@@ -16,24 +16,15 @@
 #### Instacias de las bbdd
 
 El proyecto debe contar con al menos dos bbdd (Si bien no tenemos estimaciones exactas de como de conocida es la plataforma y como será su demanda).
+Cogiendo como ejemplo Aurora MySQL, al menos necesitaremos 2 nodos.
 
-Cogiendo como ejemplo Aurora MySQL
-
-Así que al menos necesitaremos 2 nodos.
-
-Tipo de máquina elegida:
-
-db.r5.large
-(CPU:2 Memory: 16GB Network Performance: up to 10 Gb)
-
-Instance family: memory optimized
-
-Pricing model: OnDemand
-
-Result:
-
-0.58 USD x 730 hours in a month = 423.40 USD
-Amazon Aurora MySQL Compatible cost (monthly): 423.40 USD
+    Tipo de máquina elegida:
+        db.r5.large (CPU:2 Memory: 16GB Network Performance: up to 10 Gb)
+    Instance family: memory optimized
+    Pricing model: OnDemand
+    Result:
+         0.58 USD x 730 hours in a month = 423.40 USD
+         Amazon Aurora MySQL Compatible cost (monthly): 423.40 USD
 
 #### Almacenamiento
 
@@ -51,23 +42,23 @@ Nuestro storage es de 2TB y el número aproximado de I/O al mes es de 2Millones.
 
 En el caso de AWS el número mínimo de peticiones I/O que acepta al mes es de 1.000.000 por lo que no se pueden hacer las estimaciones para 1.000 usuarios.
 
-Unit conversions
-Storage amount: 2 TB x 1024 GB in a TB = 2048 GB
-Pricing calculations
-2,048 GB x 0.10 USD = 204.80 USD (Database Storage Cost)
-2 x 1000000 multiplier for million x 0.0000002 USD = 0.40 USD (I/O Rate Cost)
-204.80 USD + 0.40 USD = 205.20 USD
-Total Storage Cost (monthly): 205.20 USD
+    Unit conversions
+        Storage amount: 2 TB x 1024 GB in a TB = 2048 GB
+    Pricing calculations
+        2,048 GB x 0.10 USD = 204.80 USD (Database Storage Cost)
+        2 x 1000000 multiplier for million x 0.0000002 USD = 0.40 USD (I/O Rate Cost)
+        204.80 USD + 0.40 USD = 205.20 USD
+    Total Storage Cost (monthly): 205.20 USD
 
 #### Backup storage
 
 Vamos a guardar los 2TB ya que en nuestro caso no podemos perder transacciones. Esto podría generar dobles cobros o productos gratis, que a cierto nivel puede repercutir en malas opiniones dañando la imagen de la empresa
 
-Unit conversions
-Additional backup storage: 2 TB x 1024 GB in a TB = 2048 GB
-Pricing calculations
-2,048 GB x 0.021 USD = 43.01 USD
-Additional backup storage cost (monthly): 43.01 USD
+    Unit conversions
+        Additional backup storage: 2 TB x 1024 GB in a TB = 2048 GB
+    Pricing calculations
+        2,048 GB x 0.021 USD = 43.01 USD
+    Additional backup storage cost (monthly): 43.01 USD
 
 
 #### Backtrack
@@ -76,26 +67,26 @@ Por si acaso incluiremos servicio de backtrack, así en caso de que haya una ca�
 
 El servicio no es muy caro y en caso de necesidad puede salvarnos de las perdidas que se obtendrían en caso de no tenerlo.
 
-Unit conversions
-Average statements: 100 per second * (60 seconds in a minute x 60 minutes in an hour x 730 hours in a month) = 262800000 per month
-Pricing calculations
-262,800,000 average statements x 0.38 change records x 1 hours x 0.000000012 USD = 1.20 USD (Backtrack cost)
-Backtrack cost (monthly): 1.20 USD
+    Unit conversions
+        Average statements: 100 per second * (60 seconds in a minute x 60 minutes in an hour x 730 hours in a month) = 262800000 per month
+    Pricing calculations
+        262,800,000 average statements x 0.38 change records x 1 hours x 0.000000012 USD = 1.20 USD (Backtrack cost)
+    Backtrack cost (monthly): 1.20 USD
 
 #### Costes totales
 
 #####Amazon Aurora MySQL-Compatible estimate
 
-Amazon Aurora MySQL Compatible cost (monthly)
-423.40 USD
-Additional backup storage cost (monthly)
-43.01 USD
-Total Storage Cost (monthly)
-205.20 USD
-Backtrack cost (monthly)
-1.20 USD
-Total monthly cost:
-672.81 USD
+    Amazon Aurora MySQL Compatible cost (monthly)
+        423.40 USD
+    Additional backup storage cost (monthly)
+        43.01 USD
+    Total Storage Cost (monthly)
+        205.20 USD
+    Backtrack cost (monthly)
+        1.20 USD
+    Total monthly cost:
+        672.81 USD
 
 ### Servidores web
 
@@ -106,16 +97,16 @@ Entre hosting hacia el exterior como interno, entendemos que aproximadamente ten
 
 Y hemos elegido Geo DNS queries ya que queremos ofrecer el mejor servicio web independientemente de donde este nuestro usuario. Ya que Tajo ofrece servicio en todo el mundo.
 
-Tiered price for: 1
-1 x 0.5000000000 USD = 0.50 USD
-Total tier cost = 0.50 USD (Hosted Zone cost)
-1 policy record per month x 50.00 USD = 50.00 USD (Traffic Flow cost)
-5 million queries x 1000000 multiplier for million = 5,000,000.00 billable Geo DNS queries
-Tiered price for: 5000000.00 Geo DNS queries
-5000000 Geo DNS queries x 0.0000007000 USD = 3.50 USD
-Total tier cost = 3.50 USD (Geo DNS queries cost)
-0.50 USD + 50.00 USD + 3.50 USD = 54.00 USD
-Route53 Hosted Zone cost (monthly): 54.00 USD
+    Tiered price for: 1
+        1 x 0.5000000000 USD = 0.50 USD
+        Total tier cost = 0.50 USD (Hosted Zone cost)
+        1 policy record per month x 50.00 USD = 50.00 USD (Traffic Flow cost)
+        5 million queries x 1000000 multiplier for million = 5,000,000.00 billable Geo DNS queries
+    Tiered price for: 5000000.00 Geo DNS queries
+        5000000 Geo DNS queries x 0.0000007000 USD = 3.50 USD
+    Total tier cost = 3.50 USD (Geo DNS queries cost)
+        0.50 USD + 50.00 USD + 3.50 USD = 54.00 USD
+    Route53 Hosted Zone cost (monthly): 54.00 USD
 
 Como e-commerce que somos, una parte importante son los Health Checks. Para ello nos aseguramos de que nuestro sistema funcione de la forma adecuada. Calculamos una media de 15 pruebas mensuales de cada tipo para comprobar que todo está bien.
 
@@ -136,29 +127,29 @@ Route53 DNS Failover Health Checks cost (monthly): 191.25 USD
 
 Finalmente Amazon, nos exige un mínimo de 2 Elastic Network interfaces e indicamos que se harán aproximadamente unos 3 millones de queries al mes. Unos seran de clientes y otros de empleados.
 
-2 ENI x 0.125 USD x 730 hours in a month = 182.50 USD (Cost for ENI)
-3 million queries x 1000000 multiplier for million = 3,000,000.00 billable DNS resolver queries
-Tiered price for: 3000000.00
-3000000 x 0.0000004000 USD = 1.20 USD
-Total tier cost = 1.20 USD (Cost for DNS queries)
-182.50 USD + 1.20 USD = 183.70 USD
-Route53 Resolver cost (monthly): 183.70 USD
+    2 ENI x 0.125 USD x 730 hours in a month = 182.50 USD (Cost for ENI)
+    3 million queries x 1000000 multiplier for million = 3,000,000.00 billable DNS resolver queries
+    Tiered price for: 3000000.00
+    3000000 x 0.0000004000 USD = 1.20 USD
+    Total tier cost = 1.20 USD (Cost for DNS queries)
+    182.50 USD + 1.20 USD = 183.70 USD
+    Route53 Resolver cost (monthly): 183.70 USD
 
 #### Coste total
 
 ##### Amazon Route 53
 
-Route53 Hosted Zone cost (monthly)
-54.00 USD
-Route53 DNS Failover Health Checks cost (monthly)
-191.25 USD
-Route53 Resolver cost (monthly)
-183.70 USD
-Total monthly cost:
-428.95 USD
+    Route53 Hosted Zone cost (monthly)
+        54.00 USD
+    Route53 DNS Failover Health Checks cost (monthly)
+        191.25 USD
+    Route53 Resolver cost (monthly)
+        183.70 USD
+    Total monthly cost:
+        428.95 USD
 
 
-## Estimations can be found on:
+##### Las estimaciones se pueden encontrar en:
 https://calculator.aws/#/estimate?id=2325fdedc9fbc4026cba71316d915b1e039329d3
 
 
@@ -176,25 +167,26 @@ Debido a que nuestra compañía esta en EEUU (fundada por españoles expatriados
 
 Aun así también hace ventas al extranjero. Los ultimos análisis establecieron el siguiente volumen de ventas:
 
-United States 50%
-Canada 5%
-Europe & Israel 15%
-Hong Kong, Philippines, S. Korea, Singapore & Taiwan 10%
-South America 10%
-South Africa 5%
-Middle East 5%
+    United States 50%
+    Canada 5%
+    Europe & Israel 15%
+    Hong Kong, Philippines, S. Korea, Singapore & Taiwan 10%
+    South America 10%
+    South Africa 5%
+    Middle East 5%
 
-Data Transfer:
-   Data Transfer Out: 7 GB/Week
-   Data Transfer Out to Origin: 7 GB/Week
-Requests:
-   Average Object Size: 20KB
-Type of Requests:
-	HTTPS
-    Field Level Encryption for HTTPS Requests: 3000000 Requests
-    Invalidation Requests: 100000 Requests
+    Data Transfer:
+       Data Transfer Out: 7 GB/Week
+       Data Transfer Out to Origin: 7 GB/Week
+    Requests:
+       Average Object Size: 20KB
+    Type of Requests:
+	      HTTPS
+            Field Level Encryption for HTTPS Requests: 3000000 Requests
+            Invalidation Requests: 100000 Requests
 
 ##### Coste total CloudFront
+
     Amazon CloudFront Service: $507.03
         Data Transfer Out: $2.91
         Data Transfer Out to Origin:$1.22
@@ -348,16 +340,12 @@ Número de Clientes que no han realizado visitas este día, estimamos 200 client
 Mensualmente cargamos 252 Gb
 Emplearemos una capacidad de inferencia de 10 TPS por 720 horas al mes para generar recomendaciones en tiempo real.
 
-La factura del mes por el uso de Amazon Personalize incluirá lo siguiente:
-
-Cargo por procesamiento y almacenamiento de datos = 252 GB x 0,05 USD por GB = 12,6 USD
-
-Cargo por entrenamiento = 300 horas de entrenamiento x 0,24 USD por hora de entrenamiento = 72 USD
-
-Cargo por inferencia (en tiempo real) = 10 x 720 x 0,20 USD/TPS-hora = 1440 USD
-Estamos dentro de los 20 millones de recomendaciones al mes
-
-Costo total = 12,6 USD + 72 USD + 1440 USD = 1524,6 USD
+    La factura del mes por el uso de Amazon Personalize incluirá lo siguiente:
+        Cargo por procesamiento y almacenamiento de datos = 252 GB x 0,05 USD por GB = 12,6 USD
+        Cargo por entrenamiento = 300 horas de entrenamiento x 0,24 USD por hora de entrenamiento = 72 USD
+        Cargo por inferencia (en tiempo real) = 10 x 720 x 0,20 USD/TPS-hora = 1440 USD
+    Estamos dentro de los 20 millones de recomendaciones al mes
+        Costo total = 12,6 USD + 72 USD + 1440 USD = 1524,6 USD
 
 ##### Machine learning epoca de alta demanda
 
@@ -365,13 +353,9 @@ Número de Visitas 5000 visitas al día
 Número de Clientes que no han realizado visitas este día, estimamos 5000 clientes.
 Mensualmente cargamos 1,2 TB
 
-La factura del mes por el uso de Amazon Personalize incluirá lo siguiente:
-
-Cargo por procesamiento y almacenamiento de datos = 1155 GB x 0,05 USD por GB = 57,75 USD
-
-Cargo por entrenamiento = 300 horas de entrenamiento x 0,24 USD por hora de entrenamiento = 72 USD
-
-Cargo por inferencia (en tiempo real) = 10 x 720 x 0,20 USD/TPS-hora = 1440 USD
-Estamos dentro de los 20 millones de recomendaciones al mes
-
-Costo total = 57.75 USD + 72 USD + 1440 USD = 1569,75 USD
+    La factura del mes por el uso de Amazon Personalize incluirá lo siguiente:
+        Cargo por procesamiento y almacenamiento de datos = 1155 GB x 0,05 USD por GB = 57,75 USD
+        Cargo por entrenamiento = 300 horas de entrenamiento x 0,24 USD por hora de entrenamiento = 72 USD
+        Cargo por inferencia (en tiempo real) = 10 x 720 x 0,20 USD/TPS-hora = 1440 USD
+    Estamos dentro de los 20 millones de recomendaciones al mes
+        Costo total = 57.75 USD + 72 USD + 1440 USD = 1569,75 USD
