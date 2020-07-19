@@ -15,9 +15,9 @@
 
 #### Instacias de las bbdd
 
-El proyecto debe contar con al menos dos bbdd (Si bien no tenemos estimaciones exactas de como de conocida es la plataforma) y con diferencia geografica.
+El proyecto debe contar con al menos dos bbdd (Si bien no tenemos estimaciones exactas de como de conocida es la plataforma y como sera su demanda) y con diferencia geografica.
 
-Cogiendo como ejemplo Aurora MySQL compatible servers de la calculadora
+Cogiendo como ejemplo Aurora MySQL
 
 Asi que al menos necesitaremos 2 nodos.
 
@@ -37,13 +37,13 @@ Amazon Aurora MySQL Compatible cost (monthly): 423.40 USD
 
 #### Almacenamiento
 
-Si entendemos que colocar un producto en el carrito es ya una peticion a la base, tanto de bloqueo de item como de liberacion si se opta por no comprar.
+Si entendemos que colocar un producto en el carrito es ya una peticion a la base de datos, tanto de bloqueo de item como de liberacion si se opta por no comprar.
 
 Al ser una tienda conocida (pero no tenemos estos datos) solo podemos hacer una estimacion.
 
-Para nuestra simulacion entendemos que se hacen de media unos 5 millones de peticiones al mes.
+Para nuestra simulacion entendemos que se hacen de media unos 2 millones de peticiones al mes.
 
-Hay que tener en cuenta tambien que los compradores indecisos que hacen y deshacer el carrito tambien generan peticiones.
+Hay que tener en cuenta tambien que los compradores indecisos que hacen y deshacen el carrito tambien generan peticiones.
 
 Entendemos que es una tienda grande, por lo que tendra un buen inventario. Tambien debemos guardar un historico por motivos legales de las transacciones, usuarios y demas necesidades que tiene un ecommerce.
 
@@ -98,7 +98,7 @@ Total monthly cost:
 ### Servidores web
 
 #### DNS Amazon Route 53
-Como estamos migrando todo eso incluye nuestros servicios web. Entre ellos un DNS, tanto para la intraweb que se pueda tener (para la parte de logistica, info de la empresa... etc)
+Como estamos migrando todo eso incluye nuestros servicios web. Entre ellos un DNS, tanto para la intraweb que se pueda tener (para la parte de logistica, info de la empresa... etc) como para la venta de cara al exterior.
 
 Entre hosting hacia el exterior como interno, entendemos que aproximadamente tendremos minimo 1 hosting.
 
@@ -115,7 +115,7 @@ Total tier cost = 3.50 USD (Geo DNS queries cost)
 0.50 USD + 50.00 USD + 3.50 USD = 54.00 USD
 Route53 Hosted Zone cost (monthly): 54.00 USD
 
-Como ecommerce que somos, una parte importante son los Health Checks. Para ello nos aseguramos de que nuestro sistema funcione de la forma adecuada. Para ello calculamos una media de 15 pruebas mensuales para comprobar que todo esta bien.
+Como ecommerce que somos, una parte importante son los Health Checks. Para ello nos aseguramos de que nuestro sistema funcione de la forma adecuada. Calculamos una media de 15 pruebas mensuales de cada tipo para comprobar que todo esta bien.
 
 Tiered price for: 5 Basic Checks (AWS)
 5 Basic Checks (AWS) x 0.0000000000 USD = 0.00 USD
@@ -155,6 +155,11 @@ Route53 Resolver cost (monthly)
 Total monthly cost:
 428.95 USD
 
+
+## Estimations can be found on:
+https://calculator.aws/#/estimate?id=2325fdedc9fbc4026cba71316d915b1e039329d3
+
+
 #### WEB
 
 Para la web lo ideal seria usar Amazon CloudFront, ya que soporta https. Este servicio a su vez contiene lo siguiente:
@@ -167,7 +172,7 @@ No se encuentra el servicio en la calculadora de amazon
 
 ### Generacion de informes
 
-#### Cluster Hadoop
+#### Cluster Hadoop Baja frecuencia
 
 Amazon recomienda EMR: https://aws.amazon.com/es/getting-started/hands-on/analyze-big-data/services-costs/
 
@@ -175,11 +180,21 @@ Con un coste aproximado de 769 USD
 
 https://aws.amazon.com/es/emr/pricing/
 
-#### Machine learning (Preguntar a Pablo)
+##### S3 Bucket
+
+
+#### Cluster Hadoop Alta frecuencia
+
+##### S3 Bucket
+
+
+
+#### Machine learning Baja frecuencia
 
 Para el sistema de recomendacion de ventas, vamos a utilizar lo siguiente: Personalize
 
 Tabla costes Personalize: https://aws.amazon.com/es/personalize/pricing/
 
+#### Machine learning Alta frecuencia
 
 
