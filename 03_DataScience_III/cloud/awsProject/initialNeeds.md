@@ -1,27 +1,27 @@
-# Que se necesita para la migracion AWS
+# Que se necesita para la migración AWS
 
 ## Tienda online se divide en los siguientes servicios
 
-### Necesidades para un ecommerce
+### Necesidades para un e-commerce
 
-* Que los servidores esten siempre funcionando (un servidor inactivo = perder dinero)
-* Sistema escalable que pueda crecer en funcion de la epoca del año (es posible que se hagan mas ventas en navidad)
-* Sistema de backup que la base de datos este protegida en caso de fallo
-* Que sea ampliable, que se puedan incluir nuevos servicios de monitorizacion del entorno
-* Pagar solo por el consumo, hay que evitar pagar lo mismo cada mes ya que los sistemas no siempre tendran la misma carga
+* Que los servidores estén siempre funcionando (un servidor inactivo = perder dinero)
+* Sistema escalable que pueda crecer en función de la época del año (es posible que se hagan más ventas en navidad)
+* Sistema de backup que la base de datos esté protegida en caso de fallo
+* Que sea ampliable, que se puedan incluir nuevos servicios de monitorización del entorno
+* Pagar solo por el consumo, hay que evitar pagar lo mismo cada mes, ya que los sistemas no siempre tendrán la misma carga
 * Que sea seguro, las transacciones deben mantenerse en privado y garantizar la seguridad del usuario y los propios sistemas.
 
 ### Base de datos
 
 #### Instacias de las bbdd
 
-El proyecto debe contar con al menos dos bbdd (Si bien no tenemos estimaciones exactas de como de conocida es la plataforma y como sera su demanda) y con diferencia geografica.
+El proyecto debe contar con al menos dos bbdd (Si bien no tenemos estimaciones exactas de como de conocida es la plataforma y como será su demanda).
 
 Cogiendo como ejemplo Aurora MySQL
 
-Asi que al menos necesitaremos 2 nodos.
+Así que al menos necesitaremos 2 nodos.
 
-Tipo de maquina elegida:
+Tipo de máquina elegida:
 
 db.r5.large
 (CPU:2 Memory: 16GB Network Performance: up to 10 Gb)
@@ -37,17 +37,19 @@ Amazon Aurora MySQL Compatible cost (monthly): 423.40 USD
 
 #### Almacenamiento
 
-Si entendemos que colocar un producto en el carrito es ya una peticion a la base de datos, tanto de bloqueo de item como de liberacion si se opta por no comprar.
+Si entendemos que colocar un producto en el carrito es ya una petición a la base de datos, tanto de bloqueo de item como de liberación si se opta por no comprar.
 
-Al ser una tienda conocida (pero no tenemos estos datos) solo podemos hacer una estimacion.
+Al ser una tienda conocida (pero no tenemos estos datos) solo podemos hacer una estimación.
 
-Para nuestra simulacion entendemos que se hacen de media unos 2 millones de peticiones al mes.
+Para nuestra simulación entendemos que se hacen de media unos 2 millones de peticiones al mes.
 
-Hay que tener en cuenta tambien que los compradores indecisos que hacen y deshacen el carrito tambien generan peticiones.
+Hay que tener en cuenta también que los compradores indecisos que hacen y deshacen el carrito a su vez generan peticiones.
 
-Entendemos que es una tienda grande, por lo que tendra un buen inventario. Tambien debemos guardar un historico por motivos legales de las transacciones, usuarios y demas necesidades que tiene un ecommerce.
+Entendemos que es una tienda grande, por lo que tendrá un buen inventario. También debemos guardar un histórico por motivos legales de las transacciones, usuarios y demaáades que tiene un e-commerce.
 
-Nuestro storage es de 2TB y el numero aproximado de I/O al mes es de 2Millones. Los dos millones de I/O se toma de la siguiente estimacion, 5000 usuarios al dia * 7 peticiones I/O * 30 dias de mes = 1.050.000 aprox
+Nuestro storage es de 2TB y el número aproximado de I/O al mes es de 2Millones. Los dos millones de I/O se toma de la siguiente estimación, 5000 usuarios al día * 7 peticiones I/O * 30 dias de mes = 1.050.000 aprox
+
+En el caso de AWS el número mínimo de peticiones I/O que acepta al mes es de 1.000.000 por lo que no se pueden hacer las estimaciones para 1.000 usuarios.
 
 Unit conversions
 Storage amount: 2 TB x 1024 GB in a TB = 2048 GB
@@ -59,7 +61,7 @@ Total Storage Cost (monthly): 205.20 USD
 
 #### Backup storage
 
-Vamos a guardar los 2TB ya que en nuestro caso no se podemos perder transacciones. Esto podria generar dobles cobros o productos gratis, que a cierto nivel puede repercutir en malas opiniones dañando la imagen de la empresa
+Vamos a guardar los 2TB ya que en nuestro caso no podemos perder transacciones. Esto podría generar dobles cobros o productos gratis, que a cierto nivel puede repercutir en malas opiniones dañando la imagen de la empresa
 
 Unit conversions
 Additional backup storage: 2 TB x 1024 GB in a TB = 2048 GB
@@ -70,9 +72,9 @@ Additional backup storage cost (monthly): 43.01 USD
 
 #### Backtrack
 
-Por si acaso incluiremos servicio de backtrack, asi en caso de que haya una caida de los servidores podemos revertir el estado recuperando al menos los datos de la ultima hora.
+Por si acaso incluiremos servicio de backtrack, así en caso de que haya una caída de los servidores podemos revertir el estado recuperando al menos los datos de la última hora.
 
-El servicio no es muy caro y en caso de necesidad puede salvarnos de las perdidas que se obtendrian en caso de no tenerlo.
+El servicio no es muy caro y en caso de necesidad puede salvarnos de las perdidas que se obtendrían en caso de no tenerlo.
 
 Unit conversions
 Average statements: 100 per second * (60 seconds in a minute x 60 minutes in an hour x 730 hours in a month) = 262800000 per month
@@ -98,9 +100,9 @@ Total monthly cost:
 ### Servidores web
 
 #### DNS Amazon Route 53
-Como estamos migrando todo eso incluye nuestros servicios web. Entre ellos un DNS, tanto para la intraweb que se pueda tener (para la parte de logistica, info de la empresa... etc) como para la venta de cara al exterior.
+Como estamos migrando todo eso incluye nuestros servicios web. Entre ellos un DNS, tanto para la intraweb que se pueda tener (para la parte de logística, información de la empresa... etc) como para la venta de cara al exterior.
 
-Entre hosting hacia el exterior como interno, entendemos que aproximadamente tendremos minimo 1 hosting.
+Entre hosting hacia el exterior como interno, entendemos que aproximadamente tendremos mínimo 1 hosting.
 
 Y hemos elegido Geo DNS queries ya que queremos ofrecer el mejor servicio web independientemente de donde este nuestro usuario. Ya que Tajo ofrece servicio en todo el mundo.
 
@@ -115,7 +117,7 @@ Total tier cost = 3.50 USD (Geo DNS queries cost)
 0.50 USD + 50.00 USD + 3.50 USD = 54.00 USD
 Route53 Hosted Zone cost (monthly): 54.00 USD
 
-Como ecommerce que somos, una parte importante son los Health Checks. Para ello nos aseguramos de que nuestro sistema funcione de la forma adecuada. Calculamos una media de 15 pruebas mensuales de cada tipo para comprobar que todo esta bien.
+Como e-commerce que somos, una parte importante son los Health Checks. Para ello nos aseguramos de que nuestro sistema funcione de la forma adecuada. Calculamos una media de 15 pruebas mensuales de cada tipo para comprobar que todo está bien.
 
 Tiered price for: 5 Basic Checks (AWS)
 5 Basic Checks (AWS) x 0.0000000000 USD = 0.00 USD
@@ -132,7 +134,7 @@ Total tier cost = 0.00 USD (Basic Checks cost (AWS))
 11.25 USD + 15.00 USD + 30.00 USD + 15.00 USD + 30.00 USD + 15.00 USD + 30.00 USD + 15.00 USD + 30.00 USD = 191.25 USD
 Route53 DNS Failover Health Checks cost (monthly): 191.25 USD
 
-Finalmente Amazon, nos exige un minimo de 2 Elastic Network interfaces e indicamos que se haran aproximadamente unos 3 millones de queries al mes. Unos seran de clientes y otros de potenciales clientes e intersados en nuestros productos.
+Finalmente Amazon, nos exige un mínimo de 2 Elastic Network interfaces e indicamos que se harán aproximadamente unos 3 millones de queries al mes. Unos seran de clientes y otros de empleados.
 
 2 ENI x 0.125 USD x 730 hours in a month = 182.50 USD (Cost for ENI)
 3 million queries x 1000000 multiplier for million = 3,000,000.00 billable DNS resolver queries
@@ -168,11 +170,11 @@ Para la web lo ideal seria usar Amazon CloudFront, ya que soporta https. Este se
 * Amazon S3
 * Elastic Load Balancing o Amazon EC2
 
-Los costes estimados, son una media. Hay que tener en cuenta que en los ecommerce tienen picos de ventas como podria ser el blackfriday o epoca de Navidades.
+Los costes estimados son una media. Hay que tener en cuenta que en los e-commerce tienen picos de ventas como podría ser el blackfriday o la época de Navidades.
 
-Debido a que nuestra compañia esta en EEUU (fundada por españoles expatriados) la mayoria de las ventas las encontramos alli.
+Debido a que nuestra compañía esta en EEUU (fundada por españoles expatriados) la mayoría de las ventas las encontramos allí.
 
-Aun asi tambien hace ventas al extranjero. Los ultimos analisis establecieron el siguiente volumen de ventas:
+Aun así también hace ventas al extranjero. Los ultimos análisis establecieron el siguiente volumen de ventas:
 
 United States 50%
 Canada 5%
@@ -210,7 +212,7 @@ Type of Requests:
 
 #### Cluster Hadoop Baja frecuencia
 
-Para esta funcionalidad se elige el servicio de Elastic Map Reduce. Se utilizara para calcular el coste de generar los informes diarios y mensuales.
+Para esta funcionalidad se elige el servicio de Elastic Map Reduce. Se utilizará para calcular el coste de generar los informes diarios y mensuales.
 
 Las condiciones necesarias para nuestro EMR son los siguientes:
 
@@ -260,7 +262,7 @@ Características de las R4:
 | 1.000 usuarios |    r4.large    |      2      |      16       |         Solo EBS         |    Hasta 10     |
 | 5.000 usuarios |   r4.xlarge    |      4      |     30.5      |         Solo EBS         |    Hasta 10     |
 
-##### Numero de instancias necesarias
+##### Número de instancias necesarias
 
 Dado que no conocemos muchos datos del proyecto comenzaremos con un cluster base y posteriormente usaremos la herramienta de Auto-scaling para generar un rango de instancias. Además debemos contar con que AWS Auto Sacling es totalmente gratuito
 
@@ -273,7 +275,7 @@ Dado que no conocemos muchos datos del proyecto comenzaremos con un cluster base
 
 ##### Uso mensual
 
-Para hacerlo sencillo suponemos que un mes tiene 30 días, y que el tiempo necesario para eliminar un informe diario con los cluster en ejecución es de 2 horas, mientras que para el informe mensual es de 3 horas
+Para hacerlo sencillo suponemos que un mes tiene 30 días, y que el tiempo necesario para eliminar un informe diario con los clusters en ejecución es de 2 horas, mientras que para el informe mensual es de 3 horas
 
 |   Escenario    |    Tipo de informe    | Tiempo de procesado | Horas al día | Horas al mes |
 | :------------: | :-------------------: | :-----------------: | :----------: | :----------: |
@@ -333,16 +335,16 @@ Asumimos que la información de seguridad de todos los informes se elimina cada 
 
 #### Machine learning: Apredizaje y recomendaciones a usuarios
 
-Para el sistema de recomendacion de ventas, vamos a utilizar lo siguiente: Personalize.
+Para el sistema de recomendación de ventas, vamos a utilizar lo siguiente: Personalize.
 
-Es un sistema gestionado por Amazon, por lo que debemos despreocuparnos de los detalles sobre como generar un sistema de aprendizaje por cuenta de la empresa. Esto permite ahorrar los costes de formacion en Data Science.
+Es un sistema gestionado por Amazon, por lo que debemos despreocuparnos de los detalles sobre como generar un sistema de aprendizaje por cuenta de la empresa. Esto permite ahorrar los costes de formación en Data Science.
 
 Para este apartado tenemos en cuenta los dos escenarios, ya que el coste de este producto es alto
 
-##### Machine learning epoca de baja demanda
+##### Machine learning época de baja demanda
 
 Número de Visitas 1000 visitas al día
-Número de Clientes que no han realizado visitas este día, estimanos 200 clientes.
+Número de Clientes que no han realizado visitas este día, estimamos 200 clientes.
 Mensualmente cargamos 252 Gb
 Emplearemos una capacidad de inferencia de 10 TPS por 720 horas al mes para generar recomendaciones en tiempo real.
 
@@ -360,7 +362,7 @@ Costo total = 12,6 USD + 72 USD + 1440 USD = 1524,6 USD
 ##### Machine learning epoca de alta demanda
 
 Número de Visitas 5000 visitas al día
-Número de Clientes que no han realizado visitas este día, estimanos 5000 clientes.
+Número de Clientes que no han realizado visitas este día, estimamos 5000 clientes.
 Mensualmente cargamos 1,2 TB
 
 La factura del mes por el uso de Amazon Personalize incluirá lo siguiente:
