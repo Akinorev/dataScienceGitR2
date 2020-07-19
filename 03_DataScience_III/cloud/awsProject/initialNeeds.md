@@ -168,7 +168,43 @@ Para la web lo ideal seria usar Amazon CloudFront, ya que soporta https. Este se
 * Amazon S3
 * Elastic Load Balancing o Amazon EC2
 
-No se encuentra el servicio en la calculadora de amazon
+Los costes estimados, son una media. Hay que tener en cuenta que en los ecommerce tienen picos de ventas como podria ser el blackfriday o epoca de Navidades.
+
+Debido a que nuestra compañia esta en EEUU (fundada por españoles expatriados) la mayoria de las ventas las encontramos alli.
+
+Aun asi tambien hace ventas al extranjero. Los ultimos analisis establecieron el siguiente volumen de ventas:
+
+United States 50%
+Canada 5%
+Europe & Israel 15%
+Hong Kong, Philippines, S. Korea, Singapore & Taiwan 10%
+South America 10%
+South Africa 5%
+Middle East 5%
+
+Data Transfer:
+   Data Transfer Out: 7 GB/Week
+   Data Transfer Out to Origin: 7 GB/Week
+Requests:
+   Average Object Size: 20KB
+Type of Requests:
+	HTTPS
+    Field Level Encryption for HTTPS Requests: 3000000 Requests
+    Invalidation Requests: 100000 Requests
+
+##### Coste total CloudFront
+    Amazon CloudFront Service: $507.03
+        Data Transfer Out: $2.91
+        Data Transfer Out to Origin:$1.22
+        Requests: $1.90
+        Field Level Encryptions for HTTPS Requests: $6.00
+        Invalidations: $495.00
+
+    AWS Support (Basic) $0.00
+    Free Tier Discount: $-4.81
+    Total Monthly Payment: $502.22
+
+
 
 ### Generacion de informes
 
